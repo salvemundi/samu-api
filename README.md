@@ -29,10 +29,7 @@ $ npm run start:dev
 ## Run tests
 
 ```bash
-# unit tests
-$ npm run test
-
-# test coverage
+# run tests with coverage report
 $ npm run test:cov
 ```
 
