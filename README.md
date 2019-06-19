@@ -7,6 +7,7 @@ This is a NodeJS backend build with TypeORM and NestJS to deliver all of the dat
 ## Getting started
 
 ```bash
+$ npm prune
 $ npm install
 $ npm run start:dev
 ```
