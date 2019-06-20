@@ -12,6 +12,10 @@ $ npm install
 $ npm run start:dev
 ```
 
+## Documentation
+
+At the [wiki section](https://github.com/salvemundi/samu-api/wiki) of the repository is all the documentation
+
 ## Run tests
 
 ```bash
