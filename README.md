@@ -12,30 +12,12 @@ $ npm install
 $ npm run start:dev
 ```
 
-## Authorization
-
-
-## Environment file
-
-
-## Mail service
-
-
-## TypeORM
-
-
-## E-boekhouden.nl
-
-
 ## Run tests
 
 ```bash
 # run tests with coverage report
 $ npm run test:cov
 ```
-
-## Generate documentation
-
 
 ## License
 
