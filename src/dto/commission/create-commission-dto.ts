@@ -1,4 +1,4 @@
-import { IsNotEmpty, Max } from 'class-validator';
+import { IsNotEmpty, Max, IsDate } from 'class-validator';
 
 export class CreateCommissionDto {
   @Max(255)
@@ -7,5 +7,7 @@ export class CreateCommissionDto {
   @IsNotEmpty()
   description: string;
 
+  @IsNotEmpty()
+  @IsDate()
   created: Date;
 }
