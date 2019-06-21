@@ -4,8 +4,8 @@ export default {
     port: process.env.DB_PORT,
     username: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
-    entities: ['src/entity/*.entity.ts'],
-    migrations: ['src/migration/*.migration.ts'],
+    entities: ['/**/*.entity{.ts,.js}'],
+    migrations: ['/**/*.migration{.ts,.js}'],
     database: process.env.DB_NAME,
     synchronize: false,
 };
