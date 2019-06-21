@@ -1,7 +1,7 @@
 import { Controller, Post, Body, HttpCode } from '@nestjs/common';
 import { CommissionService } from '../../service/commission/commission.service';
-import { CreateCommissionDto } from '../../dto/commission/create-commission-dto';
 import { Commission } from '../../entity/Commission.entity';
+import { CreateCommissionDto } from '../../../dist/dto/commission/create-commission-dto';
 
 @Controller('commissions')
 export class CommissionController {
