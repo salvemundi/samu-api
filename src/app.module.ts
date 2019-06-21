@@ -11,11 +11,7 @@ import { CommissionService } from './service/commission/commission.service';
   imports: [
     ConfigModule.load(path.resolve(__dirname, 'config', '**/!(*.d).{ts,js}')),
     TypeOrmModule.forRootAsync({
-<<<<<<< HEAD
         useFactory: (config: ConfigService) => config.get('db'),
-=======
-        useFactory: (config: ConfigService) =>  config.get('db'),
->>>>>>> 6291820... Basically a lot of scaffolding, nothing interesting here.
         inject: [ConfigService],
     }),
   ],
