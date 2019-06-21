@@ -6,13 +6,14 @@ import { ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe());
-  
+
   const options = new DocumentBuilder()
     .setTitle('Salve mundi API')
     .setDescription('Salve mundi API documentation')
     .setVersion('1.0')
     .addTag('SaMu')
     .build();
+
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api', app, document);
 
