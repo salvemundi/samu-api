@@ -1,4 +1,4 @@
-import { IsNotEmpty, Max, IsDate, MaxLength, IsISO8601 } from 'class-validator';
+import { IsNotEmpty, MaxLength, IsISO8601 } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
 
 export class UpdateCommissionDto {
