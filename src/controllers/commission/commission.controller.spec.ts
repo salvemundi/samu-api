@@ -1,18 +1,19 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { CommissionController } from './commission.controller';
+import { CommissionService } from './../../services/commission/commission.service';
 
 describe('Commission Controller', () => {
   let controller: CommissionController;
+  let service: CommissionService;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      controllers: [CommissionController],
-    }).compile();
-
-    controller = module.get<CommissionController>(CommissionController);
+  beforeAll(async () => {
+    service = new CommissionService();
+    controller = new CommissionController(service);
   });
 
-  it('should be defined', () => {
-    expect(controller).toBeDefined();
+  it('Can read all commissions', async () => {
+    const result = [];
+    jest.spyOn(service, 'read').mockImplementation(() => Promise.resolve(result));
+
+    expect((await controller.readAll(0, 100)).commissions).toBe(result);
   });
 });
