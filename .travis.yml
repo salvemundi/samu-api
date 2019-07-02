@@ -1,0 +1,9 @@
+language: node_js
+
+services:
+  - docker
+
+before_install:
+  - docker pull mysql:latest
+  - docker run --name some-mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql:latest
+  - ls
