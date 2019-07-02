@@ -12,6 +12,7 @@ before_install:
   - docker pull mysql:latest
   - docker run --name some-mysql -e MYSQL_ROOT_PASSWORD=root -d mysql:latest
   - echo '#DB credentials \n DB_TYPE="mysql" \n DB_HOST="localhost" \n DB_PORT=3306 \n DB_USER="root" \n DB_PASSWORD="root" \n DB_NAME="hallo" \n SERVER_PORT=1337' > .env
+  - cat .env
 
 install:
   - npm install

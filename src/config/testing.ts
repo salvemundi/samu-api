@@ -8,11 +8,21 @@ export class DatabaseSeeder {
             port: 3306,
             username: 'root',
             password: 'my-secret-pw',
-            migrations: ['./../migration/*.js'],
         });
 
-        connection.query('CREATE DATABSE test IF NOT EXISTS;');
-        connection.query('USE test;');
-        await connection.runMigrations({transaction: true});
+        await connection.query('CREATE DATABASE IF NOT EXISTS test;');
+        await connection.close();
+
+        const connectionWithMigrations = await createConnection({
+            type: 'mysql',
+            host: 'localhost',
+            port: 3306,
+            username: 'root',
+            password: 'my-secret-pw',
+            database: 'test',
+            migrations: ['src/migration/*.ts'],
+            entities: ['src/entities/*.ts'],
+        });
+        await connectionWithMigrations.runMigrations({transaction: true}).catch(err => {console.error(err);})
     }
 }
