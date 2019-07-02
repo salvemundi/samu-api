@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from 'nestjs-config';
-import { TestController } from './controller/test/test.controller';
 import * as path from 'path';
+import { CommissionController } from './controllers/commission/commission.controller';
+import { CommissionService } from './services/commission/commission.service';
 
 // ConfigService.rootPath = path.resolve(__dirname, '..');
 
@@ -11,9 +12,10 @@ import * as path from 'path';
     ConfigModule.load(path.resolve(__dirname, 'config', '**/!(*.d).{ts,js}')),
     TypeOrmModule.forRootAsync({
         useFactory: (config: ConfigService) => config.get('db'),
-        inject: [ConfigService]
+        inject: [ConfigService],
     }),
   ],
-  controllers: [TestController],
+  controllers: [CommissionController],
+  providers: [CommissionService],
 })
 export class AppModule {}
