@@ -1,35 +1,29 @@
+import 'reflect-metadata';
 import { Test } from '@nestjs/testing';
 import { CommissionController } from './commission.controller';
 import { CommissionService } from './../../services/commission/commission.service';
 import { CreateCommissionDto } from './../../dto/commission/create-commission-dto';
-import { DatabaseSeeder } from './../../config/testing';
+import { DatabaseSeeder } from '../../config/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as path from 'path';
 import { ConfigModule, ConfigService } from 'nestjs-config';
+import { Commission } from 'dist/entities/Commission.entity';
+import * as request from 'supertest';
 
 describe('Commission Controller', () => {
   let controller: CommissionController;
   let service: CommissionService;
-  let database: DatabaseSeeder;
+  let databaseSeeder: DatabaseSeeder;
 
   beforeAll(async () => {
+    databaseSeeder = new DatabaseSeeder();
+    await databaseSeeder.before();
+
     const module = await Test.createTestingModule({
       imports: [
         ConfigModule.load(path.resolve(__dirname, 'config', '**/!(*.d).{ts,js}')),
         TypeOrmModule.forRootAsync({
-            useFactory: (config: ConfigService) => ({
-              retryAttempts: 10,
-              type: 'mysql',
-              host: process.env.DB_HOST,
-              port: +process.env.DB_PORT,
-              username: process.env.DB_USER,
-              password: process.env.DB_PASSWORD,
-              entities: [path.resolve(__dirname, '../entities', '**/!(*.d).{ts,js}')],
-              migrations: [path.resolve(__dirname, '../migrations', '**/!(*.d).{ts,js}')],
-              database: process.env.DB_NAME,
-              synchronize: false,
-          }),
-            inject: [ConfigService],
+            useFactory: () => databaseSeeder.getConnectionString(),
         }),
       ],
       controllers: [CommissionController],
@@ -38,23 +32,21 @@ describe('Commission Controller', () => {
 
     service = module.get<CommissionService>('CommissionService');
     controller = module.get<CommissionController>('CommissionController');
-    // database = new DatabaseSeeder();
-    // await database.before();
+  });
 
-    // service = new CommissionService();
-    // controller = new CommissionController(service);
+  afterAll(async () => {
+    await databaseSeeder.after();
   });
 
   it('Can read all commissions', async () => {
-    const result = [];
-    // jest.spyOn(service, 'read').mockImplementation(() => Promise.resolve(result));
+    const expect: Commission[] = [new Commission()];
 
     const create = new CreateCommissionDto();
-    create.name = "Bastiaan";
+    create.name = 'Bastiaan';
     create.created = new Date();
-    create.description = "reee";
-    await controller.create(create);
+    create.description = 'reee';
+    // await controller.create(create);
 
-    expect((await controller.readAll(0, 100)).commissions).toBe(result);
+    expect((await controller.readAll(0, 100))).toBe(expect);
   });
 });
