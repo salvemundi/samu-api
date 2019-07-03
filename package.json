@@ -54,7 +54,7 @@
       "json",
       "ts"
     ],
-    "rootDir": "",
+    "rootDir": "./",
     "roots": [
       "<rootDir>"
     ],

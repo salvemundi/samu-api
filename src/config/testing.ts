@@ -26,7 +26,6 @@ export class DatabaseSeeder {
             entities: [path.resolve(__dirname, '../entities', '**/!(*.d).{ts,js}')],
             migrations: [path.resolve(__dirname, '../migrations', '**/!(*.d).{ts,js}')],
             synchronize: false,
-            extra: { insecureAuth: true },
         });
         await connectionWithMigrations.runMigrations({transaction: true}).catch(err => {console.error(err);})
     }
