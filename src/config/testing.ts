@@ -1,4 +1,4 @@
-import { createConnection } from 'typeorm';
+import { getConnectionManager } from 'typeorm';
 import * as path from 'path';
 
 export class DatabaseSeeder {
@@ -16,7 +16,8 @@ export class DatabaseSeeder {
         // await connection.query('CREATE DATABASE IF NOT EXISTS testSaMuAPI;');
         // await connection.close();
 
-        const connectionWithMigrations = await createConnection({
+        const connectionManager = getConnectionManager();
+        const connection = connectionManager.create({
             type: 'mysql',
             host: process.env.DB_HOST,
             port: +process.env.DB_PORT,
@@ -27,6 +28,7 @@ export class DatabaseSeeder {
             migrations: [path.resolve(__dirname, '../migrations', '**/!(*.d).{ts,js}')],
             synchronize: false,
         });
+        const connectionWithMigrations = await connection.connect();
         await connectionWithMigrations.runMigrations({transaction: true}).catch(err => {console.error(err);})
     }
 }
