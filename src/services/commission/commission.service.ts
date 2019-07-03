@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Commission } from '../../entities/Commission.entity';
+import { Commission } from 'src/entities/Commission.entity';
 
 @Injectable()
 export class CommissionService {
