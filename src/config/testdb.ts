@@ -1,13 +1,18 @@
 import * as path from 'path';
+import * as dotenv from 'dotenv';
+import { Commission } from 'dist/entities/Commission.entity';
+
+dotenv.config();
 
 export default {
     type: process.env.DB_TYPE,
     host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
+    port: +process.env.DB_PORT,
     username: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     entities: [path.resolve(__dirname, '../entities', '*.ts')],
+    // entities: [Commission],
     migrations: [path.resolve(__dirname, '../migrations', '*.ts')],
-    database: process.env.DB_NAME,
+    database: 'testSaMuAPI',
     synchronize: false,
 };

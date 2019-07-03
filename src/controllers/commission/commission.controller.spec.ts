@@ -1,52 +1,36 @@
-import 'reflect-metadata';
 import { Test } from '@nestjs/testing';
-import { CommissionController } from './commission.controller';
-import { CommissionService } from './../../services/commission/commission.service';
-import { CreateCommissionDto } from './../../dto/commission/create-commission-dto';
-import { DatabaseSeeder } from '../../config/testing';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import * as path from 'path';
-import { ConfigModule, ConfigService } from 'nestjs-config';
-import { Commission } from 'dist/entities/Commission.entity';
+import { DatabaseSeeder } from '../../config/databaseSeeder';
 import * as request from 'supertest';
+import { INestApplication } from '@nestjs/common';
+import { TestModule } from 'src/test.module';
 
 describe('Commission Controller', () => {
-  let controller: CommissionController;
-  let service: CommissionService;
   let databaseSeeder: DatabaseSeeder;
+  let app: INestApplication;
 
   beforeAll(async () => {
     databaseSeeder = new DatabaseSeeder();
     await databaseSeeder.before();
 
     const module = await Test.createTestingModule({
-      imports: [
-        ConfigModule.load(path.resolve(__dirname, 'config', '**/!(*.d).{ts,js}')),
-        TypeOrmModule.forRootAsync({
-            useFactory: () => databaseSeeder.getConnectionString(),
-        }),
-      ],
-      controllers: [CommissionController],
-      providers: [CommissionService],
+      imports: [TestModule],
     }).compile();
 
-    service = module.get<CommissionService>('CommissionService');
-    controller = module.get<CommissionController>('CommissionController');
+    app = module.createNestApplication();
+    await app.init();
   });
 
   afterAll(async () => {
     await databaseSeeder.after();
+    await app.close();
   });
 
-  it('Can read all commissions', async () => {
-    const expect: Commission[] = [new Commission()];
-
-    const create = new CreateCommissionDto();
-    create.name = 'Bastiaan';
-    create.created = new Date();
-    create.description = 'reee';
-    // await controller.create(create);
-
-    expect((await controller.readAll(0, 100))).toBe(expect);
+  it('Can read all commissions', () => {
+    return request(app.getHttpServer())
+      .get('/commissions')
+      .expect(200)
+      .expect({
+        data: [],
+      });
   });
 });
