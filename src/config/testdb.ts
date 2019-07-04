@@ -1,6 +1,5 @@
 import * as path from 'path';
 import * as dotenv from 'dotenv';
-import { Commission } from 'dist/entities/Commission.entity';
 
 dotenv.config();
 
