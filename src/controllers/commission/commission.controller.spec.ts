@@ -2,16 +2,16 @@ import { Test } from '@nestjs/testing';
 import * as request from 'supertest';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { TestModule } from 'src/test.module';
-import { CommissionService } from 'dist/services/commission/commission.service';
+import { CommissionService } from 'src/services/commission/commission.service';
 import { ICommissionService } from 'src/services/commission/icommission.service';
-import { Commission } from 'dist/entities/Commission.entity';
+import { Commission } from 'src/entities/Commission.entity';
 
 // TODO: Add test for authorization
 describe('Commission Controller', () => {
   let app: INestApplication;
 
   // Mock entity
-  const randomCommission = new Commission(1, 'Random commission', 'Random commission to test this controller', new Date());
+  const randomCommission = new Commission('Random commission', 'Random commission to test this controller', new Date(), 1);
 
   // Mock service
   const commissionService: ICommissionService = {
@@ -52,6 +52,7 @@ describe('Commission Controller', () => {
     await app.close();
   });
 
+  // Tests
   describe('/commissions/ - Get all request', () => {
     it('Correct call - Should return 200 and all of the commissions', () => {
       return request(app.getHttpServer()).get('/commissions')
@@ -88,7 +89,7 @@ describe('Commission Controller', () => {
         .expect('Content-Type', 'application/json; charset=utf-8')
         .expect(200)
         .expect((response: request.Response) => {
-          response.body.commission = new Commission(2, 'ICT commissie', 'De ICT commissie is geweldig!', date);
+          response.body.commission = new Commission('ICT commissie', 'De ICT commissie is geweldig!', date, 2);
         });
     });
 
@@ -108,7 +109,7 @@ describe('Commission Controller', () => {
         .expect('Content-Type', 'application/json; charset=utf-8')
         .expect(200)
         .expect((response: request.Response) => {
-          response.body.commission = new Commission(1, 'ICT commissie', 'De ICT commissie is geweldig!', date);
+          response.body.commission = new Commission('ICT commissie', 'De ICT commissie is geweldig!', date, 1);
         });
     });
 

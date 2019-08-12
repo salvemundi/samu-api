@@ -2,23 +2,23 @@ import { PrimaryGeneratedColumn, Column, BaseEntity, Entity } from 'typeorm';
 
 @Entity()
 export class Commission extends BaseEntity {
-
-    constructor(name?: string, description?: string, created?: Date) {
+    constructor(name: string, description: string, created: Date, id?: number) {
         super();
+        this.id = id;
         this.name = name;
         this.description = description;
         this.created = created;
     }
 
     @PrimaryGeneratedColumn()
-    id: number;
+    public id: number;
 
     @Column({name: 'name'})
-    name: string;
+    public name: string;
 
     @Column({name: 'description'})
-    description: string;
+    public description: string;
 
     @Column({name: 'created'})
-    created: Date;
+    public created: Date;
 }
