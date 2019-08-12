@@ -48,18 +48,5 @@
     "tslint": "^5.18.0",
     "typescript": "3.4.3",
     "wait-on": "^3.2.0"
-  },
-  "jest": {
-    "moduleDirectories": [ "node_modules", "src" ],
-    "moduleFileExtensions": [ "js", "json", "ts" ],
-    "roots": [ "src" ],
-    "testRegex": ".spec.ts$",
-    "transform": {
-      "^.+\\.ts$": "ts-jest"
-    },
-    "coverageDirectory": "../coverage",
-    "moduleNameMapper": {
-      "src/(.*)": "<rootDir>/src/$1"
-    }
   }
 }
