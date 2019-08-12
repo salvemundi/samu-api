@@ -8,6 +8,6 @@ module.exports = {
     },
     "coverageDirectory": "../coverage",
     "moduleNameMapper": {
-      "src/(.*)": "<rootDir>/src/$0.ts"
+      "src/(.*)": "<rootDir>/src/$1.ts"
     }
 }
