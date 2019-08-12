@@ -55,12 +55,11 @@
     "roots": [ "src" ],
     "testRegex": ".spec.ts$",
     "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
+      "^.+\\.ts$": "ts-jest"
     },
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node",
     "moduleNameMapper": {
-      "src/(.*)": "<rootDir>/src/$1.ts"
+      "src/(.*)": "<rootDir>/src/$1"
     }
   }
 }
