@@ -9,5 +9,4 @@ install:
   - npm install
 
 script:
-  - ls /home/travis/build/salvemundi/samu-api/src
   - npm run test

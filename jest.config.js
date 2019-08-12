@@ -6,8 +6,5 @@ module.exports = {
     "transform": {
       "^.+\\.ts$": "ts-jest"
     },
-    "coverageDirectory": "../coverage",
-    "moduleNameMapper": {
-      "src/(.*)": "<rootDir>/src/$1"
-    }
+    "coverageDirectory": "../coverage"
 }
