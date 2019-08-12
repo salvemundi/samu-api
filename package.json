@@ -52,10 +52,9 @@
   "jest": {
     "moduleFileExtensions": [ "ts", "js" ],
     "rootDir": "src",
-    "modulePaths": [
-      "src",
-      "test"
-    ],
+    "moduleNameMapper": {
+      "^components(.*)$": "<rootDir>/**/*.ts"
+    },
     "testRegex": ".spec.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
