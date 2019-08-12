@@ -56,10 +56,6 @@
       "^components(.*)$": "<rootDir>/**/*.ts"
     },
     "testRegex": ".spec.ts$",
-    "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
-    },
-    "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "coverageDirectory": "../coverage"
   }
 }
