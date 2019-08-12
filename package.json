@@ -50,16 +50,13 @@
     "wait-on": "^3.2.0"
   },
   "jest": {
-    "moduleFileExtensions": [
-      "json",
-      "ts"
-    ],
-    "rootDir": "./",
+    "moduleFileExtensions": [ "ts", "js" ],
+    "rootDir": "src",
     "testRegex": ".spec.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
     },
-    "coverageDirectory": "./coverage",
+    "coverageDirectory": "../coverage",
     "testEnvironment": "node"
   }
 }

@@ -1,10 +1,10 @@
 import { Test } from '@nestjs/testing';
 import * as request from 'supertest';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
-import { TestModule } from 'src/test.module';
-import { CommissionService } from 'src/services/commission/commission.service';
-import { ICommissionService } from 'src/services/commission/icommission.service';
-import { Commission } from 'src/entities/Commission.entity';
+import { TestModule } from '../../test.module';
+import { CommissionService } from '../../services/commission/commission.service';
+import { ICommissionService } from '../../services/commission/icommission.service';
+import { Commission } from '../../entities/Commission.entity';
 
 // TODO: Add test for authorization
 describe('Commission Controller', () => {
