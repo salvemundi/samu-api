@@ -51,10 +51,9 @@
   },
   "jest": {
     "moduleFileExtensions": [ "ts", "js" ],
-    "rootDir": "src",
-    "moduleNameMapper": {
-      "^components(.*)$": "<rootDir>/**/*.ts"
-    },
+    "roots": [
+      "<rootDir>/src"
+    ],
     "testRegex": ".spec.ts$",
     "coverageDirectory": "../coverage",
     "transform": {
