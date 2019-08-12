@@ -1,36 +1,127 @@
 import { Test } from '@nestjs/testing';
-import { DatabaseSeeder } from '../../config/databaseSeeder';
 import * as request from 'supertest';
-import { INestApplication } from '@nestjs/common';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { TestModule } from 'src/test.module';
+import { CommissionService } from 'dist/services/commission/commission.service';
+import { ICommissionService } from 'src/services/commission/icommission.service';
+import { Commission } from 'dist/entities/Commission.entity';
 
+// TODO: Add test for authorization
 describe('Commission Controller', () => {
-  let databaseSeeder: DatabaseSeeder;
   let app: INestApplication;
 
-  beforeAll(async () => {
-    databaseSeeder = new DatabaseSeeder();
-    await databaseSeeder.before();
+  // Mock entity
+  const randomCommission = new Commission(1, 'Random commission', 'Random commission to test this controller', new Date());
 
+  // Mock service
+  const commissionService: ICommissionService = {
+    create: (commission: Commission) => new Promise<Commission>((resolve) => {
+      commission.id = 2;
+      resolve(commission);
+    }),
+    read: (skip: number, take: number) => new Promise<Commission[]>((resolve) => {
+      resolve([randomCommission]);
+    }),
+    readOne: (id: number) => new Promise<Commission>((resolve) => {
+      if (id === 1) {
+        resolve(randomCommission);
+
+      } else {
+        resolve(undefined);
+      }
+    }),
+    update: (commission: Commission) => new Promise<Commission>((resolve) => {
+      resolve(commission);
+    }),
+  };
+
+  beforeAll(async () => {
     const module = await Test.createTestingModule({
       imports: [TestModule],
-    }).compile();
+    })
+    .overrideProvider(CommissionService)
+    .useValue(commissionService)
+    .compile();
 
     app = module.createNestApplication();
+    app.useGlobalPipes(new ValidationPipe());
     await app.init();
   });
 
   afterAll(async () => {
-    await databaseSeeder.after();
     await app.close();
   });
 
-  it('Can read all commissions', () => {
-    return request(app.getHttpServer())
-      .get('/commissions')
-      .expect(200)
-      .expect({
-        data: [],
-      });
+  describe('/commissions/ - Get all request', () => {
+    it('Correct call - Should return 200 and all of the commissions', () => {
+      return request(app.getHttpServer()).get('/commissions')
+        .expect('Content-Type', 'application/json; charset=utf-8')
+        .expect(200)
+        .expect((response: request.Response) => {
+          response.body.commissions = [randomCommission];
+        });
+    });
+  });
+
+  describe('/commission/:id - Get one request', () => {
+    it('Correct call - Should return 200 and one commission', () => {
+      return request(app.getHttpServer()).get('/commissions/1')
+        .expect('Content-Type', 'application/json; charset=utf-8')
+        .expect(200)
+        .expect((response: request.Response) => {
+          response.body.commission = randomCommission;
+        });
+    });
+
+    it('Wrong id - Should return 404', () => {
+      return request(app.getHttpServer()).get('/commissions/2')
+        .expect(404);
+    });
+  });
+
+  describe('/commission/ - Post request', () => {
+    it('Correct call - Should return 200', () => {
+      const date = new Date();
+
+      return request(app.getHttpServer()).post('/commissions')
+        .send({name: 'ICT commissie', description: 'De ICT commissie is geweldig!', created: date})
+        .expect('Content-Type', 'application/json; charset=utf-8')
+        .expect(200)
+        .expect((response: request.Response) => {
+          response.body.commission = new Commission(2, 'ICT commissie', 'De ICT commissie is geweldig!', date);
+        });
+    });
+
+    it('Missing info in body - Should return 400', () => {
+      return request(app.getHttpServer()).post('/commissions')
+        .send({description: 'De ICT commissie is geweldig!', created: new Date()})
+        .expect(400);
+    });
+  });
+
+  describe('/commission/ - Put request', () => {
+    it('Correct call - Should return 200', () => {
+      const date = new Date();
+
+      return request(app.getHttpServer()).put('/commissions')
+        .send({id: 1, name: 'ICT commissie', description: 'De ICT commissie is geweldig!', created: date})
+        .expect('Content-Type', 'application/json; charset=utf-8')
+        .expect(200)
+        .expect((response: request.Response) => {
+          response.body.commission = new Commission(1, 'ICT commissie', 'De ICT commissie is geweldig!', date);
+        });
+    });
+
+    it('Missing info in body - Should return 400', () => {
+      return request(app.getHttpServer()).put('/commissions')
+        .send({id: 1, description: 'De ICT commissie is geweldig!', created: new Date()})
+        .expect(400);
+    });
+
+    it('Wrong id - Should return 404', () => {
+      return request(app.getHttpServer()).put('/commissions')
+        .send({id: 3, name: 'Dames commissie', description: 'De ICT commissie is geweldig!', created: new Date()})
+        .expect(404);
+    });
   });
 });

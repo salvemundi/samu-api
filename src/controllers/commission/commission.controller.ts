@@ -12,43 +12,48 @@ export class CommissionController {
 
     @Get('/:id')
     @HttpCode(200)
-    @ApiResponse({status: 200, description: 'Commission is found.'})
+    @ApiResponse({status: 200, description: 'Commission is found.', type: Commission})
     @ApiResponse({status: 404, description: 'No commission was found with the provided id.'})
     async readOne(@Param('id') id: number) {
-        const commission = await this.commisionService.readOne(id);
+        const commission = await this.commisionService.readOne(+id);
         if (!commission) {
             throw new NotFoundException(`No commission exists with id: ${id}.`);
         }
-        return {TBD: 'TBD', commission};
+        return {commission};
     }
-    
+
     @Get()
     @HttpCode(200)
-    @ApiResponse({status: 200, description: 'Commissions that match the skip and take parameters.'})
+    @ApiResponse({status: 200, description: 'Commissions that match the skip and take parameters.', type: Array<Commission>()})
     async readAll(@Query('skip') skip: number, @Query('take') take: number) {
-        return {TBD: 'TBD', commissions: await this.commisionService.read(skip, take)};
+        return { commissions: await this.commisionService.read(skip, take) };
     }
 
     @Post()
-    @HttpCode(201)
-    @ApiResponse({status: 201, description: 'Commission is created.'})
+    @HttpCode(200)
+    @ApiResponse({status: 200, description: 'Commission is created.', type: Commission})
     @ApiResponse({status: 400, description: 'Validation errors.'})
     async create(@Body() body: CreateCommissionDto) {
         const commission = new Commission(body.name, body.description, body.created);
-        this.commisionService.create(commission);
-        return {TBD: 'TBD'};
+
+        return { commission: await this.commisionService.create(commission) };
     }
 
     @Put()
     @HttpCode(200)
-    @ApiResponse({status: 200, description: 'Commission is updated.'})
+    @ApiResponse({status: 200, description: 'Commission is updated.', type: Commission})
     @ApiResponse({status: 400, description: 'Validation errors.'})
+    @ApiResponse({status: 404, description: 'No commission was found with the provided id.'})
     async update(@Body() body: UpdateCommissionDto) {
         const commission = await this.commisionService.readOne(body.id);
+        if (!commission) {
+            throw new NotFoundException(`No commission exists with id: ${body.id}.`);
+        }
+
         commission.created = body.created;
         commission.description = body.description;
         commission.name = body.name;
-        this.commisionService.update(commission);
-        return {TBD: 'TBD', updated: 'updated'};
+
+        return { commission: await this.commisionService.update(commission) };
     }
 }

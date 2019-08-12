@@ -1,8 +1,9 @@
-import { IsNotEmpty, MaxLength, IsISO8601 } from 'class-validator';
+import { IsNotEmpty, MaxLength } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
 
 export class CreateCommissionDto {
   @ApiModelProperty({required: true, maxLength: 255})
+  @IsNotEmpty()
   @MaxLength(255)
   name: string;
 
@@ -10,7 +11,7 @@ export class CreateCommissionDto {
   @IsNotEmpty()
   description: string;
 
-  @ApiModelProperty({required: true, format: 'ISO 8601'})
-  @IsISO8601()
+  @ApiModelProperty({required: true})
+  @IsNotEmpty()
   created: Date;
 }

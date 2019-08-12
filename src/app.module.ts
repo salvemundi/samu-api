@@ -1,11 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from 'nestjs-config';
-import * as path from 'path';
 import { CommissionController } from './controllers/commission/commission.controller';
 import { CommissionService } from './services/commission/commission.service';
-
-// ConfigService.rootPath = path.resolve(__dirname, '..');
+import * as path from 'path';
 
 @Module({
   imports: [
