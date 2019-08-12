@@ -1,4 +1,4 @@
-import { Commission } from 'src/entities/Commission.entity';
+import { Commission } from 'src/entities/commission.entity';
 
 export interface ICommissionService {
     create(model: Commission): Promise<Commission>;
