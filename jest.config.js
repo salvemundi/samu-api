@@ -5,12 +5,12 @@ module.exports = {
     "src/config",
     "src/controllers",
     "src/dto",
-    "src/enitities",
+    "src/entities",
     "src/modules",
     "src/services",
     "node_modules"
   ],
-  "moduleFileExtensions": [ "js", "json", "ts" ],
+  "moduleFileExtensions": [ "ts", "json", "js" ],
   "roots": [ "src" ],
   "testRegex": ".spec.ts$",
   "transform": {
