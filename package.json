@@ -8,8 +8,6 @@
     "build": "tsc -p tsconfig.build.json",
     "format": "prettier --write \"src/**/*.ts\"",
     "start": "concurrently --handle-input \"wait-on dist/main.js && nodemon\" \"tsc -w -p tsconfig.build.json\" ",
-    "prestart:prod": "rimraf dist && npm run build",
-    "start:prod": "node dist/main.js",
     "lint": "tslint -p tsconfig.json -c tslint.json",
     "test": "jest --coverage --no-cache",
     "erd": "./node_modules/.bin/tsuml --glob ./src/entities/*.ts"
