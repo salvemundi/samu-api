@@ -4,18 +4,14 @@
   "description": "",
   "author": "",
   "license": "GPL-2.0",
-  "compilerOptions": {
-    "rootDirs": [
-      "src/"
-    ]
-  },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "format": "prettier --write \"src/**/*.ts\"",
     "start": "concurrently --handle-input \"wait-on dist/main.js && nodemon\" \"tsc -w -p tsconfig.build.json\" ",
     "lint": "tslint -p tsconfig.json -c tslint.json",
     "test": "jest --coverage --no-cache",
-    "erd": "./node_modules/.bin/tsuml --glob ./src/entities/*.ts"
+    "erd": "./node_modules/.bin/tsuml --glob ./src/entities/*.ts",
+    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js"
   },
   "dependencies": {
     "@nestjs/common": "^6.4.0",
