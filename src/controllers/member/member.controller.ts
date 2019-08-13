@@ -1,10 +1,10 @@
 import { Controller, Get, HttpCode, Param, NotFoundException, Post, Body, Put } from '@nestjs/common';
-import { MemberService } from 'src/services/member/member.service';
+import { MemberService } from '../../services/member/member.service';
 import { ApiResponse } from '@nestjs/swagger';
-import { Member } from 'src/entities/member.entity';
-import { CreateMemberDto } from 'src/dto/member/create-member-dto';
-import { UpdateMemberDto } from 'src/dto/member/update-member-dto';
-import { ShortedMemberDto } from 'src/dto/member/shorted-member-dto';
+import { Member } from '../../entities/member.entity';
+import { CreateMemberDto } from '../../dto/member/create-member-dto';
+import { UpdateMemberDto } from '../../dto/member/update-member-dto';
+import { ShortedMemberDto } from '../../dto/member/shorted-member-dto';
 
 @Controller('member')
 export class MemberController {

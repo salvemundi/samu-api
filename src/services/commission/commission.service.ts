@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Commission } from 'src/entities/commission.entity';
+import { Commission } from '../../entities/commission.entity';
 import { ICommissionService } from './icommission.service';
 
 @Injectable()

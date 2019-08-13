@@ -1,9 +1,9 @@
 import { Controller, Post, Body, HttpCode, Get, Query, Param, Put, NotFoundException } from '@nestjs/common';
-import { CommissionService } from 'src/services/commission/commission.service';
-import { Commission } from 'src/entities/commission.entity';
-import { CreateCommissionDto } from 'src/dto/commission/create-commission-dto';
+import { CommissionService } from '../../services/commission/commission.service';
+import { Commission } from '../../entities/commission.entity';
+import { CreateCommissionDto } from '../../dto/commission/create-commission-dto';
 import { ApiUseTags, ApiResponse } from '@nestjs/swagger';
-import { UpdateCommissionDto } from 'src/dto/commission/update-commission-dto';
+import { UpdateCommissionDto } from '../../dto/commission/update-commission-dto';
 
 @ApiUseTags('commissions')
 @Controller('commissions')

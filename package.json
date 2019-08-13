@@ -4,6 +4,11 @@
   "description": "",
   "author": "",
   "license": "GPL-2.0",
+  "compilerOptions": {
+    "rootDirs": [
+      "src/"
+    ]
+  },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "format": "prettier --write \"src/**/*.ts\"",
