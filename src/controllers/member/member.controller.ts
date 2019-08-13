@@ -36,7 +36,22 @@ export class MemberController {
     @ApiResponse({status: 200, description: 'Member is created.', type: Member})
     @ApiResponse({status: 400, description: 'Validation errors.'})
     async create(@Body() body: CreateMemberDto) {
-        const member = new Member(body);
+        const member = new Member();
+
+        member.pcn = body.pcn;
+        member.firstName = body.firstName;
+        member.middleName = body.middleName;
+        member.lastName = body.lastName;
+        member.birthday = body.birthday;
+        member.address = body.address;
+        member.postalcode = body.postalcode;
+        member.city = body.city;
+        member.country = body.country;
+        member.phoneNumber = body.phoneNumber;
+        member.email = body.email;
+        member.registeredSince = new Date();
+        member.memberships = [];
+
         return { member: await this.memberService.create(member) };
     }
 
@@ -60,8 +75,8 @@ export class MemberController {
         member.postalcode = body.postalcode;
         member.city = body.city;
         member.country = body.country;
-        member.phoneNumber = member.phoneNumber;
-        member.email = member.email;
+        member.phoneNumber = body.phoneNumber;
+        member.email = body.email;
 
         return { member: await this.memberService.update(member) };
     }

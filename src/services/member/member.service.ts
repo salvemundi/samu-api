@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { IMemberService } from './imember.service';
 import { Member } from 'src/entities/member.entity';
-import { ShortedMemberDto } from 'src/dto/member/shorted-member-dto';
 
 @Injectable()
 export class MemberService implements IMemberService {

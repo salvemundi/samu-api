@@ -3,22 +3,7 @@ import { Membership } from './membership.entity';
 import { CreateMemberDto } from 'src/dto/member/create-member-dto';
 
 export class Member extends BaseEntity {
-    constructor(dto: CreateMemberDto) {
-        super();
-        this.pcn = dto.pcn;
-        this.firstName = dto.firstName;
-        this.middleName = dto.middleName;
-        this.lastName = dto.lastName;
-        this.birthday = dto.birthday;
-        this.address = dto.address;
-        this.postalcode = dto.postalcode;
-        this.city = dto.city;
-        this.country = dto.country;
-        this.phoneNumber = dto.phoneNumber;
-        this.email = dto.email;
-        this.registeredSince = new Date();
-        this.memberships = [];
-    }
+    constructor() { super(); }
 
     @PrimaryGeneratedColumn()
     public id: number;
