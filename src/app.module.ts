@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from 'nestjs-config';
-import * as path from 'path';
 import { CommissionController } from './controllers/commission/commission.controller';
 import { CommissionService } from './services/commission/commission.service';
-
-// ConfigService.rootPath = path.resolve(__dirname, '..');
+import { MemberController } from './controllers/member/member.controller';
+import { MemberService } from './services/member/member.service';
+import { MemberModule } from './modules/member/member.module';
+import * as path from 'path';
 
 @Module({
   imports: [
@@ -14,8 +15,9 @@ import { CommissionService } from './services/commission/commission.service';
         useFactory: (config: ConfigService) => config.get('db'),
         inject: [ConfigService],
     }),
+    MemberModule,
   ],
-  controllers: [CommissionController],
-  providers: [CommissionService],
+  controllers: [CommissionController, MemberController],
+  providers: [CommissionService, MemberService],
 })
 export class AppModule {}

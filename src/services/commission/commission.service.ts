@@ -1,24 +1,25 @@
 import { Injectable } from '@nestjs/common';
-import { Commission } from '../../entities/Commission.entity';
+import { Commission } from 'src/entities/commission.entity';
+import { ICommissionService } from './icommission.service';
 
 @Injectable()
-export class CommissionService {
-    public async create(model: Commission): Promise<void> {
-        await Commission.save(model);
+export class CommissionService implements ICommissionService {
+    public create(model: Commission): Promise<Commission> {
+        return Commission.save(model);
     }
 
-    public async read(skip: number, take: number): Promise<Commission[]> {
+    public read(skip: number, take: number): Promise<Commission[]> {
         if (take > 100) {
             take = 1;
         }
-        return await Commission.find({skip, take});
+        return Commission.find({skip, take});
     }
 
-    public async readOne(id: number): Promise<Commission> {
-        return await Commission.findOne(id);
+    public readOne(id: number): Promise<Commission> {
+        return Commission.findOne(id);
     }
 
-    public async update(model: Commission): Promise<void> {
-        await Commission.save(model);
+    public update(model: Commission): Promise<Commission> {
+        return Commission.save(model);
     }
 }
