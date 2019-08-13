@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { IMemberService } from './imember.service';
-import { Member } from 'src/entities/member.entity';
+import { Member } from '../../entities/member.entity';
 
 @Injectable()
 export class MemberService implements IMemberService {

@@ -1,6 +1,5 @@
 import { BaseEntity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { Membership } from './membership.entity';
-import { CreateMemberDto } from 'src/dto/member/create-member-dto';
 
 export class Member extends BaseEntity {
     constructor() { super(); }

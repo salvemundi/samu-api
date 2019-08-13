@@ -1,4 +1,4 @@
-import { Member } from 'src/entities/member.entity';
+import { Member } from '../../entities/member.entity';
 
 export interface IMemberService {
     readAll(skip: number, take: number): Promise<Member[]>;
