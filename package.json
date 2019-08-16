@@ -9,9 +9,11 @@
     "format": "prettier --write \"src/**/*.ts\"",
     "start": "concurrently --handle-input \"wait-on dist/main.js && nodemon\" \"tsc -w -p tsconfig.build.json\" ",
     "lint": "tslint -p tsconfig.json -c tslint.json",
-    "test": "jest --coverage --no-cache",
+    "test": "jest --coverage --coverageReporters=text-lcov | coveralls",
+    "testLocal": "jest --coverage",
     "erd": "./node_modules/.bin/tsuml --glob ./src/entities/*.ts",
-    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js --config src/typeormConfig.ts"
+    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js --config src/typeormConfig.ts",
+    "deploy": "npm run build && ./node_modules/.bin/now --token=$NOW_TOKEN"
   },
   "dependencies": {
     "@nestjs/common": "^6.4.0",
@@ -24,6 +26,7 @@
     "dotenv": "^8.0.0",
     "mysql": "^2.17.1",
     "nestjs-config": "^1.4.2",
+    "now": "^16.1.1",
     "reflect-metadata": "^0.1.12",
     "rimraf": "^2.6.2",
     "rxjs": "^6.3.3",
@@ -37,6 +40,7 @@
     "@types/node": "^10.14.10",
     "@types/supertest": "^2.0.7",
     "concurrently": "^4.1.1",
+    "coveralls": "^3.0.6",
     "jest": "^24.5.0",
     "nodemon": "^1.18.9",
     "prettier": "^1.15.3",
