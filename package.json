@@ -12,7 +12,8 @@
     "test": "jest --coverage --coverageReporters=text-lcov | coveralls",
     "testLocal": "jest --coverage",
     "erd": "./node_modules/.bin/tsuml --glob ./src/entities/*.ts",
-    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js --config src/typeormConfig.ts"
+    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js --config src/typeormConfig.ts",
+    "deploy": "npm run build && now ./out --static --no-clipboard --token=$NOW_TOKEN --public"
   },
   "dependencies": {
     "@nestjs/common": "^6.4.0",
