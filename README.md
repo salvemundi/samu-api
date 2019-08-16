@@ -9,7 +9,9 @@ This is a NodeJS backend build with TypeORM and NestJS to deliver all of the dat
 
 ## Getting started
 
-Before you start, please read the following wiki sections, without reading this you will make mistakes:
+Before you start, please read the following wiki sections:
+- [Env](https://github.com/salvemundi/samu-api/wiki/Environment-File-(.env))
+- [TypeORM](https://github.com/salvemundi/samu-api/wiki/TypeORM)
 - [Testing](https://github.com/salvemundi/samu-api/wiki)
 
 To make life easier, make sure that you have installed the nest CLI using: 
