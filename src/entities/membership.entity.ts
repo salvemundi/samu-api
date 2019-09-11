@@ -2,6 +2,7 @@ import { BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { Member } from './member.entity';
 
 export class Membership extends BaseEntity {
+
     @PrimaryGeneratedColumn()
     public id: number;
 
@@ -13,4 +14,5 @@ export class Membership extends BaseEntity {
 
     @ManyToOne(type => Member, member => member.memberships)
     public member: Member;
+
 }
