@@ -4,6 +4,11 @@ import { Member } from './member.entity';
 
 export class User extends BaseEntity {
 
+    constructor() { super(); }
+
+    @PrimaryGeneratedColumn()
+    public id: number;
+
     @Column()
     public firstName: string;
 
@@ -38,7 +43,7 @@ export class User extends BaseEntity {
     public registeredSince: Date;
 
     @OneToOne(type => Member)
-    public user: Member;
+    public member: Member;
 
     @Column({ nullable: true })
     public pcn: number;
