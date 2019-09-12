@@ -14,4 +14,7 @@ export class Member extends BaseEntity {
     @OneToOne(type => User)
     public user: User;
 
+    @Column()
+    public memberSince: Date;
+
 }

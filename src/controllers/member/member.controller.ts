@@ -8,24 +8,24 @@ import { ShortedMemberDto } from '../../dto/member/shorted-member-dto';
 
 @Controller('member')
 export class MemberController {
-    constructor(private memberService: MemberService) {}
+    constructor(private memberService: MemberService) { }
 
-    @Get('/:id')
-    @HttpCode(200)
-    @ApiResponse({status: 200, description: 'Member is found.', type: Member})
-    @ApiResponse({status: 404, description: 'No member was found with the provided id.'})
-    async readOne(@Param('id') id: number) {
-        const member: Member = await this.memberService.readOne(+id);
-        if (!member) {
-            throw new NotFoundException(`No member found exists with id: ${id}`);
-        }
+    // @Get('/:id')
+    // @HttpCode(200)
+    // @ApiResponse({status: 200, description: 'Member is found.', type: Member})
+    // @ApiResponse({status: 404, description: 'No member was found with the provided id.'})
+    // async readOne(@Param('id') id: number) {
+    //     const member: Member = await this.memberService.readOne(+id);
+    //     if (!member) {
+    //         throw new NotFoundException(`No member found exists with id: ${id}`);
+    //     }
 
-        return { member };
-    }
+    //     return { member };
+    // }
 
     @Get()
     @HttpCode(200)
-    @ApiResponse({status: 200, description: 'Members that match the skip and take parameters.', type: Array<ShortedMemberDto>()})
+    @ApiResponse({ status: 200, description: 'Members that match the skip and take parameters.', type: Array<ShortedMemberDto>() })
     async readAll(@Param('skip') skip: number, @Param('take') take: number) {
         const members: Member[] = await this.memberService.readAll(skip, take);
         return { members: members as ShortedMemberDto[] };
@@ -33,8 +33,8 @@ export class MemberController {
 
     @Post()
     @HttpCode(200)
-    @ApiResponse({status: 200, description: 'Member is created.', type: Member})
-    @ApiResponse({status: 400, description: 'Validation errors.'})
+    @ApiResponse({ status: 200, description: 'Member is created.', type: Member })
+    @ApiResponse({ status: 400, description: 'Validation errors.' })
     async create(@Body() body: CreateMemberDto) {
         const member = new Member();
 
@@ -57,9 +57,9 @@ export class MemberController {
 
     @Put()
     @HttpCode(200)
-    @ApiResponse({status: 200, description: 'Commission is updated.', type: Member})
-    @ApiResponse({status: 400, description: 'Validation errors.'})
-    @ApiResponse({status: 404, description: 'No member was found with the provided id.'})
+    @ApiResponse({ status: 200, description: 'Commission is updated.', type: Member })
+    @ApiResponse({ status: 400, description: 'Validation errors.' })
+    @ApiResponse({ status: 404, description: 'No member was found with the provided id.' })
     async update(@Body() body: UpdateMemberDto) {
         const member = await this.memberService.readOne(body.id);
         if (!member) {
