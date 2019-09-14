@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { HandlebarsAdapter, MailerModule } from '@nest-modules/mailer';
 import { CommissionController } from './controllers/commission/commission.controller';
 import { CommissionService } from './services/commission/commission.service';
 import { MemberController } from './controllers/member/member.controller';
@@ -10,6 +11,21 @@ import * as ormconfig from './typeormConfig';
 @Module({
   imports: [
     TypeOrmModule.forRoot(ormconfig),
+    MailerModule.forRootAsync({
+      useFactory: () => ({
+        transport: 'smtps://user@salvemundi.nl:pass@smtp.salvemundi.com',
+        defaults: {
+          from: '"nest-modules" <modules@nestjs.com>',
+        },
+        template: {
+          dir: __dirname + '/templates',
+          adapter: new HandlebarsAdapter(), // or new PugAdapter()
+          options: {
+            strict: true,
+          },
+        },
+      }),
+    }),
     MemberModule,
   ],
   controllers: [CommissionController, MemberController],
