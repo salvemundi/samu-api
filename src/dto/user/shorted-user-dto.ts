@@ -1,4 +1,4 @@
-export interface ShortedMemberDto {
+export interface ShortedUserDto {
     id: number;
     pcn: number;
     firstName: string;

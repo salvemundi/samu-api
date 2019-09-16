@@ -1,7 +1,7 @@
 import { IsNotEmpty } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
 
-export class CreateMemberDto {
+export class CreateUserDto {
     @ApiModelProperty({required: true})
     @IsNotEmpty()
     public pcn: number;
