@@ -14,7 +14,7 @@ const config: ConnectionOptions = {
     username: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     entities: [Commission, Member, Membership],
-    migrations: [path.resolve(__dirname, '../../dist/migrations/*.js')],
+    migrations: [path.resolve(__dirname, '../dist/migrations/*.js')],
     database: process.env.DB_NAME,
     synchronize: false,
     migrationsRun: true,
