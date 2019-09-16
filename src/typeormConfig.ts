@@ -13,9 +13,9 @@ const config: ConnectionOptions = {
     entities: [ path.resolve(__dirname, 'entities/**.entity.*') ],
     migrations: [ path.resolve(__dirname, 'migrations/*.*') ],
     database: process.env.DB_NAME,
-    synchronize: true,
+    synchronize: false,
     migrationsRun: true,
-    logging: true,
+    logging: false,
     cli: {
         migrationsDir: 'src/migrations',
         entitiesDir: 'src/entities',
