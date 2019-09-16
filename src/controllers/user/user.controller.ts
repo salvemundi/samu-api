@@ -1,29 +1,26 @@
-import { Controller, Get, Param, HttpCode, NotFoundException, Body, Put, Post } from "@nestjs/common";
-import { UserService } from "src/services/user/user.service";
-import { User } from "src/entities/user.entity";
-import { ApiResponse } from "@nestjs/swagger";
-import { CreateUserDto } from "src/dto/user/create-user-dto";
-import { UpdateUserDto } from "src/dto/user/update-user-dto";
-import { ShortedUserDto } from "src/dto/user/shorted-user-dto";
+import { Controller, Get, Param, HttpCode, NotFoundException, Body, Put, Post } from '@nestjs/common';
+import { UserService } from '../../services/user/user.service';
+import { User } from '../../entities/user.entity';
+import { ApiResponse } from '@nestjs/swagger';
+import { CreateUserDto } from '../../dto/user/create-user-dto';
+import { UpdateUserDto } from '../../dto/user/update-user-dto';
+import { ShortedUserDto } from '../../dto/user/shorted-user-dto';
 
-@Controller("user")
+@Controller('user')
 export class UserController {
-    constructor(readonly userService: UserService) {
-
-    }
-
+    constructor(readonly userService: UserService) { }
 
     @Get('/:id')
     @HttpCode(200)
     @ApiResponse({ status: 200, description: 'User is found.', type: User })
     @ApiResponse({ status: 404, description: 'No user was found with the provided id.' })
     async readOne(@Param('id') id: number) {
-        const User: User = await this.userService.readOne(+id);
-        if (!User) {
+        const user: User = await this.userService.readOne(+id);
+        if (!user) {
             throw new NotFoundException(`No user found exists with id: ${id}`);
         }
 
-        return { User };
+        return { user };
     }
 
     @Get()
