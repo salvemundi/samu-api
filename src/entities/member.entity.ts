@@ -1,9 +1,9 @@
-import { BaseEntity, PrimaryGeneratedColumn, Column, OneToMany, OneToOne } from 'typeorm';
+import { BaseEntity, PrimaryGeneratedColumn, Column, OneToMany, OneToOne, Entity } from 'typeorm';
 import { Membership } from './membership.entity';
 import { User } from './user.entity';
 
+@Entity()
 export class Member extends BaseEntity {
-    constructor() { super(); }
 
     @PrimaryGeneratedColumn()
     public id: number;

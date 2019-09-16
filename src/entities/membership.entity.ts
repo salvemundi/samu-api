@@ -1,6 +1,7 @@
-import { BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne, Entity } from 'typeorm';
 import { Member } from './member.entity';
 
+@Entity()
 export class Membership extends BaseEntity {
 
     @PrimaryGeneratedColumn()
