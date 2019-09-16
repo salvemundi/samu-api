@@ -1,11 +1,18 @@
-import { BaseEntity, PrimaryGeneratedColumn, Column, OneToMany, OneToOne, Entity } from 'typeorm';
+import { BaseEntity, PrimaryGeneratedColumn, Column, OneToMany, OneToOne, Entity, ManyToMany, JoinTable } from 'typeorm';
 import { Member } from './member.entity';
+import { Scope } from './scope.entity';
 
 @Entity()
 export class User extends BaseEntity {
 
     @PrimaryGeneratedColumn()
     public id: number;
+
+    @Column()
+    public username: string;
+
+    @Column()
+    public password: string;
 
     @Column()
     public firstName: string;
@@ -40,10 +47,14 @@ export class User extends BaseEntity {
     @Column()
     public registeredSince: Date;
 
+    @Column({ nullable: true })
+    public pcn: number;
+
     @OneToOne(type => Member)
     public member: Member;
 
-    @Column({ nullable: true })
-    public pcn: number;
+    @ManyToMany(x => Scope, scope => scope.users)
+    @JoinTable()
+    public scopes: Scope[];
 
 }

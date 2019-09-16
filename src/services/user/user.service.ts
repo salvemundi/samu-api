@@ -7,8 +7,14 @@ export class UserService implements IUserService {
         return User.find({ skip, take });
     }
 
-    readOne(id: number): Promise<User> {
-        return User.findOne({ where: { id } });
+    readOne(user: number | string): Promise<User> {
+        const whereQuery = { id: null, username: null };
+        if (typeof user === 'number') {
+            whereQuery.id = user;
+        } else {
+            whereQuery.username = user;
+        }
+        return User.findOne({ where: whereQuery });
     }
 
     create(user: User): Promise<User> {

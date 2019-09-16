@@ -4,17 +4,38 @@ import { CommissionController } from './controllers/commission/commission.contro
 import { CommissionService } from './services/commission/commission.service';
 import { MemberController } from './controllers/member/member.controller';
 import { MemberService } from './services/member/member.service';
-import { MemberModule } from './modules/member/member.module';
-import * as ormconfig from './typeormConfig';
 import { UserService } from './services/user/user.service';
 import { UserController } from './controllers/user/user.controller';
+import { AuthorizationController } from './controllers/authorization/authorization.controller';
+import { AuthorizationService } from './services/authorization/authorization.service';
+import * as ormconfig from './typeormConfig';
+import { APP_GUARD } from '@nestjs/core';
+import { DefaultGuard } from './guards/default.guard';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot(ormconfig),
-    MemberModule,
+    JwtModule.register({
+      secret: process.env.JWT_SECRET,
+      signOptions: { expiresIn: '60s' },
+    }),
   ],
-  controllers: [CommissionController, MemberController, UserController],
-  providers: [CommissionService, MemberService, UserService],
+  controllers: [
+    CommissionController,
+    MemberController,
+    UserController,
+    AuthorizationController,
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: DefaultGuard,
+    },
+    CommissionService,
+    MemberService,
+    UserService,
+    AuthorizationService,
+  ],
 })
 export class AppModule {}
