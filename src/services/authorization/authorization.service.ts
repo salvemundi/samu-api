@@ -25,11 +25,13 @@ export class AuthorizationService {
     }
 
     public async verifyJWT(jwt: string): Promise<User> {
-        if (this.jwtService.verifyAsync(jwt)) {
-            const decodedJWT = this.jwtService.decode(jwt) as JWT;
-            return this.userService.readOne(decodedJWT.user);
-        }
-        return undefined;
+        try {
+            if (this.jwtService.verifyAsync(jwt)) {
+                const decodedJWT = this.jwtService.decode(jwt) as JWT;
+                return this.userService.readOne(decodedJWT.user);
+            }
+        } catch (e) { return null; }
+        return null;
     }
 }
 

@@ -3,6 +3,12 @@ import { User } from './user.entity';
 
 @Entity()
 export class Scope extends BaseEntity {
+    constructor(name: string, id?: number) {
+        super();
+        this.id = id;
+        this.name = name;
+    }
+
     @PrimaryGeneratedColumn()
     public id: number;
 

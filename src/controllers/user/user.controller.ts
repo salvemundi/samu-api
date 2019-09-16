@@ -5,6 +5,7 @@ import { ApiResponse } from '@nestjs/swagger';
 import { CreateUserDto } from '../../dto/user/create-user-dto';
 import { UpdateUserDto } from '../../dto/user/update-user-dto';
 import { ShortedUserDto } from '../../dto/user/shorted-user-dto';
+import { Auth } from '../../decorators/auth.decorator';
 
 @Controller('user')
 export class UserController {
@@ -24,6 +25,7 @@ export class UserController {
     }
 
     @Get()
+    @Auth('user:read')
     @HttpCode(200)
     @ApiResponse({ status: 200, description: 'Users that match the skip and take parameters.', type: Array<ShortedUserDto>() })
     async readAll(@Param('skip') skip: number, @Param('take') take: number) {

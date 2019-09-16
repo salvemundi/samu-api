@@ -12,6 +12,7 @@ import * as ormconfig from './typeormConfig';
 import { APP_GUARD } from '@nestjs/core';
 import { DefaultGuard } from './guards/default.guard';
 import { JwtModule } from '@nestjs/jwt';
+import { ScopeSeeder } from './seed/scope.seed';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { JwtModule } from '@nestjs/jwt';
     MemberService,
     UserService,
     AuthorizationService,
+    ScopeSeeder,
   ],
 })
 export class AppModule {}
