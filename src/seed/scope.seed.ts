@@ -6,16 +6,15 @@ import { getConnection, EntityManager } from 'typeorm';
 export class ScopeSeeder {
     private scopes: Scope[] = [
         new Scope('user:read', 1),
+        new Scope('user:wrie', 2),
     ];
 
     public async seed() {
-        const entityManager: EntityManager = getConnection().createEntityManager();
         await this.scopes.forEach(async (scope: Scope) => {
-            if (await entityManager.findOne(Scope, {id: scope.id})) {
+            if (await Scope.findOne({ where: {id: scope.id}})) {
                 return;
             }
-
-            entityManager.save(Scope, scope);
+            Scope.save(scope);
         });
     }
 }

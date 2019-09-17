@@ -12,6 +12,7 @@ export class UserController {
     constructor(readonly userService: UserService) { }
 
     @Get('/:id')
+    @Auth('user:read')
     @HttpCode(200)
     @ApiResponse({ status: 200, description: 'User is found.', type: User })
     @ApiResponse({ status: 404, description: 'No user was found with the provided id.' })
@@ -34,6 +35,7 @@ export class UserController {
     }
 
     @Post()
+    @Auth('user:write')
     @HttpCode(200)
     @ApiResponse({ status: 200, description: 'User is created.', type: User })
     @ApiResponse({ status: 400, description: 'Validation errors.' })
@@ -42,6 +44,7 @@ export class UserController {
     }
 
     @Put()
+    @Auth('user:write')
     @HttpCode(200)
     @ApiResponse({ status: 200, description: 'User is updated.', type: User })
     @ApiResponse({ status: 400, description: 'Validation errors.' })

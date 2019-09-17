@@ -11,8 +11,7 @@ export class AuthorizationController {
 
     @Post('/login')
     async login(@Res() res: Response) {
-        // TODO: make env variable that sets secure to either true or false.
-        res.cookie('auth', await this.authorizationService.genJWT(1), {httpOnly: false, secure: true, sameSite: true});
+        res.cookie('auth', await this.authorizationService.genJWT(1, 'bastiankpn7800@gmail.com'), {secure: false});
         res.send({message: 'Logged in!'});
     }
 }

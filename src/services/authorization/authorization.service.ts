@@ -1,40 +1,43 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
-import { User } from 'src/entities/user.entity';
+import { User } from '../../entities/user.entity';
 
 @Injectable()
 export class AuthorizationService {
     constructor(
-        private readonly userService: UserService,
         private readonly jwtService: JwtService,
     ) {}
 
-    public async validateUser(usernameInput: string, pass: string): Promise<any> {
-        const user: User = await this.userService.readOne(usernameInput);
-        if (user && user.password === pass) {
-            const { password, username, ...result } = user;
-            return result;
+    public async validateUser(email: string, pass: string): Promise<User> {
+        const user: User = await User.findOne({where: { email, password: pass }});
+        if (user) {
+            return user;
         }
 
         return null;
     }
 
-    public async genJWT(userId: number) {
-        return this.jwtService.sign({user: userId});
+    public async genJWT(userId: number, email: string) {
+        const data: JWT = { userId, email };
+        return this.jwtService.sign(data);
     }
 
-    public async verifyJWT(jwt: string): Promise<User> {
+    public verifyJWT(jwt: string): boolean {
         try {
-            if (this.jwtService.verifyAsync(jwt)) {
-                const decodedJWT = this.jwtService.decode(jwt) as JWT;
-                return this.userService.readOne(decodedJWT.user);
-            }
-        } catch (e) { return null; }
-        return null;
+            return !!this.jwtService.verify(jwt);
+
+        } catch (err) {
+            return false;
+        }
+    }
+
+    public decodeJWT(jwt) {
+        return this.jwtService.decode(jwt) as JWT;
     }
 }
 
 interface JWT {
-    user: number;
+    userId: number;
+    email: string;
 }

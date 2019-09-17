@@ -2,26 +2,24 @@ import { IUserService } from './iuser.service';
 import { User } from '../../entities/user.entity';
 
 export class UserService implements IUserService {
-
     readAll(skip: number, take: number): Promise<User[]> {
         return User.find({ skip, take });
     }
 
-    readOne(user: number | string): Promise<User> {
-        const whereQuery = { id: null, username: null };
-        if (typeof user === 'number') {
-            whereQuery.id = user;
-        } else {
-            whereQuery.username = user;
+    readOne(user: number, email?: string): Promise<User> {
+        const whereQuery = { id: user, email: null };
+        if (email) {
+            whereQuery.email = email;
         }
-        return User.findOne({ where: whereQuery });
+
+        return User.findOne({ where: whereQuery, relations: ['scopes'] });
     }
 
-    create(user: User): Promise<User> {
+    async create(user: User): Promise<User> {
         return user.save();
     }
 
-    update(user: User): Promise<User> {
+    async update(user: User): Promise<User> {
         return user.save();
     }
 }

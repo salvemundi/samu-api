@@ -1,4 +1,5 @@
-import { BaseEntity, PrimaryGeneratedColumn, Column, OneToMany, OneToOne, Entity, ManyToMany, JoinTable } from 'typeorm';
+import { BaseEntity, PrimaryGeneratedColumn, Column, OneToOne, Entity, ManyToMany, JoinTable } from 'typeorm';
+import { Exclude } from 'class-transformer';
 import { Member } from './member.entity';
 import { Scope } from './scope.entity';
 
@@ -8,9 +9,7 @@ export class User extends BaseEntity {
     @PrimaryGeneratedColumn()
     public id: number;
 
-    @Column()
-    public username: string;
-
+    @Exclude()
     @Column()
     public password: string;
 
