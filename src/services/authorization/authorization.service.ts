@@ -2,9 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '../../entities/user.entity';
 import * as bcrypt from 'bcrypt';
+import { IAuthorizationService } from './iAuthorization.service';
 
 @Injectable()
-export class AuthorizationService {
+export class AuthorizationService implements IAuthorizationService {
     constructor(
         private readonly jwtService: JwtService,
     ) {}
@@ -18,7 +19,7 @@ export class AuthorizationService {
         return null;
     }
 
-    public async genJWT(userId: number, email: string) {
+    public async genJWT(userId: number, email: string): Promise<string> {
         const data: JWT = { userId, email };
         return this.jwtService.sign(data);
     }
@@ -32,7 +33,7 @@ export class AuthorizationService {
         }
     }
 
-    public decodeJWT(jwt) {
+    public decodeJWT(jwt): JWT {
         return this.jwtService.decode(jwt) as JWT;
     }
 
@@ -50,7 +51,7 @@ export class AuthorizationService {
     }
 }
 
-interface JWT {
+export interface JWT {
     userId: number;
     email: string;
 }

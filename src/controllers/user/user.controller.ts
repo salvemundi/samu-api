@@ -9,7 +9,9 @@ import { Auth } from '../../decorators/auth.decorator';
 
 @Controller('user')
 export class UserController {
-    constructor(readonly userService: UserService) { }
+    constructor(
+        private readonly userService: UserService,
+    ) { }
 
     @Get('/:id')
     @Auth('user:read')

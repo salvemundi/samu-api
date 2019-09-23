@@ -1,18 +1,48 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { AuthorizationController } from './authorization.controller';
+import { Test } from '@nestjs/testing';
+import * as request from 'supertest';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
+import { TestModule } from '../../test.module';
+import { LoginDTO } from 'src/dto/authorization/LoginDTO';
+import { AuthorizationService } from 'src/services/authorization/authorization.service';
+import { MockAuthorizationService } from 'src/services/authorization/mock.authorization.service';
+import { UserService } from 'src/services/user/user.service';
+import { MockUserService } from 'src/services/user/mock.user.service';
 
 describe('Authorization Controller', () => {
-  let controller: AuthorizationController;
+  let app: INestApplication;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      controllers: [AuthorizationController],
-    }).compile();
+  beforeAll(async () => {
+    const module = await Test.createTestingModule({
+      imports: [TestModule],
+    })
+    .overrideProvider(AuthorizationService)
+    .useValue(MockAuthorizationService)
+    .overrideProvider(UserService)
+    .useValue(MockUserService)
+    .compile();
 
-    controller = module.get<AuthorizationController>(AuthorizationController);
+    app = module.createNestApplication();
+    app.useGlobalPipes(new ValidationPipe());
+    await app.init();
   });
 
-  it('should be defined', () => {
-    expect(controller).toBeDefined();
+  afterAll(async () => {
+    await app.close();
+  });
+
+  // Tests
+  describe('/authentication/login - Login user', () => {
+    it('Correct call - Should return 200 with a cookie', () => {
+      const loginDto: LoginDTO = {
+        email: 'admin@gmail.com',
+        password: 'admin',
+      };
+
+      return request(app.getHttpServer()).post('/authentication/login').send(loginDto)
+        .expect(200)
+        .expect((response: request.Response) => {
+            response.header['Set-Cookie'] = 'awsomeJWT';
+        });
+    });
   });
 });

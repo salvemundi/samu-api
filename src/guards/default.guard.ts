@@ -19,6 +19,9 @@ export class DefaultGuard implements CanActivate {
     }
 
     const request = context.switchToHttp().getRequest();
+    if (!request.cookies) {
+      throw new UnauthorizedException('No cookies found...');
+    }
     if (!request.cookies.auth) {
         throw new UnauthorizedException('No authorization cookie found...');
     }

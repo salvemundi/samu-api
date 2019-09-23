@@ -5,42 +5,18 @@ import { TestModule } from 'src/test.module';
 import { CommissionService } from 'src/services/commission/commission.service';
 import { ICommissionService } from 'src/services/commission/icommission.service';
 import { Commission } from 'src/entities/commission.entity';
+import randomCommission, { MockCommissionService } from 'src/services/commission/mock.commission.service';
 
 // TODO: Add test for authorization
 describe('Commission Controller', () => {
   let app: INestApplication;
-
-  // Mock entity
-  const randomCommission = new Commission('Random commission', 'Random commission to test this controller', new Date(), 1);
-
-  // Mock service
-  const commissionService: ICommissionService = {
-    create: (commission: Commission) => new Promise<Commission>((resolve) => {
-      commission.id = 2;
-      resolve(commission);
-    }),
-    read: (skip: number, take: number) => new Promise<Commission[]>((resolve) => {
-      resolve([randomCommission]);
-    }),
-    readOne: (id: number) => new Promise<Commission>((resolve) => {
-      if (id === 1) {
-        resolve(randomCommission);
-
-      } else {
-        resolve(undefined);
-      }
-    }),
-    update: (commission: Commission) => new Promise<Commission>((resolve) => {
-      resolve(commission);
-    }),
-  };
 
   beforeAll(async () => {
     const module = await Test.createTestingModule({
       imports: [TestModule],
     })
     .overrideProvider(CommissionService)
-    .useValue(commissionService)
+    .useValue(MockCommissionService)
     .compile();
 
     app = module.createNestApplication();

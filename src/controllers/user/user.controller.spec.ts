@@ -3,61 +3,26 @@ import * as request from 'supertest';
 import { TestModule } from 'src/test.module';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { User } from 'src/entities/user.entity';
-import { IUserService } from 'src/services/user/iuser.service';
 import { ShortedUserDto } from 'src/dto/user/shorted-user-dto';
 import { CreateUserDto } from 'src/dto/user/create-user-dto';
-import { UserService } from 'src/services/user/user.service';
 import { UpdateUserDto } from 'src/dto/user/update-user-dto';
+import randomUser, { MockUserService } from 'src/services/user/mock.user.service';
+import { UserService } from 'src/services/user/user.service';
+import { AuthorizationService } from 'src/services/authorization/authorization.service';
+import { MockAuthorizationService } from 'src/services/authorization/mock.authorization.service';
 
 describe('Users Controller', () => {
     let app: INestApplication;
-
-    // Mock entity
-    const randomUser: User = new User();
-    randomUser.id = 1;
-    randomUser.pcn = 123456;
-    randomUser.firstName = 'Random';
-    randomUser.middleName = null;
-    randomUser.lastName = 'User';
-    randomUser.birthday = new Date(1990, 1, 1);
-    randomUser.address = 'Rachelsmolen 1';
-    randomUser.postalcode = '5612 MA';
-    randomUser.city = 'Eindhoven';
-    randomUser.country = 'Nederland';
-    randomUser.phoneNumber = '+31 6 12346789';
-    randomUser.email = 'no-reply@salvemundi.nl';
-    randomUser.registeredSince = new Date();
-    randomUser.member = null;
-
-    // Mock service
-    const userService: IUserService = {
-        readOne: (id: number) => new Promise<User>((resolve) => {
-            if (id === 1) {
-                resolve(randomUser);
-
-            } else {
-                resolve(undefined);
-            }
-        }),
-        readAll: (skip: number, take: number) => new Promise<User[]>((resolve) => {
-            resolve([randomUser]);
-        }),
-        update: (user: User) => new Promise<User>((resolve) => {
-            resolve(user);
-        }),
-        create: (user: User) => new Promise<User>((resolve) => {
-            user.id = 2;
-            resolve(user);
-        }),
-    };
 
     beforeAll(async () => {
         const module = await Test.createTestingModule({
             imports: [TestModule],
         })
-            .overrideProvider(UserService)
-            .useValue(userService)
-            .compile();
+        .overrideProvider(UserService)
+        .useValue(MockUserService)
+        .overrideProvider(AuthorizationService)
+        .useValue(MockAuthorizationService)
+        .compile();
 
         app = module.createNestApplication();
         app.useGlobalPipes(new ValidationPipe());
