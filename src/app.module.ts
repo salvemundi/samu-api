@@ -19,7 +19,7 @@ import { ScopeSeeder } from './seed/scope.seed';
     TypeOrmModule.forRoot(ormconfig),
     JwtModule.register({
       secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '60s' },
+      signOptions: { expiresIn: '15m' },
     }),
   ],
   controllers: [

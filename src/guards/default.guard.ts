@@ -1,4 +1,4 @@
-import { Injectable, CanActivate, ExecutionContext, UnauthorizedException } from '@nestjs/common';
+import { Injectable, CanActivate, ExecutionContext, UnauthorizedException, Res } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AuthorizationService } from '../services/authorization/authorization.service';
 import { UserService } from '../services/user/user.service';
@@ -23,15 +23,21 @@ export class DefaultGuard implements CanActivate {
         throw new UnauthorizedException('No authorization cookie found...');
     }
 
-    const verifyoken = this.authService.verifyJWT(request.cookies.auth);
-    if (verifyoken) {
+    const verifytoken = this.authService.verifyJWT(request.cookies.auth);
+    if (verifytoken) {
       const decodedJWT = this.authService.decodeJWT(request.cookies.auth);
       const user: User = await this.userService.readOne(decodedJWT.userId, decodedJWT.email);
 
-      return (!!user && !!user.scopes.find(x => x.name === scope));
+      if (!!user && !!user.scopes.find(x => x.name === scope)) {
+        const reponse = context.switchToHttp().getResponse();
+        reponse.cookie('auth', await this.authService.genJWT(user.id, user.email), {secure: false});
+        return true;
+      }
+
+      return false;
 
     } else {
-      throw new UnauthorizedException('Token expired...');
+      throw new UnauthorizedException('Token invalid or expired...');
     }
   }
 }

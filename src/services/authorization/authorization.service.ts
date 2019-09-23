@@ -37,9 +37,14 @@ export class AuthorizationService {
     }
 
     private checkPassword(password: string, user: User): Promise<boolean> {
-        return new Promise<boolean>((resolve) => {
+        return new Promise<boolean>((resolve, reject) => {
             bcrypt.compare(password, user.password, (err, res) => {
-                resolve(res);
+                if (err) {
+                    reject(err);
+
+                } else {
+                    resolve(res);
+                }
             });
         });
     }

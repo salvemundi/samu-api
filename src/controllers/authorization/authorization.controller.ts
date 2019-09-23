@@ -54,11 +54,21 @@ export class AuthorizationController {
     }
 
     private encryptPassword(password: string): Promise<string> {
-        return new Promise<string>((resolve) => {
+        return new Promise<string>((resolve, reject) => {
             bcrypt.genSalt(10, function(err, salt) {
-                bcrypt.hash(password, salt, function(err, hash) {
-                    resolve(hash);
-                });
+                if (err) {
+                    reject(err);
+
+                } else {
+                    bcrypt.hash(password, salt, function(err, hash) {
+                        if (err) {
+                            reject(err);
+                        
+                        } else {
+                            resolve(hash);
+                        }
+                    });
+                }
             });
         });
     }
