@@ -2,11 +2,7 @@ import { Test } from '@nestjs/testing';
 import * as request from 'supertest';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { TestModule } from '../../test.module';
-import { LoginDTO } from 'src/dto/authorization/LoginDTO';
-import { AuthorizationService } from 'src/services/authorization/authorization.service';
-import { MockAuthorizationService } from 'src/services/authorization/mock.authorization.service';
-import { UserService } from 'src/services/user/user.service';
-import { MockUserService } from 'src/services/user/mock.user.service';
+import { LoginDTO } from '../../dto/authorization/LoginDTO';
 
 describe('Authorization Controller', () => {
   let app: INestApplication;
@@ -15,10 +11,6 @@ describe('Authorization Controller', () => {
     const module = await Test.createTestingModule({
       imports: [TestModule],
     })
-    .overrideProvider(AuthorizationService)
-    .useValue(MockAuthorizationService)
-    .overrideProvider(UserService)
-    .useValue(MockUserService)
     .compile();
 
     app = module.createNestApplication();
@@ -38,7 +30,7 @@ describe('Authorization Controller', () => {
         password: 'admin',
       };
 
-      return request(app.getHttpServer()).post('/authentication/login').send(loginDto)
+      return request(app.getHttpServer()).post('/authorization/login').send(loginDto)
         .expect(200)
         .expect((response: request.Response) => {
             response.header['Set-Cookie'] = 'awsomeJWT';

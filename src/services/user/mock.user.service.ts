@@ -1,5 +1,6 @@
 import { User } from '../../entities/user.entity';
 import { IUserService } from './iuser.service';
+import { Scope } from 'src/entities/scope.entity';
 
 const randomUser: User = new User();
 randomUser.id = 1;
@@ -17,6 +18,10 @@ randomUser.email = 'admin@gmail.com';
 randomUser.password = 'admin';
 randomUser.registeredSince = new Date();
 randomUser.member = null;
+randomUser.scopes = [
+    new Scope('user:read', 1),
+    new Scope('user:write', 2),
+];
 
 export default randomUser;
 export class MockUserService implements IUserService {

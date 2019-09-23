@@ -10,6 +10,9 @@ import { DefaultGuard } from './guards/default.guard';
 import { JwtModule } from '@nestjs/jwt';
 import { CommissionController } from './controllers/commission/commission.controller';
 import { MemberController } from './controllers/member/member.controller';
+import { MockCommissionService } from './services/commission/mock.commission.service';
+import { MockUserService } from './services/user/mock.user.service';
+import { MockAuthorizationService } from './services/authorization/mock.authorization.service';
 
 @Module({
   imports: [
@@ -29,10 +32,19 @@ import { MemberController } from './controllers/member/member.controller';
       provide: APP_GUARD,
       useClass: DefaultGuard,
     },
-    CommissionService,
+    {
+      provide: CommissionService,
+      useClass: MockCommissionService,
+    },
     MemberService,
-    AuthorizationService,
-    UserService,
+    {
+      provide: AuthorizationService,
+      useClass: MockAuthorizationService,
+    },
+    {
+      provide: UserService,
+      useClass: MockUserService,
+    },
   ],
 })
 export class TestModule {}

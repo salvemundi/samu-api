@@ -3,6 +3,9 @@ import { User } from '../../entities/user.entity';
 import randomUser from '../user/mock.user.service';
 import { JWT } from './authorization.service';
 
+const JWToken = 'awsomeJWT';
+
+export default JWT;
 export class MockAuthorizationService implements IAuthorizationService {
     validateUser(email: string, password: string): Promise<User> {
         return new Promise<User>((resolve) => {
@@ -16,14 +19,23 @@ export class MockAuthorizationService implements IAuthorizationService {
     }
 
     genJWT(userId: number, email: string): Promise<string> {
-        throw new Error("Method not implemented.");
+        return new Promise<string>((resolve) => {
+            resolve(JWToken);
+        });
     }
 
     verifyJWT(jwt: string): boolean {
-        return (jwt === 'awsomeJWT');
+        return (jwt === JWToken);
     }
 
     decodeJWT(jwt: any): JWT {
-        throw new Error("Method not implemented.");
+        if (jwt === JWToken) {
+            return {
+                email: 'admin@gmail.com',
+                userId: 1,
+            };
+        }
+
+        return null;
     }
 }

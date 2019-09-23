@@ -19,6 +19,7 @@ export class DefaultGuard implements CanActivate {
     }
 
     const request = context.switchToHttp().getRequest();
+    console.log(request.cookies) // Kan geen cookies vinden...
     if (!request.cookies) {
       throw new UnauthorizedException('No cookies found...');
     }
