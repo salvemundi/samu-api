@@ -2,7 +2,7 @@
   "defaultSeverity": "error",
   "extends": ["tslint:recommended"],
   "jsRules": {
-    "no-unused-expression": true
+    //"no-unused-expression": true
   },
   "rules": {
     "quotemark": [true, "single"],
@@ -11,6 +11,7 @@
     "max-line-length": [true, 150],
     "member-ordering": [false],
     "interface-name": [false],
+    "indent": [true, "spaces", 4],
     "arrow-parens": false,
     "object-literal-sort-keys": false
   },
