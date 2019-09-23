@@ -22,4 +22,8 @@ export class UserService implements IUserService {
     async update(user: User): Promise<User> {
         return user.save();
     }
+
+    async exists(email: string): Promise<boolean> {
+        return (await User.count({where: { email }})) > 0;
+    }
 }
