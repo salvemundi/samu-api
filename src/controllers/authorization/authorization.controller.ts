@@ -1,4 +1,4 @@
-import { Controller, Post, Res, Body, UnauthorizedException, BadRequestException } from '@nestjs/common';
+import { Controller, Post, Res, Body, UnauthorizedException, BadRequestException, HttpCode } from '@nestjs/common';
 import { Response } from 'express';
 import { AuthorizationService } from '../../services/authorization/authorization.service';
 import { RegisterDTO } from '../../dto/authorization/RegisterDTO';
@@ -6,6 +6,7 @@ import { LoginDTO } from '../../dto/authorization/LoginDTO';
 import { User } from '../../entities/user.entity';
 import { UserService } from '../../services/user/user.service';
 import * as bcrypt from 'bcrypt';
+import { ApiResponse } from '@nestjs/swagger';
 
 @Controller('authorization')
 export class AuthorizationController {
@@ -16,6 +17,9 @@ export class AuthorizationController {
     ) { }
 
     @Post('/login')
+    @HttpCode(200)
+    @ApiResponse({status: 200, description: 'Logged in!'})
+    @ApiResponse({status: 401, description: 'Email or password is wrong...'})
     async login(@Res() res: Response, @Body() body: LoginDTO) {
         const user: User = await this.authorizationService.validateUser(body.email, body.password);
         if (user === null) {
@@ -27,7 +31,10 @@ export class AuthorizationController {
     }
 
     @Post('/register')
-    async regiser(@Body() body: RegisterDTO) {
+    @HttpCode(200)
+    @ApiResponse({status: 200, description: 'Registered!', type: User})
+    @ApiResponse({status: 400, description: 'User with email address this already exists'})
+    async regiser(@Res() res: Response, @Body() body: RegisterDTO) {
         if (await this.userService.exists(body.email)) {
             throw new BadRequestException('User with email address this already exists');
         }
@@ -50,25 +57,16 @@ export class AuthorizationController {
         user.member = null;
 
         this.userService.create(user);
-        return user;
+        res.cookie('auth', await this.authorizationService.genJWT(user.id, user.email), {secure: false});
+        res.status(200).send(user);
     }
 
     private encryptPassword(password: string): Promise<string> {
-        return new Promise<string>((resolve, reject) => {
-            bcrypt.genSalt(10, function(err, salt) {
-                if (err) {
-                    reject(err);
-
-                } else {
-                    bcrypt.hash(password, salt, function(err, hash) {
-                        if (err) {
-                            reject(err);
-                        
-                        } else {
-                            resolve(hash);
-                        }
-                    });
-                }
+        return new Promise<string>((resolve) => {
+            bcrypt.genSalt(10, (err, salt) => {
+                bcrypt.hash(password, salt, (err2, hash) => {
+                    resolve(hash);
+                });
             });
         });
     }

@@ -4,7 +4,7 @@ import { Commission } from '../../entities/commission.entity';
 import { CreateCommissionDto } from '../../dto/commission/create-commission-dto';
 import { ApiUseTags, ApiResponse } from '@nestjs/swagger';
 import { UpdateCommissionDto } from '../../dto/commission/update-commission-dto';
-import { Auth } from 'src/decorators/auth.decorator';
+import { Auth } from '../../decorators/auth.decorator';
 
 @ApiUseTags('commissions')
 @Controller('commissions')

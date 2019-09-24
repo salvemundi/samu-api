@@ -59,7 +59,7 @@ export class MockUserService implements IUserService {
 
     exists(email: string): Promise<boolean> {
         return new Promise<boolean>((resolve) => {
-            resolve(email === 'test@gmail.com');
+            resolve(email === randomUser.email);
         });
     }
 }
