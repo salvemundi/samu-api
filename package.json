@@ -12,7 +12,7 @@
     "test": "jest --coverage --coverageReporters=text-lcov | coveralls",
     "testLocal": "jest --coverage",
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js --config src/typeormConfig.ts",
-    "deploy": "npm run build && ./node_modules/.bin/now secrets add SERVER_PORT $SERVER_PORT --token=$NOW_TOKEN && ./node_modules/.bin/now secrets add JWT_SECRET $JWT_SECRET && ./node_modules/.bin/now secrets add DB_HOST $DB_HOST && ./node_modules/.bin/now secrets add DB_PORT $DB_PORT && ./node_modules/.bin/now secrets add DB_USER $DB_USER && ./node_modules/.bin/now secrets add DB_PASSWORD $DB_PASSWORD && ./node_modules/.bin/now secrets add DB_NAME $DB_NAME && ./node_modules/.bin/now --token=$NOW_TOKEN"
+    "deploy": "npm run build && ./node_modules/.bin/now secrets add SERVER_PORT $SERVER_PORT --token=$NOW_TOKEN && ./node_modules/.bin/now secrets add JWT_SECRET $JWT_SECRET --token=$NOW_TOKEN && ./node_modules/.bin/now secrets add DB_HOST $DB_HOST --token=$NOW_TOKEN && ./node_modules/.bin/now secrets add DB_PORT $DB_PORT --token=$NOW_TOKEN && ./node_modules/.bin/now secrets add DB_USER $DB_USER --token=$NOW_TOKEN && ./node_modules/.bin/now secrets add DB_PASSWORD $DB_PASSWORD --token=$NOW_TOKEN && ./node_modules/.bin/now secrets add DB_NAME $DB_NAME --token=$NOW_TOKEN && ./node_modules/.bin/now --token=$NOW_TOKEN"
   },
   "dependencies": {
     "@nestjs/common": "^6.4.0",
