@@ -3,7 +3,7 @@ import { User } from '../../entities/user.entity';
 import randomUser from '../user/mock.user.service';
 import { JWT } from './authorization.service';
 
-const JWToken = 'awsomeJWT';
+const JWToken = 'awesomeJWT';
 
 export default JWT;
 export class MockAuthorizationService implements IAuthorizationService {

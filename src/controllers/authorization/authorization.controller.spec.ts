@@ -34,7 +34,7 @@ describe('Authorization Controller', () => {
       return request(app.getHttpServer()).post('/authorization/login').send(loginDto)
         .expect(200)
         .expect((response: request.Response) => {
-            response.header.Cookie = 'awsomeJWT';
+            response.header.Cookie = 'awesomeJWT';
         });
     });
 
@@ -69,7 +69,7 @@ describe('Authorization Controller', () => {
       return request(app.getHttpServer()).post('/authorization/register').send(registerDto)
         .expect(200)
         .expect((response: request.Response) => {
-            response.header.Cookie = 'awsomeJWT';
+            response.header.Cookie = 'awesomeJWT';
         });
     });
 
