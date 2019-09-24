@@ -2,7 +2,6 @@ import { Controller, Get, Param, HttpCode, NotFoundException, Body, Put, Post } 
 import { UserService } from '../../services/user/user.service';
 import { User } from '../../entities/user.entity';
 import { ApiResponse } from '@nestjs/swagger';
-import { CreateUserDto } from '../../dto/user/create-user-dto';
 import { UpdateUserDto } from '../../dto/user/update-user-dto';
 import { ShortedUserDto } from '../../dto/user/shorted-user-dto';
 import { Auth } from '../../decorators/auth.decorator';
@@ -16,12 +15,12 @@ export class UserController {
     @Get('/:id')
     @Auth('user:read')
     @HttpCode(200)
-    @ApiResponse({ status: 200, description: 'User is found.', type: User })
-    @ApiResponse({ status: 404, description: 'No user was found with the provided id.' })
+    @ApiResponse({ status: 200, description: 'Gebruiker gevonden', type: User })
+    @ApiResponse({ status: 404, description: 'Geen gebruiker gevonden...' })
     async readOne(@Param('id') id: number) {
         const user: User = await this.userService.readOne(+id);
         if (!user) {
-            throw new NotFoundException(`No user found exists with id: ${id}`);
+            throw new NotFoundException(`Geen gebruiker gevonden met id: ${id}`);
         }
 
         return { user };
@@ -30,7 +29,7 @@ export class UserController {
     @Get()
     @Auth('user:read')
     @HttpCode(200)
-    @ApiResponse({ status: 200, description: 'Users that match the skip and take parameters.', type: Array<ShortedUserDto>() })
+    @ApiResponse({ status: 200, description: 'Gebruikers gevonden binnen skip en take parameters', type: Array<ShortedUserDto>() })
     async readAll(@Param('skip') skip: number, @Param('take') take: number) {
         const users: User[] = await this.userService.readAll(skip, take);
         return { users: users as ShortedUserDto[] };
@@ -39,13 +38,13 @@ export class UserController {
     @Put()
     @Auth('user:write')
     @HttpCode(200)
-    @ApiResponse({ status: 200, description: 'User is updated.', type: User })
-    @ApiResponse({ status: 400, description: 'Validation errors.' })
-    @ApiResponse({ status: 404, description: 'No user was found with the provided id.' })
+    @ApiResponse({ status: 200, description: 'Gebruiker is geupdated', type: User })
+    @ApiResponse({ status: 400, description: 'Validation error' })
+    @ApiResponse({ status: 404, description: 'Geen gebruiker gevonden...' })
     async update(@Body() body: UpdateUserDto) {
         const user = await this.userService.readOne(body.id);
         if (!user) {
-            throw new NotFoundException(`No user exists with id: ${body.id}.`);
+            throw new NotFoundException(`Geen gebruiker gevonden met id: ${body.id}`);
         }
 
         user.pcn = body.pcn;

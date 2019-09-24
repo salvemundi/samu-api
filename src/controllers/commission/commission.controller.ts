@@ -14,12 +14,12 @@ export class CommissionController {
     @Get('/:id')
     @Auth('commission:read')
     @HttpCode(200)
-    @ApiResponse({status: 200, description: 'Commission is found.', type: Commission})
-    @ApiResponse({status: 404, description: 'No commission was found with the provided id.'})
+    @ApiResponse({status: 200, description: 'Commissie is gevonden', type: Commission})
+    @ApiResponse({status: 404, description: 'Geen commissie gevonden...'})
     async readOne(@Param('id') id: number) {
         const commission = await this.commisionService.readOne(+id);
         if (!commission) {
-            throw new NotFoundException(`No commission exists with id: ${id}.`);
+            throw new NotFoundException(`Geen commissie met id: ${id}.`);
         }
         return {commission};
     }
@@ -27,7 +27,7 @@ export class CommissionController {
     @Get()
     @Auth('commission:read')
     @HttpCode(200)
-    @ApiResponse({status: 200, description: 'Commissions that match the skip and take parameters.', type: Array<Commission>()})
+    @ApiResponse({status: 200, description: 'Commissies binnen de skip en take parameters', type: Array<Commission>()})
     async readAll(@Query('skip') skip: number, @Query('take') take: number) {
         return { commissions: await this.commisionService.read(skip, take) };
     }
@@ -35,8 +35,8 @@ export class CommissionController {
     @Post()
     @Auth('commission:write')
     @HttpCode(200)
-    @ApiResponse({status: 200, description: 'Commission is created.', type: Commission})
-    @ApiResponse({status: 400, description: 'Validation errors.'})
+    @ApiResponse({status: 200, description: 'Commissie is aangemaakt', type: Commission})
+    @ApiResponse({status: 400, description: 'Validation error...'})
     async create(@Body() body: CreateCommissionDto) {
         const commission = new Commission(body.name, body.description, body.created);
 
@@ -46,9 +46,9 @@ export class CommissionController {
     @Put()
     @Auth('commission:write')
     @HttpCode(200)
-    @ApiResponse({status: 200, description: 'Commission is updated.', type: Commission})
-    @ApiResponse({status: 400, description: 'Validation errors.'})
-    @ApiResponse({status: 404, description: 'No commission was found with the provided id.'})
+    @ApiResponse({status: 200, description: 'Commissie is geupdated', type: Commission})
+    @ApiResponse({status: 400, description: 'Validation error...'})
+    @ApiResponse({status: 404, description: 'Geen commissie gevonden...'})
     async update(@Body() body: UpdateCommissionDto) {
         const commission = await this.commisionService.readOne(body.id);
         if (!commission) {

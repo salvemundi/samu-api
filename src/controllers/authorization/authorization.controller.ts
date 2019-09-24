@@ -19,24 +19,24 @@ export class AuthorizationController {
     @Post('/login')
     @HttpCode(200)
     @ApiResponse({status: 200, description: 'Logged in!'})
-    @ApiResponse({status: 401, description: 'Email or password is wrong...'})
+    @ApiResponse({status: 401, description: 'Email or password is incorrect...'})
     async login(@Res() res: Response, @Body() body: LoginDTO) {
         const user: User = await this.authorizationService.validateUser(body.email, body.password);
         if (user === null) {
-            throw new UnauthorizedException('Email or password is wrong...');
+            throw new UnauthorizedException('Email or password is incorrect...');
         }
 
         res.cookie('auth', await this.authorizationService.genJWT(user.id, user.email), {secure: false});
-        res.status(200).send({message: 'Logged in!'});
+        res.status(200).send({message: 'Ingelogd!'});
     }
 
     @Post('/register')
     @HttpCode(200)
-    @ApiResponse({status: 200, description: 'Registered!', type: User})
-    @ApiResponse({status: 400, description: 'User with email address this already exists'})
+    @ApiResponse({status: 200, description: 'Geregisteerd!', type: User})
+    @ApiResponse({status: 400, description: 'Er bestaat al een gebruiker met die email adres...'})
     async regiser(@Res() res: Response, @Body() body: RegisterDTO) {
         if (await this.userService.exists(body.email)) {
-            throw new BadRequestException('User with email address this already exists');
+            throw new BadRequestException('Er bestaat al een gebruiker met die email adres...');
         }
 
         const user = new User();

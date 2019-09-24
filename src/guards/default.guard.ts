@@ -20,11 +20,11 @@ export class DefaultGuard implements CanActivate {
 
     const request = context.switchToHttp().getRequest();
     if (!request.headers.cookie) {
-      throw new UnauthorizedException('No cookies found...');
+      throw new UnauthorizedException('Geen koekje gevonden in je request... Zorg ervoor dat deze meegestuurd wordt met iedere request!');
     }
     const auth = this.parseCookies(request).auth;
     if (!auth) {
-        throw new UnauthorizedException('No authorization cookie found...');
+        throw new UnauthorizedException('No authorizatie koekje gevonden... Zorg ervoor dat deze meegestuurd wordt met iedere request!');
     }
 
     const verifytoken = this.authService.verifyJWT(auth);
@@ -41,7 +41,7 @@ export class DefaultGuard implements CanActivate {
       return false;
 
     } else {
-      throw new UnauthorizedException('Token invalid or expired...');
+      throw new UnauthorizedException('Token incorrect of verlopen...');
     }
   }
 
