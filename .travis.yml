@@ -13,7 +13,9 @@ script:
 
 deploy:
   provider: script
-  script: npm run deploy
+  script: 
+    - npm run build
+    - npm run deploy
   skip_cleanup: true
   on:
     branch: master
