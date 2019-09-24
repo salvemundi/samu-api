@@ -11,8 +11,7 @@
     "lint": "tslint -p tsconfig.json -c tslint.json",
     "test": "jest --coverage --coverageReporters=text-lcov | coveralls",
     "testLocal": "jest --coverage",
-    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js --config src/typeormConfig.ts",
-    "deploy": "npm run build && ./node_modules/.bin/now --token=$NOW_TOKEN"
+    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js --config src/typeormConfig.ts"
   },
   "dependencies": {
     "@nestjs/common": "^6.4.0",
