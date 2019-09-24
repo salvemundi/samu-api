@@ -7,9 +7,9 @@ export class UserService implements IUserService {
     }
 
     readOne(user: number, email?: string): Promise<User> {
-        const whereQuery = { id: user, email: null };
+        const whereQuery = { id: user };
         if (email) {
-            whereQuery.email = email;
+            whereQuery['email'] = email;
         }
 
         return User.findOne({ where: whereQuery, relations: ['scopes'] });

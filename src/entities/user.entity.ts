@@ -9,8 +9,7 @@ export class User extends BaseEntity {
     @PrimaryGeneratedColumn()
     public id: number;
 
-    @Exclude()
-    @Column()
+    @Column({select: false})
     public password: string;
 
     @Column()
