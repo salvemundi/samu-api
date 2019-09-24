@@ -19,17 +19,17 @@ export class DefaultGuard implements CanActivate {
     }
 
     const request = context.switchToHttp().getRequest();
-    console.log(request.cookies) // Kan geen cookies vinden...
-    if (!request.cookies) {
+    if (!request.headers.cookie) {
       throw new UnauthorizedException('No cookies found...');
     }
-    if (!request.cookies.auth) {
+    const auth = this.parseCookies(request).auth;
+    if (!auth) {
         throw new UnauthorizedException('No authorization cookie found...');
     }
 
-    const verifytoken = this.authService.verifyJWT(request.cookies.auth);
+    const verifytoken = this.authService.verifyJWT(auth);
     if (verifytoken) {
-      const decodedJWT = this.authService.decodeJWT(request.cookies.auth);
+      const decodedJWT = this.authService.decodeJWT(auth);
       const user: User = await this.userService.readOne(decodedJWT.userId, decodedJWT.email);
 
       if (!!user && !!user.scopes.find(x => x.name === scope)) {
@@ -44,4 +44,18 @@ export class DefaultGuard implements CanActivate {
       throw new UnauthorizedException('Token invalid or expired...');
     }
   }
+
+  private parseCookies(request): any {
+    const list = {};
+    const rc = request.headers.cookie;
+
+    if (rc) {
+      rc.split(';').forEach((cookie) => {
+          const parts = cookie.split('=');
+          list[parts.shift().trim()] = decodeURI(parts.join('='));
+      });
+    }
+
+    return list;
+}
 }

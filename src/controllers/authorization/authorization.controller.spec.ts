@@ -26,14 +26,14 @@ describe('Authorization Controller', () => {
   describe('/authentication/login - Login user', () => {
     it('Correct call - Should return 200 with a cookie', () => {
       const loginDto: LoginDTO = {
-        email: 'admin@gmail.com',
+        email: 'admin@test.com',
         password: 'admin',
       };
 
       return request(app.getHttpServer()).post('/authorization/login').send(loginDto)
         .expect(200)
         .expect((response: request.Response) => {
-            response.header['Set-Cookie'] = 'awsomeJWT';
+            response.header.Cookie = 'awsomeJWT';
         });
     });
   });

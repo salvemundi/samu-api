@@ -30,7 +30,8 @@ describe('Users Controller', () => {
     describe('/user/:id - Get one request', () => {
         it('Correct call - Should return 200 and a user', () => {
             return request(app.getHttpServer()).get('/user/1')
-                .set('Cookie', ['auth=awsomeJWT'])
+                .set('Cookie', ['auth=awsomeJWT; path=/; domain=localhost;'])
+                .send()
                 .expect('Content-Type', 'application/json; charset=utf-8')
                 .expect(200)
                 .expect((response: request.Response) => {
@@ -40,7 +41,8 @@ describe('Users Controller', () => {
 
         it('Wrong id - Should return 404', () => {
             return request(app.getHttpServer()).get('/user/2')
-                .set('Cookie', ['auth=awsomeJWT'])
+                .set('Cookie', ['auth=awsomeJWT; path=/; domain=localhost;'])
+                .send()
                 .expect(404);
         });
     });
@@ -48,59 +50,13 @@ describe('Users Controller', () => {
     describe('/user/ - Get all request', () => {
         it('Correct call - Should return 200 and the users', () => {
             return request(app.getHttpServer()).get('/user/')
-                .set('Cookie', ['auth=awsomeJWT'])
+                .set('Cookie', ['auth=awsomeJWT; path=/; domain=localhost;'])
+                .send()
                 .expect('Content-Type', 'application/json; charset=utf-8')
                 .expect(200)
                 .expect((response: request.Response) => {
                     response.body.users = [randomUser] as ShortedUserDto[];
                 });
-        });
-    });
-
-    describe('/user/ - Post request', () => {
-        it('Correct call - Should return 200 and the users', () => {
-            const userDto = new CreateUserDto();
-            userDto.pcn = 123456;
-            userDto.firstName = 'Salve';
-            userDto.middleName = null;
-            userDto.lastName = 'Mundi';
-            userDto.birthday = new Date(1970, 1, 1);
-            userDto.address = 'Rachelsmolen 1';
-            userDto.postalcode = '5612MA';
-            userDto.city = 'Eindhoven';
-            userDto.country = 'Nederland';
-            userDto.phoneNumber = '+31 6 12346789';
-            userDto.email = 'no-reply@salvemundi.nl';
-
-            const expectedUser = userDto as User;
-            expectedUser.id = 2;
-            expectedUser.member = null;
-
-            return request(app.getHttpServer()).post('/user/').send(userDto)
-                .set('Cookie', ['auth=awsomeJWT'])
-                .expect('Content-Type', 'application/json; charset=utf-8')
-                .expect(200)
-                .expect((response: request.Response) => {
-                    response.body.user = expectedUser;
-                });
-        });
-
-        it('Missing info in body - Should return 400', () => {
-            const userDto = new CreateUserDto();
-            userDto.pcn = 123456;
-            userDto.firstName = 'Salve';
-            userDto.middleName = null;
-            userDto.lastName = 'Mundi';
-            userDto.birthday = new Date(1970, 1, 1);
-            userDto.address = 'Rachelsmolen 1';
-            userDto.postalcode = '5612MA';
-            userDto.city = 'Eindhoven';
-            userDto.country = 'Nederland';
-            userDto.phoneNumber = '+31 6 12346789';
-
-            return request(app.getHttpServer()).post('/user/').send(userDto)
-                .set('Cookie', ['auth=awsomeJWT'])
-                .expect(400);
         });
     });
 
@@ -124,7 +80,7 @@ describe('Users Controller', () => {
             expectedUser.member = null;
 
             return request(app.getHttpServer()).put('/user/').send(userDto)
-                .set('Cookie', ['auth=awsomeJWT'])
+                .set('Cookie', ['auth=awsomeJWT; path=/; domain=localhost;'])
                 .expect('Content-Type', 'application/json; charset=utf-8')
                 .expect(200)
                 .expect((response: request.Response) => {
@@ -147,7 +103,7 @@ describe('Users Controller', () => {
             userDto.phoneNumber = '+31 6 12346789';
 
             return request(app.getHttpServer()).put('/user/').send(userDto)
-                .set('Cookie', ['auth=awsomeJWT'])
+                .set('Cookie', ['auth=awsomeJWT; path=/; domain=localhost;'])
                 .expect(400);
         });
 
@@ -167,7 +123,7 @@ describe('Users Controller', () => {
             userDto.email = 'no-reply@salvemundi.nl';
 
             return request(app.getHttpServer()).put('/user/').send(userDto)
-                .set('Cookie', ['auth=awsomeJWT'])
+                .set('Cookie', ['auth=awsomeJWT; path=/; domain=localhost;'])
                 .expect(404);
         });
     });

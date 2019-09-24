@@ -23,7 +23,7 @@ export class AuthorizationController {
         }
 
         res.cookie('auth', await this.authorizationService.genJWT(user.id, user.email), {secure: false});
-        res.send({message: 'Logged in!'});
+        res.status(200).send({message: 'Logged in!'});
     }
 
     @Post('/register')

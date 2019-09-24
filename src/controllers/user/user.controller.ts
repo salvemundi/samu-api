@@ -36,15 +36,6 @@ export class UserController {
         return { users: users as ShortedUserDto[] };
     }
 
-    @Post()
-    @Auth('user:write')
-    @HttpCode(200)
-    @ApiResponse({ status: 200, description: 'User is created.', type: User })
-    @ApiResponse({ status: 400, description: 'Validation errors.' })
-    async create(@Body() body: CreateUserDto) {
-        const user = new User();
-    }
-
     @Put()
     @Auth('user:write')
     @HttpCode(200)
