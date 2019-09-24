@@ -3,13 +3,13 @@
     "name": "SaMu-api",
     "build": {
       "env": {
-        "SERVER_PORT": "@SERVER_PORT",
-        "JWT_SECRET": "@JWT_SECRET",
-        "DB_HOST": "@DB_HOST",
-        "DB_PORT": "@DB_PORT",
-        "DB_USER": "@DB_USER",
-        "DB_PASSWORD": "@DB_PASSWORD",
-        "DB_NAME": "@DB_NAME"
+        "SERVER_PORT": "@server_port",
+        "JWT_SECRET": "@jwt_secret",
+        "DB_HOST": "@db_host",
+        "DB_PORT": "@db_port",
+        "DB_USER": "@db_user",
+        "DB_PASSWORD": "@db_password",
+        "DB_NAME": "@db_name"
       }
     },
     "builds": [
