@@ -1,10 +1,11 @@
-import { Controller, Get, Param, HttpCode, NotFoundException, Body, Put, Post } from '@nestjs/common';
+import { Controller, Get, Param, HttpCode, NotFoundException, Body, Put, Post, UseInterceptors, ClassSerializerInterceptor } from '@nestjs/common';
 import { UserService } from '../../services/user/user.service';
 import { User } from '../../entities/user.entity';
 import { ApiResponse } from '@nestjs/swagger';
 import { UpdateUserDto } from '../../dto/user/update-user-dto';
 import { ShortedUserDto } from '../../dto/user/shorted-user-dto';
 import { Auth } from '../../decorators/auth.decorator';
+import { classToPlain } from 'class-transformer';
 
 @Controller('user')
 export class UserController {
@@ -23,7 +24,7 @@ export class UserController {
             throw new NotFoundException(`Geen gebruiker gevonden met id: ${id}`);
         }
 
-        return { user };
+        return user;
     }
 
     @Get()
