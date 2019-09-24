@@ -1,6 +1,17 @@
 {
     "version": 2,
     "name": "SaMu-api",
+    "build": {
+      "env": {
+        "SERVER_PORT": "@SERVER_PORT",
+        "JWT_SECRET": "@JWT_SECRET",
+        "DB_HOST": "@DB_HOST",
+        "DB_PORT": "@DB_PORT",
+        "DB_USER": "@DB_USER",
+        "DB_PASSWORD": "@DB_PASSWORD",
+        "DB_NAME": "@DB_NAME"
+      }
+    },
     "builds": [
       {
         "src": "dist/main.js",
