@@ -3,7 +3,7 @@ import { MemberService } from '../../services/member/member.service';
 import { ApiResponse } from '@nestjs/swagger';
 import { Member } from '../../entities/member.entity';
 
-@Controller('member')
+@Controller('/member')
 export class MemberController {
     constructor(private memberService: MemberService) { }
 
