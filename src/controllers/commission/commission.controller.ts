@@ -4,6 +4,7 @@ import { Commission } from '../../entities/commission.entity';
 import { CreateCommissionDto } from '../../dto/commission/create-commission-dto';
 import { ApiUseTags, ApiResponse } from '@nestjs/swagger';
 import { UpdateCommissionDto } from '../../dto/commission/update-commission-dto';
+import { Auth } from 'src/decorators/auth.decorator';
 
 @ApiUseTags('commissions')
 @Controller('commissions')
@@ -11,6 +12,7 @@ export class CommissionController {
     constructor(private readonly commisionService: CommissionService) {}
 
     @Get('/:id')
+    @Auth('commission:read')
     @HttpCode(200)
     @ApiResponse({status: 200, description: 'Commission is found.', type: Commission})
     @ApiResponse({status: 404, description: 'No commission was found with the provided id.'})
@@ -23,6 +25,7 @@ export class CommissionController {
     }
 
     @Get()
+    @Auth('commission:read')
     @HttpCode(200)
     @ApiResponse({status: 200, description: 'Commissions that match the skip and take parameters.', type: Array<Commission>()})
     async readAll(@Query('skip') skip: number, @Query('take') take: number) {
@@ -30,6 +33,7 @@ export class CommissionController {
     }
 
     @Post()
+    @Auth('commission:write')
     @HttpCode(200)
     @ApiResponse({status: 200, description: 'Commission is created.', type: Commission})
     @ApiResponse({status: 400, description: 'Validation errors.'})
@@ -40,6 +44,7 @@ export class CommissionController {
     }
 
     @Put()
+    @Auth('commission:write')
     @HttpCode(200)
     @ApiResponse({status: 200, description: 'Commission is updated.', type: Commission})
     @ApiResponse({status: 400, description: 'Validation errors.'})

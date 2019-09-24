@@ -35,6 +35,12 @@ describe('Commission Controller', () => {
           response.body.commissions = [randomCommission];
         });
     });
+
+    it('No auth cookie - Should return 401', () => {
+      return request(app.getHttpServer()).get('/commissions')
+          .send()
+          .expect(401);
+    });
   });
 
   describe('/commission/:id - Get one request', () => {
@@ -52,6 +58,12 @@ describe('Commission Controller', () => {
       return request(app.getHttpServer()).get('/commissions/2')
         .set('Cookie', ['auth=awsomeJWT; path=/; domain=localhost;'])
         .expect(404);
+    });
+
+    it('No auth cookie - Should return 401', () => {
+      return request(app.getHttpServer()).get('/commissions/1')
+          .send()
+          .expect(401);
     });
   });
 
@@ -74,6 +86,15 @@ describe('Commission Controller', () => {
         .set('Cookie', ['auth=awsomeJWT; path=/; domain=localhost;'])
         .send({description: 'De ICT commissie is geweldig!', created: new Date()})
         .expect(400);
+    });
+
+    it('No auth cookie - Should return 401', () => {
+      const date = new Date();
+
+      return request(app.getHttpServer()).post('/commissions')
+          .send({name: 'ICT commissie', description: 'De ICT commissie is geweldig!', created: date})
+          .send()
+          .expect(401);
     });
   });
 
@@ -103,6 +124,13 @@ describe('Commission Controller', () => {
         .set('Cookie', ['auth=awsomeJWT; path=/; domain=localhost;'])
         .send({id: 3, name: 'Dames commissie', description: 'De ICT commissie is geweldig!', created: new Date()})
         .expect(404);
+    });
+
+    it('No auth cookie - Should return 401', () => {
+      return request(app.getHttpServer()).put('/commissions')
+        .send({id: 1, name: 'ICT commissie', description: 'De ICT commissie is geweldig!', created: new Date()})
+        .send()
+        .expect(401);
     });
   });
 });

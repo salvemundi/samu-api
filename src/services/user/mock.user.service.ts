@@ -21,6 +21,8 @@ randomUser.member = null;
 randomUser.scopes = [
     new Scope('user:read', 1),
     new Scope('user:write', 2),
+    new Scope('commission:read', 3),
+    new Scope('commission:write', 4),
 ];
 
 export default randomUser;

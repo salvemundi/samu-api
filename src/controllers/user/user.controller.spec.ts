@@ -4,7 +4,6 @@ import { TestModule } from 'src/test.module';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { User } from 'src/entities/user.entity';
 import { ShortedUserDto } from 'src/dto/user/shorted-user-dto';
-import { CreateUserDto } from 'src/dto/user/create-user-dto';
 import { UpdateUserDto } from 'src/dto/user/update-user-dto';
 import randomUser from 'src/services/user/mock.user.service';
 
@@ -45,6 +44,12 @@ describe('Users Controller', () => {
                 .send()
                 .expect(404);
         });
+
+        it('No auth cookie - Should return 401', () => {
+            return request(app.getHttpServer()).get('/user/1')
+                .send()
+                .expect(401);
+        });
     });
 
     describe('/user/ - Get all request', () => {
@@ -57,6 +62,12 @@ describe('Users Controller', () => {
                 .expect((response: request.Response) => {
                     response.body.users = [randomUser] as ShortedUserDto[];
                 });
+        });
+
+        it('No auth cookie - Should return 401', () => {
+            return request(app.getHttpServer()).get('/user/')
+                .send()
+                .expect(401);
         });
     });
 
@@ -125,6 +136,26 @@ describe('Users Controller', () => {
             return request(app.getHttpServer()).put('/user/').send(userDto)
                 .set('Cookie', ['auth=awsomeJWT; path=/; domain=localhost;'])
                 .expect(404);
+        });
+
+        it('No auth cookie - Should return 401', () => {
+            const userDto = new UpdateUserDto();
+            userDto.id = 1;
+            userDto.pcn = 123456;
+            userDto.firstName = 'Salve';
+            userDto.middleName = null;
+            userDto.lastName = 'Mundi';
+            userDto.birthday = new Date(1970, 1, 1);
+            userDto.address = 'Rachelsmolen 1';
+            userDto.postalcode = '5612MA';
+            userDto.city = 'Eindhoven';
+            userDto.country = 'Nederland';
+            userDto.phoneNumber = '+31 6 12346789';
+            userDto.email = 'no-reply@salvemundi.nl';
+
+            return request(app.getHttpServer()).put('/user/')
+                .send()
+                .expect(401);
         });
     });
 });
