@@ -8,7 +8,7 @@ import { UserService } from '../../services/user/user.service';
 import * as bcrypt from 'bcrypt';
 import { ApiResponse, ApiUseTags, ApiOperation } from '@nestjs/swagger';
 import axios from 'axios';
-import { MeDTO } from 'src/dto/authorization/MeDTO';
+import { MeDTO } from '../../dto/authorization/MeDTO';
 
 @ApiUseTags('Authorization')
 @Controller('authorization')
@@ -79,7 +79,7 @@ export class AuthorizationController {
         title: 'me',
         description: 'This call is used to get the user from the FHICT api',
     })
-    @ApiResponse({ status: 200, description: 'Geregisteerd!', type: User })
+    @ApiResponse({ status: 200, description: 'Geregisteerd!', type: MeDTO })
     @ApiResponse({ status: 400, description: 'Incorrecte Oauth token verkregen...' })
     @ApiResponse({ status: 500, description: 'Internal server error...' })
     async me(@Query('token') token: string) {
