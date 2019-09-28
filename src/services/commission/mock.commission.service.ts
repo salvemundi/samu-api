@@ -20,6 +20,7 @@ export class MockCommissionService implements ICommissionService {
 
     readOne(id: number): Promise<Commission> {
         return new Promise<Commission>((resolve) => {
+            id = +id;
             if (id === 1) {
               resolve(randomCommission);
 
@@ -31,6 +32,12 @@ export class MockCommissionService implements ICommissionService {
 
     update(model: Commission): Promise<Commission> {
         return new Promise<Commission>((resolve) => {
+            resolve(model);
+        });
+    }
+
+    delete(model: Commission): Promise<Commission> {
+        return new Promise<any>((resolve) => {
             resolve(model);
         });
     }

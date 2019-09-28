@@ -4,9 +4,8 @@ import { Scope } from 'src/entities/scope.entity';
 
 const randomUser: User = new User();
 randomUser.id = 1;
-randomUser.pcn = 123456;
+randomUser.pcn = 'i123456';
 randomUser.firstName = 'Random';
-randomUser.middleName = null;
 randomUser.lastName = 'User';
 randomUser.birthday = new Date(1990, 1, 1);
 randomUser.address = 'Rachelsmolen 1';
@@ -21,8 +20,9 @@ randomUser.member = null;
 randomUser.scopes = [
     new Scope('user:read', 1),
     new Scope('user:write', 2),
-    new Scope('commission:read', 3),
+    new Scope('user:delete', 3),
     new Scope('commission:write', 4),
+    new Scope('commission:delete', 5),
 ];
 
 export default randomUser;

@@ -12,7 +12,7 @@ export class RegisterDTO {
     @MaxLength(255)
     lastName: string;
 
-    @ApiModelProperty({required: true})
+    @ApiModelProperty({required: true, type: String, format: 'date'})
     @IsNotEmpty()
     birthday: Date;
 
@@ -46,7 +46,8 @@ export class RegisterDTO {
     @MaxLength(14)
     phoneNumber: string;
 
-    @ApiModelProperty({required: true})
+    @ApiModelProperty({required: true, maxLength: 7})
+    @MaxLength(7)
     pcn: string;
 
     @ApiModelProperty({required: true, maxLength: 64})

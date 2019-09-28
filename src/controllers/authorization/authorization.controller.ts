@@ -6,10 +6,11 @@ import { LoginDTO } from '../../dto/authorization/LoginDTO';
 import { User } from '../../entities/user.entity';
 import { UserService } from '../../services/user/user.service';
 import * as bcrypt from 'bcrypt';
-import { ApiResponse } from '@nestjs/swagger';
+import { ApiResponse, ApiUseTags, ApiOperation } from '@nestjs/swagger';
 import axios from 'axios';
 import { MeDTO } from 'src/dto/authorization/MeDTO';
 
+@ApiUseTags('Authorization')
 @Controller('authorization')
 export class AuthorizationController {
 
@@ -20,8 +21,13 @@ export class AuthorizationController {
 
     @Post('/login')
     @HttpCode(200)
-    @ApiResponse({status: 200, description: 'Logged in!'})
-    @ApiResponse({status: 401, description: 'Email or password is incorrect...'})
+    @ApiOperation({
+        title: 'login',
+        description: 'This call is used to login a user. It will return an authorization cookie when succesful',
+    })
+    @ApiResponse({ status: 200, description: 'Logged in!' })
+    @ApiResponse({ status: 401, description: 'Email or password is incorrect...' })
+    @ApiResponse({ status: 500, description: 'Internal server error...' })
     async login(@Res() res: Response, @Body() body: LoginDTO) {
         const user: User = await this.authorizationService.validateUser(body.email, body.password);
         if (user === null) {
@@ -34,8 +40,13 @@ export class AuthorizationController {
 
     @Post('/register')
     @HttpCode(200)
-    @ApiResponse({status: 200, description: 'Geregisteerd!', type: User})
-    @ApiResponse({status: 400, description: 'Er bestaat al een gebruiker met die email adres...'})
+    @ApiOperation({
+        title: 'register',
+        description: 'This call is used to register a user. It will return an authorization cookie when succesful',
+    })
+    @ApiResponse({ status: 200, description: 'Geregisteerd!', type: User })
+    @ApiResponse({ status: 400, description: 'Er bestaat al een gebruiker met die email adres...' })
+    @ApiResponse({ status: 500, description: 'Internal server error...' })
     async regiser(@Res() res: Response, @Body() body: RegisterDTO) {
         if (await this.userService.exists(body.email)) {
             throw new BadRequestException('Er bestaat al een gebruiker met die email adres...');
@@ -64,8 +75,13 @@ export class AuthorizationController {
 
     @Get('me')
     @HttpCode(200)
-    @ApiResponse({status: 200, description: 'Geregisteerd!', type: User})
-    @ApiResponse({status: 400, description: 'Incorrecte Oauth token verkregen...'})
+    @ApiOperation({
+        title: 'me',
+        description: 'This call is used to get the user from the FHICT api',
+    })
+    @ApiResponse({ status: 200, description: 'Geregisteerd!', type: User })
+    @ApiResponse({ status: 400, description: 'Incorrecte Oauth token verkregen...' })
+    @ApiResponse({ status: 500, description: 'Internal server error...' })
     async me(@Query('token') token: string) {
         try {
             const {data} = await axios.get('https://api.fhict.nl/people/me', {headers: {Authorization: 'bearer ' + token}});

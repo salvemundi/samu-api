@@ -3,6 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { User } from '../../entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { IAuthorizationService } from './iAuthorization.service';
+import { getConnection } from 'typeorm';
 
 @Injectable()
 export class AuthorizationService implements IAuthorizationService {
@@ -11,9 +12,9 @@ export class AuthorizationService implements IAuthorizationService {
     ) {}
 
     public async validateUser(email: string, pass: string): Promise<User> {
-        const user: User = await User.findOne({where: { email }});
+        const user: User = await User.findOne({where: {email}, select: ['password']});
         if (user && await this.checkPassword(pass, user)) {
-            return user;
+            return await User.findOne({where: { email }});
         }
 
         return null;

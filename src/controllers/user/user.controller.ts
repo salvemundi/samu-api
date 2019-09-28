@@ -1,23 +1,67 @@
-import { Controller, Get, Param, HttpCode, NotFoundException, Body, Put, Post, UseInterceptors, ClassSerializerInterceptor } from '@nestjs/common';
+import { Controller, Get, Param, HttpCode, NotFoundException, Body, Put, Req, UnauthorizedException } from '@nestjs/common';
 import { UserService } from '../../services/user/user.service';
 import { User } from '../../entities/user.entity';
-import { ApiResponse } from '@nestjs/swagger';
+import { ApiResponse, ApiUseTags, ApiImplicitParam, ApiOperation } from '@nestjs/swagger';
 import { UpdateUserDto } from '../../dto/user/update-user-dto';
-import { ShortedUserDto } from '../../dto/user/shorted-user-dto';
 import { Auth } from '../../decorators/auth.decorator';
-import { classToPlain } from 'class-transformer';
+import { AuthorizationService } from '../../services/authorization/authorization.service';
+import { ShortedUserDto } from '../../dto/user/shorted-user-dto';
 
+@ApiUseTags('User')
 @Controller('user')
 export class UserController {
     constructor(
         private readonly userService: UserService,
+        private readonly authService: AuthorizationService,
     ) { }
+
+    @Get('/me')
+    @HttpCode(200)
+    @ApiOperation({
+        title: 'me',
+        description: 'This call is used to get the current user',
+    })
+    @ApiResponse({ status: 200, description: 'Gebruiker gevonden', type: User })
+    @ApiResponse({ status: 500, description: 'Internal server error...' })
+    async readMe(@Req() request: any) {
+        if (!request.headers.cookie) {
+            throw new UnauthorizedException('Geen koekje gevonden in je request... Zorg ervoor dat deze meegestuurd wordt met iedere request!');
+        }
+        const list: any = {};
+        const rc = request.headers.cookie;
+        if (rc) {
+            rc.split(';').forEach((cookie) => {
+                const parts = cookie.split('=');
+                list[parts.shift().trim()] = decodeURI(parts.join('='));
+            });
+        }
+
+        const auth = list.auth;
+        if (!auth) {
+            throw new UnauthorizedException('No authorizatie koekje gevonden... Zorg ervoor dat deze meegestuurd wordt met iedere request!');
+        }
+        const verifytoken = this.authService.verifyJWT(auth);
+        if (verifytoken) {
+            const decodedJWT = this.authService.decodeJWT(auth);
+            const user: User = await this.userService.readOne(decodedJWT.userId, decodedJWT.email);
+            return user;
+
+        } else {
+            throw new UnauthorizedException('Token incorrect of verlopen...');
+        }
+    }
 
     @Get('/:id')
     @Auth('user:read')
     @HttpCode(200)
+    @ApiOperation({
+        title: 'getOne',
+        description: 'This call is used to get a specific user',
+    })
     @ApiResponse({ status: 200, description: 'Gebruiker gevonden', type: User })
+    @ApiResponse({ status: 403, description: 'U do not have the permission to do this...' })
     @ApiResponse({ status: 404, description: 'Geen gebruiker gevonden...' })
+    @ApiResponse({ status: 500, description: 'Internal server error...' })
     async readOne(@Param('id') id: number) {
         const user: User = await this.userService.readOne(+id);
         if (!user) {
@@ -30,8 +74,16 @@ export class UserController {
     @Get()
     @Auth('user:read')
     @HttpCode(200)
-    @ApiResponse({ status: 200, description: 'Gebruikers gevonden binnen skip en take parameters', type: Array<ShortedUserDto>() })
-    async readAll(@Param('skip') skip: number, @Param('take') take: number) {
+    @ApiOperation({
+        title: 'getAll',
+        description: 'This call is used to get a summary of all the users',
+    })
+    @ApiImplicitParam({name: 'skip', required: false, type: Number })
+    @ApiImplicitParam({name: 'take', required: false, type: Number })
+    @ApiResponse({ status: 200, description: 'Gebruikers gevonden binnen skip en take parameters', type: ShortedUserDto, isArray: true })
+    @ApiResponse({ status: 403, description: 'U do not have the permission to do this...' })
+    @ApiResponse({ status: 500, description: 'Internal server error...' })
+    async readAll(@Param('skip') skip?: number, @Param('take') take?: number) {
         const users: User[] = await this.userService.readAll(skip, take);
         return { users: users as ShortedUserDto[] };
     }
@@ -39,9 +91,15 @@ export class UserController {
     @Put()
     @Auth('user:write')
     @HttpCode(200)
+    @ApiOperation({
+        title: 'update',
+        description: 'This call is used to update a user',
+    })
     @ApiResponse({ status: 200, description: 'Gebruiker is geupdated', type: User })
     @ApiResponse({ status: 400, description: 'Validation error' })
+    @ApiResponse({ status: 403, description: 'U do not have the permission to do this...' })
     @ApiResponse({ status: 404, description: 'Geen gebruiker gevonden...' })
+    @ApiResponse({ status: 500, description: 'Internal server error...' })
     async update(@Body() body: UpdateUserDto) {
         const user = await this.userService.readOne(body.id);
         if (!user) {

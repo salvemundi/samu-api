@@ -21,7 +21,7 @@ export class UpdateUserDto {
     @IsNotEmpty()
     public lastName: string;
 
-    @ApiModelProperty({required: true})
+    @ApiModelProperty({required: true, type: String, format: 'date'})
     @IsNotEmpty()
     public birthday: Date;
 

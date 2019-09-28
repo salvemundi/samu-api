@@ -12,7 +12,8 @@
     "test": "jest --coverage --coverageReporters=text-lcov | coveralls",
     "testLocal": "jest --coverage",
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js --config src/typeormConfig.ts",
-    "deploy": "npm run build && ./node_modules/.bin/now --token=$NOW_TOKEN"
+    "deploy": "npm run build && ./node_modules/.bin/now --token=$NOW_TOKEN",
+    "generate-services": "ts-node src/swagger/swaggerBuilder.ts && openapi-generator generate -g typescript-rxjs -i swagger-spec.json -o ../salvemundi.nl/src"
   },
   "dependencies": {
     "@nestjs/common": "^6.4.0",
@@ -52,7 +53,6 @@
     "prettier": "^1.15.3",
     "supertest": "^3.4.1",
     "ts-jest": "24.0.2",
-    "ts-node": "8.1.0",
     "tsconfig-paths": "3.8.0",
     "tslint": "^5.18.0",
     "typescript": "3.4.3",

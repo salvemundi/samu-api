@@ -22,4 +22,8 @@ export class CommissionService implements ICommissionService {
     public update(model: Commission): Promise<Commission> {
         return Commission.save(model);
     }
+
+    public delete(model: Commission): Promise<Commission> {
+        return Commission.remove(model);
+    }
 }

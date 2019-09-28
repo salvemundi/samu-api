@@ -36,3 +36,4 @@ lerna-debug.log*
 # Environment file
 .env
 ormconfig.json
+swagger-spec.json

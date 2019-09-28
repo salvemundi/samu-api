@@ -5,4 +5,5 @@ export interface ICommissionService {
     read(skip: number, take: number): Promise<Commission[]>;
     readOne(id: number): Promise<Commission>;
     update(model: Commission): Promise<Commission>;
+    delete(model: Commission): Promise<Commission>;
 }

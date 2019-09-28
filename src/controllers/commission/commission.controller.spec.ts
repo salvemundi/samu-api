@@ -3,7 +3,7 @@ import * as request from 'supertest';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { TestModule } from 'src/test.module';
 import { Commission } from 'src/entities/commission.entity';
-import randomCommission, { MockCommissionService } from 'src/services/commission/mock.commission.service';
+import randomCommission from 'src/services/commission/mock.commission.service';
 
 // TODO: Add test for authorization
 describe('Commission Controller', () => {
@@ -35,15 +35,9 @@ describe('Commission Controller', () => {
           response.body.commissions = [randomCommission];
         });
     });
-
-    it('No auth cookie - Should return 401', () => {
-      return request(app.getHttpServer()).get('/commissions')
-          .send()
-          .expect(401);
-    });
   });
 
-  describe('/commission/:id - Get one request', () => {
+  describe('/commissions/:id - Get one request', () => {
     it('Correct call - Should return 200 and one commission', () => {
       return request(app.getHttpServer()).get('/commissions/1')
         .set('Cookie', ['auth=awesomeJWT; path=/; domain=localhost;'])
@@ -59,15 +53,9 @@ describe('Commission Controller', () => {
         .set('Cookie', ['auth=awesomeJWT; path=/; domain=localhost;'])
         .expect(404);
     });
-
-    it('No auth cookie - Should return 401', () => {
-      return request(app.getHttpServer()).get('/commissions/1')
-          .send()
-          .expect(401);
-    });
   });
 
-  describe('/commission/ - Post request', () => {
+  describe('/commissions/ - Post request', () => {
     it('Correct call - Should return 200', () => {
       const date = new Date();
 
@@ -93,12 +81,11 @@ describe('Commission Controller', () => {
 
       return request(app.getHttpServer()).post('/commissions')
           .send({name: 'ICT commissie', description: 'De ICT commissie is geweldig!', created: date})
-          .send()
           .expect(401);
     });
   });
 
-  describe('/commission/ - Put request', () => {
+  describe('/commissions/ - Put request', () => {
     it('Correct call - Should return 200', () => {
       const date = new Date();
 
@@ -129,8 +116,26 @@ describe('Commission Controller', () => {
     it('No auth cookie - Should return 401', () => {
       return request(app.getHttpServer()).put('/commissions')
         .send({id: 1, name: 'ICT commissie', description: 'De ICT commissie is geweldig!', created: new Date()})
-        .send()
         .expect(401);
+    });
+  });
+
+  describe('/commissions/:id - Delete request', () => {
+    it('Correct call - Should return 200', () => {
+      return request(app.getHttpServer()).del('/commissions/1')
+        .set('Cookie', ['auth=awesomeJWT; path=/; domain=localhost;'])
+        .expect(200);
+    });
+
+    it('Wrong id - Should return 404', () => {
+      return request(app.getHttpServer()).del('/commissions/2')
+        .set('Cookie', ['auth=awesomeJWT; path=/; domain=localhost;'])
+        .expect(404);
+    });
+
+    it('No auth cookie - Should return 401', () => {
+      return request(app.getHttpServer()).del('/commissions/1')
+          .expect(401);
     });
   });
 });
