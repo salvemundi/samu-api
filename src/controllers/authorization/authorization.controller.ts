@@ -1,4 +1,4 @@
-import { Controller, Post, Res, Body, UnauthorizedException, BadRequestException, HttpCode } from '@nestjs/common';
+import { Controller, Post, Res, Body, UnauthorizedException, BadRequestException, HttpCode, Get, Query } from '@nestjs/common';
 import { Response } from 'express';
 import { AuthorizationService } from '../../services/authorization/authorization.service';
 import { RegisterDTO } from '../../dto/authorization/RegisterDTO';
@@ -7,6 +7,8 @@ import { User } from '../../entities/user.entity';
 import { UserService } from '../../services/user/user.service';
 import * as bcrypt from 'bcrypt';
 import { ApiResponse } from '@nestjs/swagger';
+import axios from 'axios';
+import { MeDTO } from 'src/dto/authorization/MeDTO';
 
 @Controller('authorization')
 export class AuthorizationController {
@@ -41,7 +43,6 @@ export class AuthorizationController {
 
         const user = new User();
         user.firstName = body.firstName;
-        user.middleName = body.middleName;
         user.lastName = body.lastName;
         user.email = body.email;
         user.password = await this.encryptPassword(body.password);
@@ -59,6 +60,26 @@ export class AuthorizationController {
         this.userService.create(user);
         res.cookie('auth', await this.authorizationService.genJWT(user.id, user.email), {secure: false});
         res.status(200).send(user);
+    }
+
+    @Get('me')
+    @HttpCode(200)
+    @ApiResponse({status: 200, description: 'Geregisteerd!', type: User})
+    @ApiResponse({status: 400, description: 'Incorrecte Oauth token verkregen...'})
+    async me(@Query('token') token: string) {
+        try {
+            const {data} = await axios.get('https://api.fhict.nl/people/me', {headers: {Authorization: 'bearer ' + token}});
+            const me: MeDTO = {
+                firstName: data.givenName,
+                lastName: data.surName,
+                email: data.mail,
+                pcn: data.id,
+            };
+            return me;
+
+        } catch (err) {
+            throw new BadRequestException('Incorrecte Oauth token verkregen...');
+        }
     }
 
     private encryptPassword(password: string): Promise<string> {

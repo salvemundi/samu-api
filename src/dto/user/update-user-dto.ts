@@ -8,7 +8,7 @@ export class UpdateUserDto {
 
     @ApiModelProperty({required: true})
     @IsNotEmpty()
-    public pcn: number;
+    public pcn: string;
 
     @ApiModelProperty({required: true, maxLength: 255})
     @IsNotEmpty()

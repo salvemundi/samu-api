@@ -8,10 +8,6 @@ export class RegisterDTO {
     firstName: string;
 
     @ApiModelProperty({required: true, maxLength: 255})
-    @MaxLength(255)
-    middleName: string;
-
-    @ApiModelProperty({required: true, maxLength: 255})
     @IsNotEmpty()
     @MaxLength(255)
     lastName: string;
@@ -51,7 +47,7 @@ export class RegisterDTO {
     phoneNumber: string;
 
     @ApiModelProperty({required: true})
-    pcn: number;
+    pcn: string;
 
     @ApiModelProperty({required: true, maxLength: 64})
     @IsNotEmpty()

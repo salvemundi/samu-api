@@ -1,5 +1,4 @@
 import { BaseEntity, PrimaryGeneratedColumn, Column, OneToOne, Entity, ManyToMany, JoinTable } from 'typeorm';
-import { Exclude } from 'class-transformer';
 import { Member } from './member.entity';
 import { Scope } from './scope.entity';
 
@@ -14,9 +13,6 @@ export class User extends BaseEntity {
 
     @Column()
     public firstName: string;
-
-    @Column({ nullable: true })
-    public middleName: string;
 
     @Column()
     public lastName: string;
@@ -46,7 +42,7 @@ export class User extends BaseEntity {
     public registeredSince: Date;
 
     @Column({ nullable: true })
-    public pcn: number;
+    public pcn: string;
 
     @OneToOne(type => Member)
     public member: Member;

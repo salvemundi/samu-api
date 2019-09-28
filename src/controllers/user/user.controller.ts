@@ -50,7 +50,6 @@ export class UserController {
 
         user.pcn = body.pcn;
         user.firstName = body.firstName;
-        user.middleName = body.middleName;
         user.lastName = body.lastName;
         user.birthday = body.birthday;
         user.address = body.address;

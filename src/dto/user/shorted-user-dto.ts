@@ -1,8 +1,7 @@
 export interface ShortedUserDto {
     id: number;
-    pcn: number;
+    pcn: string;
     firstName: string;
-    middleName: string;
     lastName: string;
     registeredSince: Date;
 }
