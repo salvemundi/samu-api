@@ -57,6 +57,12 @@ export class MockUserService implements IUserService {
         });
     }
 
+    delete(user: User): Promise<User> {
+        return new Promise<User>((resolve) => {
+            resolve(user);
+        });
+    }
+
     exists(email: string): Promise<boolean> {
         return new Promise<boolean>((resolve) => {
             resolve(email === randomUser.email);

@@ -2,8 +2,8 @@ import { Test } from '@nestjs/testing';
 import * as request from 'supertest';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { TestModule } from 'src/test.module';
-import { Commission } from 'src/entities/commission.entity';
-import randomCommission from 'src/services/commission/mock.commission.service';
+import { Committee } from 'src/entities/committee.entity';
+import randomCommission from 'src/services/committee/mock.committee.service';
 
 // TODO: Add test for authorization
 describe('Commission Controller', () => {
@@ -65,7 +65,7 @@ describe('Commission Controller', () => {
         .expect('Content-Type', 'application/json; charset=utf-8')
         .expect(200)
         .expect((response: request.Response) => {
-          response.body.commission = new Commission('ICT commissie', 'De ICT commissie is geweldig!', date, 2);
+          response.body.commission = new Committee('ICT commissie', 'De ICT commissie is geweldig!', date, 2);
         });
     });
 
@@ -95,7 +95,7 @@ describe('Commission Controller', () => {
         .expect('Content-Type', 'application/json; charset=utf-8')
         .expect(200)
         .expect((response: request.Response) => {
-          response.body.commission = new Commission('ICT commissie', 'De ICT commissie is geweldig!', date, 1);
+          response.body.commission = new Committee('ICT commissie', 'De ICT commissie is geweldig!', date, 1);
         });
     });
 

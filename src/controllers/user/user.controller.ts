@@ -1,4 +1,4 @@
-import { Controller, Get, Param, HttpCode, NotFoundException, Body, Put, Req, UnauthorizedException } from '@nestjs/common';
+import { Controller, Get, Param, HttpCode, NotFoundException, Body, Put, Req, UnauthorizedException, Delete } from '@nestjs/common';
 import { UserService } from '../../services/user/user.service';
 import { User } from '../../entities/user.entity';
 import { ApiResponse, ApiUseTags, ApiImplicitParam, ApiOperation } from '@nestjs/swagger';
@@ -21,7 +21,7 @@ export class UserController {
         title: 'me',
         description: 'This call is used to get the current user',
     })
-    @ApiResponse({ status: 200, description: 'Gebruiker gevonden', type: User })
+    @ApiResponse({ status: 200, description: 'Found you', type: User })
     @ApiResponse({ status: 500, description: 'Internal server error...' })
     async readMe(@Req() request: any) {
         if (!request.headers.cookie) {
@@ -58,14 +58,14 @@ export class UserController {
         title: 'getOne',
         description: 'This call is used to get a specific user',
     })
-    @ApiResponse({ status: 200, description: 'Gebruiker gevonden', type: User })
+    @ApiResponse({ status: 200, description: 'User found!', type: User })
     @ApiResponse({ status: 403, description: 'U do not have the permission to do this...' })
-    @ApiResponse({ status: 404, description: 'Geen gebruiker gevonden...' })
+    @ApiResponse({ status: 404, description: 'No user found...' })
     @ApiResponse({ status: 500, description: 'Internal server error...' })
     async readOne(@Param('id') id: number) {
         const user: User = await this.userService.readOne(+id);
         if (!user) {
-            throw new NotFoundException(`Geen gebruiker gevonden met id: ${id}`);
+            throw new NotFoundException(`No user found with id: ${id}`);
         }
 
         return user;
@@ -80,7 +80,7 @@ export class UserController {
     })
     @ApiImplicitParam({name: 'skip', required: false, type: Number })
     @ApiImplicitParam({name: 'take', required: false, type: Number })
-    @ApiResponse({ status: 200, description: 'Gebruikers gevonden binnen skip en take parameters', type: ShortedUserDto, isArray: true })
+    @ApiResponse({ status: 200, description: 'Users within the skip and take parameter', type: ShortedUserDto, isArray: true })
     @ApiResponse({ status: 403, description: 'U do not have the permission to do this...' })
     @ApiResponse({ status: 500, description: 'Internal server error...' })
     async readAll(@Param('skip') skip?: number, @Param('take') take?: number) {
@@ -95,15 +95,15 @@ export class UserController {
         title: 'update',
         description: 'This call is used to update a user',
     })
-    @ApiResponse({ status: 200, description: 'Gebruiker is geupdated', type: User })
+    @ApiResponse({ status: 200, description: 'User has been updated!', type: User })
     @ApiResponse({ status: 400, description: 'Validation error' })
     @ApiResponse({ status: 403, description: 'U do not have the permission to do this...' })
-    @ApiResponse({ status: 404, description: 'Geen gebruiker gevonden...' })
+    @ApiResponse({ status: 404, description: 'No user found...' })
     @ApiResponse({ status: 500, description: 'Internal server error...' })
     async update(@Body() body: UpdateUserDto) {
         const user = await this.userService.readOne(body.id);
         if (!user) {
-            throw new NotFoundException(`Geen gebruiker gevonden met id: ${body.id}`);
+            throw new NotFoundException(`No user found with id: ${body.id}`);
         }
 
         user.pcn = body.pcn;
@@ -120,4 +120,23 @@ export class UserController {
         return { User: await this.userService.update(user) };
     }
 
+    @Delete('/:id')
+    @Auth('user:delete')
+    @HttpCode(200)
+    @ApiOperation({
+        title: 'delete',
+        description: 'This call is used to delete a user',
+    })
+    @ApiResponse({ status: 200, description: 'User is deleted!' })
+    @ApiResponse({ status: 403, description: 'U do not have the permission to do this...' })
+    @ApiResponse({ status: 404, description: 'No user found...' })
+    @ApiResponse({ status: 500, description: 'Internal server error...' })
+    async delete(@Param('id') id: number) {
+        const user: User = await this.userService.readOne(+id);
+        if (!user) {
+            throw new NotFoundException(`No user found with id: ${id}`);
+        }
+
+        this.userService.delete(user);
+    }
 }

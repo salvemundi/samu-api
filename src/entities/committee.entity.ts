@@ -2,7 +2,7 @@ import { PrimaryGeneratedColumn, Column, BaseEntity, Entity } from 'typeorm';
 import { ApiModelProperty } from '@nestjs/swagger';
 
 @Entity()
-export class Commission extends BaseEntity {
+export class Committee extends BaseEntity {
     constructor(name: string, description: string, created: Date, id?: number) {
         super();
         this.id = id;

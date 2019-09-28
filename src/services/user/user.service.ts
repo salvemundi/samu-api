@@ -23,6 +23,10 @@ export class UserService implements IUserService {
         return user.save();
     }
 
+    async delete(user: User): Promise<User> {
+        return user.remove();
+    }
+
     async exists(email: string): Promise<boolean> {
         return (await User.count({where: { email }})) > 0;
     }

@@ -1,7 +1,7 @@
-import { Module, ClassSerializerInterceptor } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CommissionController } from './controllers/commission/commission.controller';
-import { CommissionService } from './services/commission/commission.service';
+import { CommitteeController } from './controllers/committee/committee.controller';
+import { CommitteeService } from './services/committee/committee.service';
 import { MemberController } from './controllers/member/member.controller';
 import { MemberService } from './services/member/member.service';
 import { UserService } from './services/user/user.service';
@@ -23,7 +23,7 @@ import { ScopeSeeder } from './seed/scope.seed';
     }),
   ],
   controllers: [
-    CommissionController,
+    CommitteeController,
     MemberController,
     UserController,
     AuthorizationController,
@@ -33,7 +33,7 @@ import { ScopeSeeder } from './seed/scope.seed';
       provide: APP_GUARD,
       useClass: DefaultGuard,
     },
-    CommissionService,
+    CommitteeService,
     MemberService,
     UserService,
     AuthorizationService,
