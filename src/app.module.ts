@@ -9,7 +9,7 @@ import { UserController } from './controllers/user/user.controller';
 import { AuthorizationController } from './controllers/authorization/authorization.controller';
 import { AuthorizationService } from './services/authorization/authorization.service';
 import * as ormconfig from './typeormConfig';
-import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_GUARD } from '@nestjs/core';
 import { DefaultGuard } from './guards/default.guard';
 import { JwtModule } from '@nestjs/jwt';
 import { ScopeSeeder } from './seed/scope.seed';
