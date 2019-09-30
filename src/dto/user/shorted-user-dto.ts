@@ -1,8 +1,18 @@
-export interface ShortedUserDto {
+import { ApiModelProperty } from '@nestjs/swagger';
+
+export class ShortedUserDto {
+    @ApiModelProperty()
     id: number;
-    pcn: number;
+
+    @ApiModelProperty()
+    pcn: string;
+
+    @ApiModelProperty()
     firstName: string;
-    middleName: string;
+
+    @ApiModelProperty()
     lastName: string;
+
+    @ApiModelProperty({type: String, format: 'date'})
     registeredSince: Date;
 }
