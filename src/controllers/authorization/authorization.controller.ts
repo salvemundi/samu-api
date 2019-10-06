@@ -1,4 +1,4 @@
-import { Controller, Post, Res, Body, UnauthorizedException, BadRequestException, HttpCode, Get, Query } from '@nestjs/common';
+import { Controller, Post, Res, Body, UnauthorizedException, BadRequestException, HttpCode, Get, Query, ConflictException } from '@nestjs/common';
 import { Response } from 'express';
 import { AuthorizationService } from '../../services/authorization/authorization.service';
 import { RegisterDTO } from '../../dto/authorization/RegisterDTO';
@@ -34,7 +34,7 @@ export class AuthorizationController {
             throw new UnauthorizedException('Email or password is incorrect...');
         }
 
-        res.cookie('auth', await this.authorizationService.genJWT(user.id, user.email), {secure: false});
+        res.cookie('auth', await this.authorizationService.genJWT(user.id, user.email));
         res.status(200).send({message: 'Ingelogd!'});
     }
 
@@ -45,11 +45,12 @@ export class AuthorizationController {
         description: 'This call is used to register a user. It will return an authorization cookie when succesful',
     })
     @ApiResponse({ status: 200, description: 'Geregisteerd!', type: User })
-    @ApiResponse({ status: 400, description: 'Er bestaat al een gebruiker met die email adres...' })
+    @ApiResponse({ status: 400, description: 'Validation error...'})
+    @ApiResponse({ status: 409, description: 'Er bestaat al een gebruiker met die email adres...' })
     @ApiResponse({ status: 500, description: 'Internal server error...' })
     async regiser(@Res() res: Response, @Body() body: RegisterDTO) {
         if (await this.userService.exists(body.email)) {
-            throw new BadRequestException('Er bestaat al een gebruiker met die email adres...');
+            throw new ConflictException('Er bestaat al een gebruiker met die email adres...');
         }
 
         const user = new User();
@@ -69,7 +70,7 @@ export class AuthorizationController {
         user.member = null;
 
         this.userService.create(user);
-        res.cookie('auth', await this.authorizationService.genJWT(user.id, user.email), {secure: false});
+        res.cookie('auth', await this.authorizationService.genJWT(user.id, user.email));
         res.status(200).send(user);
     }
 

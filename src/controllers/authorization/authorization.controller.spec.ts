@@ -62,7 +62,7 @@ describe('Authorization Controller', () => {
         postalcode: '5612MA',
         birthday: new Date(2017, 1, 1),
         phoneNumber: '+31 6 24827777',
-        pcn: null,
+        pcn: '',
       };
 
       return request(app.getHttpServer()).post('/authorization/register').send(registerDto)
@@ -84,11 +84,11 @@ describe('Authorization Controller', () => {
         postalcode: '5612MA',
         birthday: new Date(2017, 1, 1),
         phoneNumber: '+31 6 24827777',
-        pcn: null,
+        pcn: '',
       };
 
       return request(app.getHttpServer()).post('/authorization/register').send(registerDto)
-        .expect(400);
+        .expect(409);
     });
   });
 });

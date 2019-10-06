@@ -1,6 +1,12 @@
 {
   "defaultSeverity": "error",
   "extends": ["tslint:recommended"],
+  "linterOptions": {
+    "exclude": [
+      "node_modules/**",
+      "src/migrations/**"
+    ]
+  },
   "jsRules": {
     "no-unused-expression": true
   },
