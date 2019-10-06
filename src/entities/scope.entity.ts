@@ -23,6 +23,6 @@ export class Scope extends BaseEntity {
     @Column()
     public description: string;
 
-    @ManyToMany(x => User, user => user.scopes)
+    @ManyToMany(type => User, user => user.scopes)
     public users: User[];
 }

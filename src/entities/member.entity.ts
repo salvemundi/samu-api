@@ -19,8 +19,4 @@ export class Member extends BaseEntity {
     @ApiModelProperty()
     @OneToMany(type => Membership, membership => membership.member)
     public memberships: Membership[];
-
-    @ApiModelProperty()
-    @OneToOne(type => User)
-    public user: User;
 }

@@ -1,4 +1,4 @@
-import { BaseEntity, PrimaryGeneratedColumn, Column, OneToOne, Entity, ManyToMany, JoinTable } from 'typeorm';
+import { BaseEntity, PrimaryGeneratedColumn, Column, OneToOne, Entity, ManyToMany, JoinTable, JoinColumn } from 'typeorm';
 import { Member } from './member.entity';
 import { Scope } from './scope.entity';
 import { ApiModelProperty } from '@nestjs/swagger';
@@ -59,10 +59,11 @@ export class User extends BaseEntity {
 
     @ApiModelProperty()
     @OneToOne(type => Member)
+    @JoinColumn()
     public member: Member;
 
     @ApiModelProperty({type: Scope, isArray: true})
-    @ManyToMany(x => Scope, scope => scope.users)
+    @ManyToMany(type => Scope, scope => scope.users)
     @JoinTable()
     public scopes: Scope[];
 
