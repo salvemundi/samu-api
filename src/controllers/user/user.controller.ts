@@ -5,7 +5,7 @@ import { ApiResponse, ApiUseTags, ApiImplicitParam, ApiOperation } from '@nestjs
 import { UpdateUserDto } from '../../dto/user/update-user-dto';
 import { Auth } from '../../decorators/auth.decorator';
 import { AuthorizationService } from '../../services/authorization/authorization.service';
-import { ShortedUserDto } from '../../dto/user/shorted-user-dto';
+import { SummaryUserDto } from '../../dto/user/summary-user-dto';
 
 @ApiUseTags('User')
 @Controller('user')
@@ -80,12 +80,30 @@ export class UserController {
     })
     @ApiImplicitParam({name: 'skip', required: false, type: Number })
     @ApiImplicitParam({name: 'take', required: false, type: Number })
-    @ApiResponse({ status: 200, description: 'Users within the skip and take parameter', type: ShortedUserDto, isArray: true })
+    @ApiResponse({ status: 200, description: 'Users within the skip and take parameter', type: SummaryUserDto, isArray: true })
     @ApiResponse({ status: 403, description: 'U do not have the permission to do this...' })
     @ApiResponse({ status: 500, description: 'Internal server error...' })
     async readAll(@Param('skip') skip?: number, @Param('take') take?: number) {
         const users: User[] = await this.userService.readAll(skip, take);
-        return { users: users as ShortedUserDto[] };
+        const summaries: SummaryUserDto[] = [];
+
+        users.forEach(user => {
+            let memberTill = new Date();
+            user.member.memberships.forEach(membership => {
+                if (memberTill < membership.endDate) {
+                    memberTill = membership.endDate;
+                }
+            });
+
+            summaries.push({
+                id: user.id,
+                pcn: user.pcn,
+                name: user.firstName + ' ' + user.lastName,
+                memberTill,
+            });
+        });
+
+        return summaries;
     }
 
     @Put()

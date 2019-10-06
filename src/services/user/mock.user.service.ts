@@ -1,6 +1,8 @@
 import { User } from '../../entities/user.entity';
 import { IUserService } from './iuser.service';
 import { Scope } from 'src/entities/scope.entity';
+import { Member } from 'src/entities/member.entity';
+import { Membership } from 'src/entities/membership.entity';
 
 const randomUser: User = new User();
 randomUser.id = 1;
@@ -16,13 +18,13 @@ randomUser.phoneNumber = '+31 6 12346789';
 randomUser.email = 'admin@gmail.com';
 randomUser.password = 'admin';
 randomUser.registeredSince = new Date();
-randomUser.member = null;
+randomUser.member = new Member (1, [new Membership(new Date(2019, 1, 1), new Date(2019, 12, 31), 1)]);
 randomUser.scopes = [
-    new Scope('user:read', 1),
-    new Scope('user:write', 2),
-    new Scope('user:delete', 3),
-    new Scope('commission:write', 4),
-    new Scope('commission:delete', 5),
+    new Scope('user:read', 'Lid bekijken', 1),
+    new Scope('user:write', 'Lid bewerken', 2),
+    new Scope('user:delete', 'Lid verwijderen', 3),
+    new Scope('committee:write', 'Commissies bewerken', 4),
+    new Scope('committee:delete', 'Commissies verwijderen', 5),
 ];
 
 export default randomUser;

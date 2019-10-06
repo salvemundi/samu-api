@@ -1,6 +1,6 @@
 import { ApiModelProperty } from '@nestjs/swagger';
 
-export class ShortedUserDto {
+export class SummaryUserDto {
     @ApiModelProperty()
     id: number;
 
@@ -8,11 +8,8 @@ export class ShortedUserDto {
     pcn: string;
 
     @ApiModelProperty()
-    firstName: string;
-
-    @ApiModelProperty()
-    lastName: string;
+    name: string;
 
     @ApiModelProperty({type: String, format: 'date'})
-    registeredSince: Date;
+    memberTill: Date;
 }

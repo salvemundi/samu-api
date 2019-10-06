@@ -1,5 +1,5 @@
 import { ApiModelProperty } from '@nestjs/swagger';
-import { MaxLength, IsNotEmpty } from 'class-validator';
+import { MaxLength, IsNotEmpty, IsEmail } from 'class-validator';
 
 export class RegisterDTO {
     @ApiModelProperty({required: true, maxLength: 255})
@@ -36,9 +36,9 @@ export class RegisterDTO {
     @MaxLength(64)
     country: string;
 
-    @ApiModelProperty({required: true, maxLength: 255})
+    @ApiModelProperty({required: true, type: String, format: 'email'})
     @IsNotEmpty()
-    @MaxLength(255)
+    @IsEmail()
     email: string;
 
     @ApiModelProperty({required: true, maxLength: 14})

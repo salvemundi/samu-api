@@ -3,7 +3,7 @@ import * as request from 'supertest';
 import { TestModule } from 'src/test.module';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { User } from 'src/entities/user.entity';
-import { ShortedUserDto } from 'src/dto/user/shorted-user-dto';
+import { SummaryUserDto } from 'src/dto/user/summary-user-dto';
 import { UpdateUserDto } from 'src/dto/user/update-user-dto';
 import randomUser from 'src/services/user/mock.user.service';
 
@@ -73,13 +73,22 @@ describe('Users Controller', () => {
 
     describe('/user/ - Get all request', () => {
         it('Correct call - Should return 200 and the users', () => {
+            const expectedSummary: SummaryUserDto[] = [
+                {
+                    id: randomUser.id,
+                    pcn: randomUser.pcn,
+                    name: randomUser.firstName + ' ' + randomUser.lastName,
+                    memberTill: new Date(2019, 12, 31),
+                },
+            ];
+
             return request(app.getHttpServer()).get('/user/')
                 .set('Cookie', ['auth=awesomeJWT; path=/; domain=localhost;'])
                 .send()
                 .expect('Content-Type', 'application/json; charset=utf-8')
                 .expect(200)
                 .expect((response: request.Response) => {
-                    response.body.users = [randomUser] as ShortedUserDto[];
+                    response.body.users = expectedSummary;
                 });
         });
 

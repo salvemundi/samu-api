@@ -4,10 +4,11 @@ import { ApiModelProperty } from '@nestjs/swagger';
 
 @Entity()
 export class Scope extends BaseEntity {
-    constructor(name: string, id?: number) {
+    constructor(name: string, description: string, id?: number) {
         super();
         this.id = id;
         this.name = name;
+        this.description = description;
     }
 
     @ApiModelProperty()
@@ -17,6 +18,10 @@ export class Scope extends BaseEntity {
     @ApiModelProperty()
     @Column()
     public name: string;
+
+    @ApiModelProperty()
+    @Column()
+    public description: string;
 
     @ManyToMany(x => User, user => user.scopes)
     public users: User[];

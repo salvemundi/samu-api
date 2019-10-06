@@ -5,6 +5,13 @@ import { ApiModelProperty } from '@nestjs/swagger';
 @Entity()
 export class Membership extends BaseEntity {
 
+    constructor(start: Date, end: Date, id?: number) {
+        super();
+        this.startDate = start;
+        this.endDate = end;
+        this.id = id;
+    }
+
     @ApiModelProperty()
     @PrimaryGeneratedColumn()
     public id: number;

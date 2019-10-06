@@ -3,12 +3,13 @@ import { User } from '../../entities/user.entity';
 
 export class UserService implements IUserService {
     readAll(skip: number, take: number): Promise<User[]> {
-        return User.find({ skip, take });
+        return User.find({ skip, take, relations: ['member', 'member.memberships'] });
     }
 
     readOne(user: number, email?: string): Promise<User> {
         const whereQuery = { id: user };
         if (email) {
+            // tslint:disable-next-line: no-string-literal
             whereQuery['email'] = email;
         }
 

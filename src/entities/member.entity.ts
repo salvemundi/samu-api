@@ -6,6 +6,12 @@ import { ApiModelProperty } from '@nestjs/swagger';
 @Entity()
 export class Member extends BaseEntity {
 
+    constructor(id?: number, memberships?: Membership[]) {
+        super();
+        this.id = id;
+        this.memberships = memberships;
+    }
+
     @ApiModelProperty()
     @PrimaryGeneratedColumn()
     public id: number;
@@ -17,9 +23,4 @@ export class Member extends BaseEntity {
     @ApiModelProperty()
     @OneToOne(type => User)
     public user: User;
-
-    @ApiModelProperty({type: String, format: 'date'})
-    @Column()
-    public memberSince: Date;
-
 }
