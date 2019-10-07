@@ -88,7 +88,7 @@ export class UserController {
         const summaries: SummaryUserDto[] = [];
 
         users.forEach(user => {
-            let memberTill = new Date();
+            let memberTill = new Date(0);
             user.member.memberships.forEach(membership => {
                 if (memberTill < membership.endDate) {
                     memberTill = membership.endDate;
