@@ -37,4 +37,10 @@ export class MemberService implements IMemberService {
         membership.member = user.member;
         membership.save();
     }
+
+    async removeMembership(user: User) {
+        const memberships: Membership[] = user.member.memberships;
+        const activeMembership = memberships.find(x => x.startDate >= new Date() && x.endDate <= new Date());
+        await activeMembership.remove();
+    }
 }

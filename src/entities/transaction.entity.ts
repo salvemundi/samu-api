@@ -1,4 +1,4 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, OneToOne, Column } from 'typeorm';
+import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { User } from './user.entity';
 import { PaymentStatus } from '../controllers/payment/paymentstatus.enum';
 
@@ -8,14 +8,14 @@ export class Transaction extends BaseEntity {
     @PrimaryGeneratedColumn()
     public id: number;
 
-    @OneToOne(type => User)
+    @ManyToOne(type => User, user => user.transactions)
     public user: User;
 
     @Column()
     public status: PaymentStatus;
 
     @Column()
-    public amount: string;
+    public price: number;
 
     @Column()
     public description: string;

@@ -1,7 +1,4 @@
 export default interface IPurchasable {
-    getPrice(): number;
-
-    getDescription(): string;
-
-    getProduct(): any;
+    price: number;
+    description: string;
 }

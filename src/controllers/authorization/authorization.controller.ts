@@ -69,7 +69,7 @@ export class AuthorizationController {
         user.scopes = [];
         user.member = null;
 
-        this.userService.create(user);
+        await this.userService.create(user);
         res.cookie('auth', await this.authorizationService.genJWT(user.id, user.email));
         res.status(200).send(user);
     }

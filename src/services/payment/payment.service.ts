@@ -3,6 +3,7 @@ import createMollieClient, { MollieClient, Payment } from '@mollie/api-client';
 import { User } from '../../entities/user.entity';
 import { Transaction } from '../../entities/transaction.entity';
 import IPurchasable from '../../entities/interface/purchasable.interface';
+import { PaymentStatus } from '../../controllers/payment/paymentstatus.enum';
 
 @Injectable()
 export class PaymentService {
@@ -13,29 +14,46 @@ export class PaymentService {
     }
 
     async createPayment(user: User, product: IPurchasable): Promise<Payment> {
-        let transaction: Transaction = new Transaction();
-        transaction.amount = product.getPrice().toString();
-        transaction.description = product.getDescription();
+        const transaction: Transaction = new Transaction();
+        transaction.price = product.price;
+        transaction.description = product.description + user.firstName + ' ' + user.lastName;
         transaction.user = user;
-        transaction = await transaction.save();
+        await transaction.save();
 
         const payment: Payment = await this.mollieClient.payments.create({
             amount: {
-                value: product.getPrice().toString(),
-                currency: 'EUR'
-            }, description: product.getDescription(),
-            metadata: [{
-                transaction_id: transaction.id
-            }]
+                value: product.price.toFixed(2),
+                currency: 'EUR',
+            },
+            description: product.description,
+            metadata: [
+                { transaction_id: transaction.id },
+            ],
+            redirectUrl: process.env.MOLLIE_REDIRECT_URL,
+            webhookUrl: process.env.MOLLIE_WEBHOOK_URL + '/webhook/membership',
         });
 
         transaction.status = payment.status;
-        transaction.save();
+        await transaction.save();
 
         return payment;
     }
 
-    async get(payment_id: string): Promise<Payment> {
-        return await this.mollieClient.payments.get(payment_id);
+    async transactionPaid(transaction: Transaction) {
+        transaction.status = PaymentStatus.PAID;
+        await transaction.save();
+    }
+
+    async transactionRefunded(transaction: Transaction) {
+        transaction.status = PaymentStatus.CANCELED;
+        await transaction.save();
+    }
+
+    async getMolliePayment(paymentId: string): Promise<Payment> {
+        return this.mollieClient.payments.get(paymentId);
+    }
+
+    async getTransaction(id: number) {
+        return Transaction.findOne({where: {id}});
     }
 }
