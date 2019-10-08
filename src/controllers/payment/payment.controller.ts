@@ -1,13 +1,13 @@
-import { Controller, Post, Body } from "@nestjs/common";
-import { PaymentService } from "src/services/payment/payment.service";
+import { Controller, Post, Body } from '@nestjs/common';
+import { PaymentService } from '../../services/payment/payment.service';
 
-@Controller("/payments")
+@Controller('/payments')
 export class PaymentController {
     constructor(readonly paymentService: PaymentService) {
 
     }
 
-    @Post("/webhook")
+    @Post('/webhook')
     webhook(@Body() body: any): void {
 
     }

@@ -1,8 +1,8 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, OneToOne, Column } from "typeorm";
-import { User } from "./user.entity";
-import { PaymentStatus } from "src/controllers/payment/paymentstatus.enum";
+import { BaseEntity, Entity, PrimaryGeneratedColumn, OneToOne, Column } from 'typeorm';
+import { User } from './user.entity';
+import { PaymentStatus } from '../controllers/payment/paymentstatus.enum';
 
-@Entity("transaction")
+@Entity('transaction')
 export class Transaction extends BaseEntity {
 
     @PrimaryGeneratedColumn()
@@ -20,6 +20,6 @@ export class Transaction extends BaseEntity {
     @Column()
     public description: string;
 
-    @Column()
-    public transaction_id: number;
+    @Column({name: 'transaction_id'})
+    public transactionId: number;
 }

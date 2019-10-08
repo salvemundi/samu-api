@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { IMemberService } from './imember.service';
 import { Member } from '../../entities/member.entity';
-import { User } from 'src/entities/user.entity';
-import { Membership } from 'src/entities/membership.entity';
+import { User } from '../../entities/user.entity';
+import { Membership } from '../../entities/membership.entity';
 
 @Injectable()
 export class MemberService implements IMemberService {
@@ -29,15 +29,11 @@ export class MemberService implements IMemberService {
         }
 
         if (user.member == null) {
-            const member: Member = new Member();
-            member.user = user;
-            member.memberSince = new Date();
-            await member.save();
+            user.member = new Member();
+            await user.save();
         }
 
-        const membership: Membership = new Membership();
-        membership.startDate = startDate;
-        membership.endDate = endDate;
+        const membership: Membership = new Membership(startDate, endDate);
         membership.member = user.member;
         membership.save();
     }

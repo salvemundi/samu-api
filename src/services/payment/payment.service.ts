@@ -1,13 +1,11 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable } from '@nestjs/common';
 import createMollieClient, { MollieClient, Payment } from '@mollie/api-client';
-import { User } from "src/entities/user.entity";
-import { Transaction } from "src/entities/transaction.entity";
-import IPurchasable from "src/entities/interface/purchasable.interface";
+import { User } from '../../entities/user.entity';
+import { Transaction } from '../../entities/transaction.entity';
+import IPurchasable from '../../entities/interface/purchasable.interface';
 
 @Injectable()
 export class PaymentService {
-
-
     private readonly mollieClient: MollieClient;
 
     constructor() {
