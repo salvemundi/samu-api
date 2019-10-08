@@ -12,7 +12,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
   app.use(cookieParser());
   app.enableCors({
-    origin: ['http://localhost:8080', 'https://localhost:8080', 'https://salvemundi.nl', 'http://salvemundi.nl'],
+    //origin: ['http://localhost:8080', 'https://localhost:8080', 'https://salvemundi.nl', 'http://salvemundi.nl'],
     credentials: true,
   });
 
