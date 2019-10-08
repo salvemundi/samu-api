@@ -26,5 +26,4 @@ export class Membership extends BaseEntity {
 
     @ManyToOne(type => Member, member => member.memberships)
     public member: Member;
-
 }

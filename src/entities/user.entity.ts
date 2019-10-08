@@ -57,7 +57,7 @@ export class User extends BaseEntity {
     @Column({ nullable: true })
     public pcn: string;
 
-    @ApiModelProperty()
+    @ApiModelProperty({type: Member})
     @OneToOne(type => Member)
     @JoinColumn()
     public member: Member;
