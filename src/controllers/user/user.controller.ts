@@ -89,16 +89,19 @@ export class UserController {
 
         users.forEach(user => {
             let memberTill = new Date(0);
-            user.member.memberships.forEach(membership => {
-                if (memberTill < membership.endDate) {
-                    memberTill = membership.endDate;
-                }
-            });
+            if (user.member) {
+                user.member.memberships.forEach(membership => {
+                    if (memberTill < membership.endDate) {
+                        memberTill = membership.endDate;
+                    }
+                });
+            }
 
             summaries.push({
                 id: user.id,
                 pcn: user.pcn,
-                name: user.firstName + ' ' + user.lastName,
+                firstName: user.firstName,
+                lastName: user.lastName,
                 memberTill,
             });
         });

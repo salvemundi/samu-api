@@ -8,7 +8,10 @@ export class SummaryUserDto {
     pcn: string;
 
     @ApiModelProperty()
-    name: string;
+    firstName: string;
+
+    @ApiModelProperty()
+    lastName: string;
 
     @ApiModelProperty({type: String, format: 'date'})
     memberTill: Date;

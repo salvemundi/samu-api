@@ -13,7 +13,7 @@ export class UserService implements IUserService {
             whereQuery['email'] = email;
         }
 
-        return User.findOne({ where: whereQuery, relations: ['scopes'] });
+        return User.findOne({ where: whereQuery, relations: ['scopes', 'member', 'member.memberships'] });
     }
 
     async create(user: User): Promise<User> {
