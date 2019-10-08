@@ -8,7 +8,7 @@ export class UpdateUserDto {
 
     @ApiModelProperty({required: true})
     @IsNotEmpty()
-    public pcn: number;
+    public pcn: string;
 
     @ApiModelProperty({required: true, maxLength: 255})
     @IsNotEmpty()
@@ -21,7 +21,7 @@ export class UpdateUserDto {
     @IsNotEmpty()
     public lastName: string;
 
-    @ApiModelProperty({required: true})
+    @ApiModelProperty({required: true, type: String, format: 'date'})
     @IsNotEmpty()
     public birthday: Date;
 
