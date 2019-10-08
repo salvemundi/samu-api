@@ -15,7 +15,7 @@ const config: ConnectionOptions = {
     database: process.env.DB_NAME,
     synchronize: false,
     migrationsRun: true,
-    logging: true,
+    logging: false,
     cli: {
         migrationsDir: 'src/migrations',
         entitiesDir: 'src/entities',

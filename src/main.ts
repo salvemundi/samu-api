@@ -16,13 +16,6 @@ async function bootstrap() {
     credentials: true,
   });
 
-  app.use(async (ctx, next, par2) => {
-    const start = Date.now();
-    await par2();
-    const ms = Date.now() - start;
-    console.log(`${ctx.method} ${ctx.url} - ${ms}ms`);
-  });
-
   const scopeSeeder = app.get(ScopeSeeder);
   await scopeSeeder.seed();
 
