@@ -11,7 +11,7 @@ import axios from 'axios';
 import { MeDTO } from '../../dto/authorization/MeDTO';
 
 @ApiUseTags('Authorization')
-@Controller('authorization')
+@Controller('/authorization')
 export class AuthorizationController {
 
     constructor(
