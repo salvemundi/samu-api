@@ -16,9 +16,9 @@ async function bootstrap() {
     credentials: true,
   });
 
-  app.use(async (ctx, next) => {
+  app.use(async (ctx, next, par2) => {
     const start = Date.now();
-    await next();
+    await par2();
     const ms = Date.now() - start;
     console.log(`${ctx.method} ${ctx.url} - ${ms}ms`);
   });
