@@ -15,6 +15,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { ScopeSeeder } from './seed/scope.seed';
 import { PaymentController } from './controllers/payment/payment.controller';
 import { PaymentService } from './services/payment/payment.service';
+import { EmailService } from './services/email/email.service';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { PaymentService } from './services/payment/payment.service';
     AuthorizationService,
     PaymentService,
     ScopeSeeder,
+    EmailService,
   ],
 })
 export class AppModule {}
