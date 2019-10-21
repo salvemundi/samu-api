@@ -10,8 +10,4 @@ export class CreateCommissionDto {
   @ApiModelProperty({required: true})
   @IsNotEmpty()
   description: string;
-
-  @ApiModelProperty({required: true})
-  @IsNotEmpty()
-  created: Date;
 }

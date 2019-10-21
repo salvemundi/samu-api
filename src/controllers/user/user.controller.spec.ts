@@ -3,61 +3,18 @@ import * as request from 'supertest';
 import { TestModule } from 'src/test.module';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { User } from 'src/entities/user.entity';
-import { IUserService } from 'src/services/user/iuser.service';
-import { ShortedUserDto } from 'src/dto/user/shorted-user-dto';
-import { CreateUserDto } from 'src/dto/user/create-user-dto';
-import { UserService } from 'src/services/user/user.service';
+import { SummaryUserDto } from 'src/dto/user/summary-user-dto';
 import { UpdateUserDto } from 'src/dto/user/update-user-dto';
+import randomUser from 'src/services/user/mock.user.service';
 
 describe('Users Controller', () => {
     let app: INestApplication;
-
-    // Mock entity
-    const randomUser: User = new User();
-    randomUser.id = 1;
-    randomUser.pcn = 123456;
-    randomUser.firstName = 'Random';
-    randomUser.middleName = null;
-    randomUser.lastName = 'User';
-    randomUser.birthday = new Date(1990, 1, 1);
-    randomUser.address = 'Rachelsmolen 1';
-    randomUser.postalcode = '5612 MA';
-    randomUser.city = 'Eindhoven';
-    randomUser.country = 'Nederland';
-    randomUser.phoneNumber = '+31 6 12346789';
-    randomUser.email = 'no-reply@salvemundi.nl';
-    randomUser.registeredSince = new Date();
-    randomUser.member = null;
-
-    // Mock service
-    const userService: IUserService = {
-        readOne: (id: number) => new Promise<User>((resolve) => {
-            if (id === 1) {
-                resolve(randomUser);
-
-            } else {
-                resolve(undefined);
-            }
-        }),
-        readAll: (skip: number, take: number) => new Promise<User[]>((resolve) => {
-            resolve([randomUser]);
-        }),
-        update: (user: User) => new Promise<User>((resolve) => {
-            resolve(user);
-        }),
-        create: (user: User) => new Promise<User>((resolve) => {
-            user.id = 2;
-            resolve(user);
-        }),
-    };
 
     beforeAll(async () => {
         const module = await Test.createTestingModule({
             imports: [TestModule],
         })
-            .overrideProvider(UserService)
-            .useValue(userService)
-            .compile();
+        .compile();
 
         app = module.createNestApplication();
         app.useGlobalPipes(new ValidationPipe());
@@ -72,6 +29,8 @@ describe('Users Controller', () => {
     describe('/user/:id - Get one request', () => {
         it('Correct call - Should return 200 and a user', () => {
             return request(app.getHttpServer()).get('/user/1')
+                .set('Cookie', ['auth=awesomeJWT; path=/; domain=localhost;'])
+                .send()
                 .expect('Content-Type', 'application/json; charset=utf-8')
                 .expect(200)
                 .expect((response: request.Response) => {
@@ -81,63 +40,62 @@ describe('Users Controller', () => {
 
         it('Wrong id - Should return 404', () => {
             return request(app.getHttpServer()).get('/user/2')
+                .set('Cookie', ['auth=awesomeJWT; path=/; domain=localhost;'])
+                .send()
                 .expect(404);
+        });
+
+        it('No auth cookie - Should return 401', () => {
+            return request(app.getHttpServer()).get('/user/1')
+                .send()
+                .expect(401);
+        });
+    });
+
+    describe('/user/me - Get me request', () => {
+        it('Correct call - Should return 200 and a user', () => {
+            return request(app.getHttpServer()).get('/user/me')
+                .set('Cookie', ['auth=awesomeJWT; path=/; domain=localhost;'])
+                .send()
+                .expect('Content-Type', 'application/json; charset=utf-8')
+                .expect(200)
+                .expect((response: request.Response) => {
+                    response.body.user = randomUser;
+                });
+        });
+
+        it('No auth cookie - Should return 401', () => {
+            return request(app.getHttpServer()).get('/user/1')
+                .send()
+                .expect(401);
         });
     });
 
     describe('/user/ - Get all request', () => {
         it('Correct call - Should return 200 and the users', () => {
+            const expectedSummary: SummaryUserDto[] = [
+                {
+                    id: randomUser.id,
+                    pcn: randomUser.pcn,
+                    name: randomUser.firstName + ' ' + randomUser.lastName,
+                    memberTill: new Date(2019, 12, 31),
+                },
+            ];
+
             return request(app.getHttpServer()).get('/user/')
+                .set('Cookie', ['auth=awesomeJWT; path=/; domain=localhost;'])
+                .send()
                 .expect('Content-Type', 'application/json; charset=utf-8')
                 .expect(200)
                 .expect((response: request.Response) => {
-                    response.body.users = [randomUser] as ShortedUserDto[];
-                });
-        });
-    });
-
-    describe('/user/ - Post request', () => {
-        it('Correct call - Should return 200 and the users', () => {
-            const userDto = new CreateUserDto();
-            userDto.pcn = 123456;
-            userDto.firstName = 'Salve';
-            userDto.middleName = null;
-            userDto.lastName = 'Mundi';
-            userDto.birthday = new Date(1970, 1, 1);
-            userDto.address = 'Rachelsmolen 1';
-            userDto.postalcode = '5612MA';
-            userDto.city = 'Eindhoven';
-            userDto.country = 'Nederland';
-            userDto.phoneNumber = '+31 6 12346789';
-            userDto.email = 'no-reply@salvemundi.nl';
-
-            const expectedUser = userDto as User;
-            expectedUser.id = 2;
-            expectedUser.member = null;
-
-            return request(app.getHttpServer()).post('/user/').send(userDto)
-                .expect('Content-Type', 'application/json; charset=utf-8')
-                .expect(200)
-                .expect((response: request.Response) => {
-                    response.body.user = expectedUser;
+                    response.body.users = expectedSummary;
                 });
         });
 
-        it('Missing info in body - Should return 400', () => {
-            const userDto = new CreateUserDto();
-            userDto.pcn = 123456;
-            userDto.firstName = 'Salve';
-            userDto.middleName = null;
-            userDto.lastName = 'Mundi';
-            userDto.birthday = new Date(1970, 1, 1);
-            userDto.address = 'Rachelsmolen 1';
-            userDto.postalcode = '5612MA';
-            userDto.city = 'Eindhoven';
-            userDto.country = 'Nederland';
-            userDto.phoneNumber = '+31 6 12346789';
-
-            return request(app.getHttpServer()).post('/user/').send(userDto)
-                .expect(400);
+        it('No auth cookie - Should return 401', () => {
+            return request(app.getHttpServer()).get('/user/')
+                .send()
+                .expect(401);
         });
     });
 
@@ -145,7 +103,7 @@ describe('Users Controller', () => {
         it('Correct call - Should return 200 and the users', () => {
             const userDto = new UpdateUserDto();
             userDto.id = 1;
-            userDto.pcn = 123456;
+            userDto.pcn = 'i123456';
             userDto.firstName = 'Salve';
             userDto.middleName = null;
             userDto.lastName = 'Mundi';
@@ -157,10 +115,11 @@ describe('Users Controller', () => {
             userDto.phoneNumber = '+31 6 12346789';
             userDto.email = 'no-reply@salvemundi.nl';
 
-            const expectedUser = userDto as User;
+            const expectedUser = userDto as unknown as User;
             expectedUser.member = null;
 
             return request(app.getHttpServer()).put('/user/').send(userDto)
+                .set('Cookie', ['auth=awesomeJWT; path=/; domain=localhost;'])
                 .expect('Content-Type', 'application/json; charset=utf-8')
                 .expect(200)
                 .expect((response: request.Response) => {
@@ -171,7 +130,7 @@ describe('Users Controller', () => {
         it('Missing info in body - Should return 400', () => {
             const userDto = new UpdateUserDto();
             userDto.id = 1;
-            userDto.pcn = 123456;
+            userDto.pcn = 'i123456';
             userDto.firstName = 'Salve';
             userDto.middleName = null;
             userDto.lastName = 'Mundi';
@@ -183,13 +142,14 @@ describe('Users Controller', () => {
             userDto.phoneNumber = '+31 6 12346789';
 
             return request(app.getHttpServer()).put('/user/').send(userDto)
+                .set('Cookie', ['auth=awesomeJWT; path=/; domain=localhost;'])
                 .expect(400);
         });
 
         it('Wrong id - Should return 404', () => {
             const userDto = new UpdateUserDto();
             userDto.id = 3;
-            userDto.pcn = 123456;
+            userDto.pcn = 'i123456';
             userDto.firstName = 'Salve';
             userDto.middleName = null;
             userDto.lastName = 'Mundi';
@@ -202,7 +162,28 @@ describe('Users Controller', () => {
             userDto.email = 'no-reply@salvemundi.nl';
 
             return request(app.getHttpServer()).put('/user/').send(userDto)
+                .set('Cookie', ['auth=awesomeJWT; path=/; domain=localhost;'])
                 .expect(404);
+        });
+
+        it('No auth cookie - Should return 401', () => {
+            const userDto = new UpdateUserDto();
+            userDto.id = 1;
+            userDto.pcn = 'i123456';
+            userDto.firstName = 'Salve';
+            userDto.middleName = null;
+            userDto.lastName = 'Mundi';
+            userDto.birthday = new Date(1970, 1, 1);
+            userDto.address = 'Rachelsmolen 1';
+            userDto.postalcode = '5612MA';
+            userDto.city = 'Eindhoven';
+            userDto.country = 'Nederland';
+            userDto.phoneNumber = '+31 6 12346789';
+            userDto.email = 'no-reply@salvemundi.nl';
+
+            return request(app.getHttpServer()).put('/user/')
+                .send()
+                .expect(401);
         });
     });
 });
