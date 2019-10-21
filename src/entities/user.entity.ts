@@ -1,6 +1,7 @@
-import { BaseEntity, PrimaryGeneratedColumn, Column, OneToOne, Entity, ManyToMany, JoinTable, JoinColumn } from 'typeorm';
+import { BaseEntity, PrimaryGeneratedColumn, Column, OneToOne, Entity, ManyToMany, JoinTable, JoinColumn, OneToMany } from 'typeorm';
 import { Member } from './member.entity';
 import { Scope } from './scope.entity';
+import { Transaction } from '../entities/transaction.entity';
 import { ApiModelProperty } from '@nestjs/swagger';
 
 @Entity()
@@ -67,4 +68,6 @@ export class User extends BaseEntity {
     @JoinTable()
     public scopes: Scope[];
 
+    @OneToMany(type => Transaction, transaction => transaction.user)
+    public transactions: Transaction[];
 }

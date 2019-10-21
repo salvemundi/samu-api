@@ -11,7 +11,7 @@ import axios from 'axios';
 import { MeDTO } from '../../dto/authorization/MeDTO';
 
 @ApiUseTags('Authorization')
-@Controller('authorization')
+@Controller('/authorization')
 export class AuthorizationController {
 
     constructor(
@@ -28,7 +28,7 @@ export class AuthorizationController {
     @ApiResponse({ status: 200, description: 'Logged in!' })
     @ApiResponse({ status: 401, description: 'Email or password is incorrect...' })
     @ApiResponse({ status: 500, description: 'Internal server error...' })
-    async login(@Res() res: Response, @Body() body: LoginDTO) {
+    async login(@Res() res: any, @Body() body: LoginDTO) {
         const user: User = await this.authorizationService.validateUser(body.email, body.password);
         if (user === null) {
             throw new UnauthorizedException('Email or password is incorrect...');
@@ -69,7 +69,7 @@ export class AuthorizationController {
         user.scopes = [];
         user.member = null;
 
-        this.userService.create(user);
+        await this.userService.create(user);
         res.cookie('auth', await this.authorizationService.genJWT(user.id, user.email));
         res.status(200).send(user);
     }

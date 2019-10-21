@@ -3,7 +3,6 @@ import { JwtService } from '@nestjs/jwt';
 import { User } from '../../entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { IAuthorizationService } from './iAuthorization.service';
-import { getConnection } from 'typeorm';
 
 @Injectable()
 export class AuthorizationService implements IAuthorizationService {

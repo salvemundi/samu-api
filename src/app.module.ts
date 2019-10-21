@@ -13,6 +13,8 @@ import { APP_GUARD } from '@nestjs/core';
 import { DefaultGuard } from './guards/default.guard';
 import { JwtModule } from '@nestjs/jwt';
 import { ScopeSeeder } from './seed/scope.seed';
+import { PaymentController } from './controllers/payment/payment.controller';
+import { PaymentService } from './services/payment/payment.service';
 
 @Module({
   imports: [
@@ -27,6 +29,7 @@ import { ScopeSeeder } from './seed/scope.seed';
     MemberController,
     UserController,
     AuthorizationController,
+    PaymentController,
   ],
   providers: [
     {
@@ -37,6 +40,7 @@ import { ScopeSeeder } from './seed/scope.seed';
     MemberService,
     UserService,
     AuthorizationService,
+    PaymentService,
     ScopeSeeder,
   ],
 })
