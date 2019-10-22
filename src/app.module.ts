@@ -17,6 +17,7 @@ import { PaymentService } from './services/payment/payment.service';
 import { EmailService } from './services/email/email.service';
 import { typeormconfig } from './typeormConfig';
 import { WebhookController } from './controllers/payment/webhook.controller';
+import { ConfirmationService } from './services/confirmation/confirmation.service';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { WebhookController } from './controllers/payment/webhook.controller';
     PaymentService,
     ScopeSeeder,
     EmailService,
+    ConfirmationService
   ],
 })
 export class AppModule {}

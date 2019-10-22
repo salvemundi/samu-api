@@ -65,6 +65,7 @@ export class AuthorizationController {
         user.phoneNumber = body.phoneNumber;
         user.postalcode = body.postalcode;
         user.registeredSince = new Date();
+        user.activated = false;
         user.pcn = body.pcn;
         user.scopes = [];
         user.member = null;
@@ -97,6 +98,11 @@ export class AuthorizationController {
         } catch (err) {
             throw new BadRequestException('Incorrecte Oauth token verkregen...');
         }
+    }
+
+    @Get('confirmation')
+    async confirmEmail(@Query('token') token: string) {
+        
     }
 
     private encryptPassword(password: string): Promise<string> {

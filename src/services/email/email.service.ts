@@ -2,9 +2,12 @@ import * as nodemailer from 'nodemailer';
 import * as sgTransport from 'nodemailer-sendgrid-transport';
 import * as hbs from 'nodemailer-express-handlebars';
 import { Injectable } from '@nestjs/common';
+import { User } from '../../entities/user.entity';
+import { Confirmation } from '../../entities/confirmation.entity';
 
 @Injectable()
 export class EmailService {
+    private fromEmailAddress = 'noreply@salvemundi.nl';
     private sgOptions  = {
         auth: {
             api_key: process.env.SENDGIRD_APIKEY,
@@ -22,11 +25,40 @@ export class EmailService {
         extName: '.hbs',
     };
 
-    public sendEmail(email: nodemailer.SendMailOptions): Promise<nodemailer.SentMessageInfo> {
-        const mailer = nodemailer.createTransport(sgTransport(this.sgOptions));
-        mailer.use('compile', hbs(this.hbsOptions));
+    public sendEmailConfirmationEmail(user: User, confirmation: Confirmation): Promise<nodemailer.SentMessageInfo> {
+        const mail = {
+            from: this.fromEmailAddress,
+            to: user.email,
+            subject: 'Bevestig je email adres',
+            template: 'email-confirmation',
+            context: {
+                token: user.firstName,
+            },
+        };
 
+        return this.sendEmail(mail);
+    }
+
+    public sendRegistrationConfirmationEmail(user: User): Promise<nodemailer.SentMessageInfo> {
+        const mail = {
+            from: this.fromEmailAddress,
+            to: user.email,
+            subject: 'Welkom!',
+            template: 'new-member-confirmation',
+            context: {
+                firstName: user.firstName,
+                lastName: user.lastName,
+            },
+        };
+
+        return this.sendEmail(mail);
+    }
+
+    private sendEmail(email: nodemailer.SendMailOptions): Promise<nodemailer.SentMessageInfo> {
         return new Promise((resolve, reject) => {
+            const mailer = nodemailer.createTransport(sgTransport(this.sgOptions));
+            mailer.use('compile', hbs(this.hbsOptions));
+
             mailer.sendMail(email, (err, response) => {
                 if (err) {
                     reject(err);
