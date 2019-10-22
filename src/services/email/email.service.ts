@@ -32,7 +32,9 @@ export class EmailService {
             subject: 'Bevestig je email adres',
             template: 'email-confirmation',
             context: {
-                token: user.firstName,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                token: confirmation.token,
             },
         };
 

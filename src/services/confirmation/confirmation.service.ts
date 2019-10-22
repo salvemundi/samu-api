@@ -12,4 +12,8 @@ export class ConfirmationService {
 
         return confirmation.save();
     }
+
+    readOne(token: string) {
+        return Confirmation.findOne({where: {token}, relations: ['user']});
+    }
 }
