@@ -5,31 +5,35 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class EmailService {
-    private mailer;
+    private sgOptions  = {
+        auth: {
+            api_key: process.env.SENDGIRD_APIKEY,
+        },
+    };
 
-    constructor() {
-        const sgOptions = {
-            auth: {
-                api_user: process.env.SENDGRID_USERNAME,
-                api_key: process.env.SENDGRID_PASSWORD,
-            },
-        };
-        const hbsOptions = {
-            viewEngine: {
-                extname: '.hbs',
-                layoutsDir: '/templates',
-                defaultLayout: 'template',
-                partialsDir: '/partials',
-            },
-            viewPath: '/templates',
-            extName: '.hbs',
-        };
+    private hbsOptions = {
+        viewEngine: {
+            extname: '.hbs',
+            layoutsDir: __dirname + '/templates',
+            defaultLayout: 'template',
+            partialsDir: __dirname + '/partials',
+        },
+        viewPath: __dirname + '/templates',
+        extName: '.hbs',
+    };
 
-        this.mailer = nodemailer.createTransport(sgTransport(sgOptions));
-        this.mailer.use('compile', hbs(hbsOptions));
-    }
+    public sendEmail(email: nodemailer.SendMailOptions): Promise<nodemailer.SentMessageInfo> {
+        const mailer = nodemailer.createTransport(sgTransport(this.sgOptions));
+        mailer.use('compile', hbs(this.hbsOptions));
 
-    public sendTestMail(email: {from: string, to: string[], subject: string, template: string, context: any}): Promise<nodemailer.SentMessageInfo> {
-        return this.mailer.sendMail(email);
+        return new Promise((resolve, reject) => {
+            mailer.sendMail(email, (err, response) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(response);
+                }
+            });
+        });
     }
 }
