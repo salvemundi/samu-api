@@ -33,7 +33,7 @@ lerna-debug.log*
 !.vscode/launch.json
 !.vscode/extensions.json
 
-# Environment file
+# Environment
 .env
 ormconfig.json
 swagger-spec.json

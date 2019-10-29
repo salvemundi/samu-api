@@ -1,4 +1,4 @@
-import { Controller, Post, Res, Body, UnauthorizedException, BadRequestException, HttpCode, Get, Query, ConflictException } from '@nestjs/common';
+import { Controller, Post, Res, Body, UnauthorizedException, BadRequestException, HttpCode, Get, Query, ConflictException, NotFoundException } from '@nestjs/common';
 import { Response } from 'express';
 import { AuthorizationService } from '../../services/authorization/authorization.service';
 import { RegisterDTO } from '../../dto/authorization/RegisterDTO';
@@ -9,6 +9,8 @@ import * as bcrypt from 'bcrypt';
 import { ApiResponse, ApiUseTags, ApiOperation } from '@nestjs/swagger';
 import axios from 'axios';
 import { MeDTO } from '../../dto/authorization/MeDTO';
+import { ConfirmationDTO } from '../../dto/authorization/confirmationDTO';
+import { ConfirmationService } from '../../services/confirmation/confirmation.service';
 
 @ApiUseTags('Authorization')
 @Controller('/authorization')
@@ -17,13 +19,14 @@ export class AuthorizationController {
     constructor(
         private readonly authorizationService: AuthorizationService,
         private readonly userService: UserService,
+        private readonly confirmationService: ConfirmationService,
     ) { }
 
     @Post('/login')
     @HttpCode(200)
     @ApiOperation({
         title: 'login',
-        description: 'This call is used to login a user. It will return an authorization cookie when succesful',
+        description: 'This call is used to login an user. It will return an authorization cookie when succesful',
     })
     @ApiResponse({ status: 200, description: 'Logged in!' })
     @ApiResponse({ status: 401, description: 'Email or password is incorrect...' })
@@ -42,13 +45,13 @@ export class AuthorizationController {
     @HttpCode(200)
     @ApiOperation({
         title: 'register',
-        description: 'This call is used to register a user. It will return an authorization cookie when succesful',
+        description: 'This call is used to register an user',
     })
-    @ApiResponse({ status: 200, description: 'Geregisteerd!', type: User })
+    @ApiResponse({ status: 200, description: 'Registered!' })
     @ApiResponse({ status: 400, description: 'Validation error...'})
     @ApiResponse({ status: 409, description: 'Er bestaat al een gebruiker met die email adres...' })
     @ApiResponse({ status: 500, description: 'Internal server error...' })
-    async regiser(@Res() res: Response, @Body() body: RegisterDTO) {
+    async regiser(@Body() body: RegisterDTO) {
         if (await this.userService.exists(body.email)) {
             throw new ConflictException('Er bestaat al een gebruiker met die email adres...');
         }
@@ -57,7 +60,6 @@ export class AuthorizationController {
         user.firstName = body.firstName;
         user.lastName = body.lastName;
         user.email = body.email;
-        user.password = await this.encryptPassword(body.password);
         user.birthday = body.birthday;
         user.address = body.address;
         user.city = body.city;
@@ -65,13 +67,13 @@ export class AuthorizationController {
         user.phoneNumber = body.phoneNumber;
         user.postalcode = body.postalcode;
         user.registeredSince = new Date();
+        user.activated = false;
         user.pcn = body.pcn;
         user.scopes = [];
         user.member = null;
 
         await this.userService.create(user);
-        res.cookie('auth', await this.authorizationService.genJWT(user.id, user.email));
-        res.status(200).send(user);
+        return null;
     }
 
     @Get('me')
@@ -99,12 +101,44 @@ export class AuthorizationController {
         }
     }
 
+    @Post('confirmation')
+    @HttpCode(200)
+    @ApiOperation({
+        title: 'confirmation',
+        description: 'This call is used to activate an user. It will return an authorization cookie when succesful',
+    })
+    @ApiResponse({ status: 200, description: 'Activated!', type: User })
+    @ApiResponse({ status: 400, description: 'Validation error...' })
+    @ApiResponse({ status: 404, description: 'The token does not correspond to a confirmation...'})
+    @ApiResponse({ status: 500, description: 'Internal server error...' })
+    async confirmEmail(@Res() res: Response, @Body() body: ConfirmationDTO) {
+        const confirmation = await this.confirmationService.readOne(body.token);
+        if (!confirmation) {
+            throw new NotFoundException('Confirmation not found...');
+        }
+
+        const user = confirmation.user;
+        user.password = await this.encryptPassword(body.password);
+
+        await this.userService.update(user);
+        res.cookie('auth', await this.authorizationService.genJWT(user.id, user.email));
+        res.status(200).send(user);
+    }
+
     private encryptPassword(password: string): Promise<string> {
-        return new Promise<string>((resolve) => {
+        return new Promise<string>((resolve, reject) => {
             bcrypt.genSalt(10, (err, salt) => {
-                bcrypt.hash(password, salt, (err2, hash) => {
-                    resolve(hash);
-                });
+                if (err) {
+                    reject(err);
+                } else {
+                    bcrypt.hash(password, salt, (err2, hash) => {
+                        if (err2) {
+                            reject(err2);
+                        } else {
+                            resolve(hash);
+                        }
+                    });
+                }
             });
         });
     }

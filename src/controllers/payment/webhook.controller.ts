@@ -3,14 +3,17 @@ import { PaymentService } from '../../services/payment/payment.service';
 import { MemberService } from '../../services/member/member.service';
 import { UserService } from '../../services/user/user.service';
 import { User } from '../../entities/user.entity';
-import { PaymentStatus } from './paymentstatus.enum';
+import { EmailService } from '../../services/email/email.service';
+import { ConfirmationService } from '../../services/confirmation/confirmation.service';
 
 @Controller('/webhook')
 export class WebhookController {
 
-    constructor(readonly paymentService: PaymentService,
-                readonly memberService: MemberService,
-                readonly userService: UserService) {
+    constructor(private readonly paymentService: PaymentService,
+                private readonly memberService: MemberService,
+                private readonly userService: UserService,
+                private readonly emailService: EmailService,
+                private readonly confirmationService: ConfirmationService) {
     }
 
     @Post('/membership')
@@ -35,6 +38,9 @@ export class WebhookController {
         if (payment.isPaid() && !payment.hasRefunds()) {
             await this.memberService.giveMembership(user);
             await this.paymentService.transactionPaid(transaction);
+
+            const confirmation = await this.confirmationService.create(user);
+            await this.emailService.sendEmailConfirmationEmail(user, confirmation);
             return;
 
         } else if (payment.hasRefunds) {

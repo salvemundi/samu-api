@@ -49,9 +49,4 @@ export class RegisterDTO {
     @ApiModelProperty({required: true, maxLength: 7})
     @MaxLength(7)
     pcn: string;
-
-    @ApiModelProperty({required: true, maxLength: 64})
-    @IsNotEmpty()
-    @MaxLength(64)
-    password: string;
 }
