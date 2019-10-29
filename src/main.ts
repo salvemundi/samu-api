@@ -1,29 +1,27 @@
 import 'reflect-metadata';
-import { NestFactory, Reflector } from '@nestjs/core';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { NestFactory } from '@nestjs/core';
+import { SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
-import { ValidationPipe, ClassSerializerInterceptor } from '@nestjs/common';
+import { ValidationPipe } from '@nestjs/common';
 import * as cookieParser from 'cookie-parser';
 import { ScopeSeeder } from './seed/scope.seed';
+import swaggerOptions from './swagger/document';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe());
   app.use(cookieParser());
-  app.enableCors();
+  app.enableCors({
+    origin: ['http://localhost:8080', 'https://localhost:8080', 'https://salvemundi.nl', 'http://salvemundi.nl', 'http://beta.salvemundi.nl', 'https://beta.salvemundi.nl'],
+    credentials: true,
+  });
 
   const scopeSeeder = app.get(ScopeSeeder);
   await scopeSeeder.seed();
 
-  const options = new DocumentBuilder()
-    .setTitle('Salve mundi API')
-    .setDescription('Salve mundi API documentation')
-    .setVersion('1.0')
-    .addTag('SaMu')
-    .build();
-
-  const document = SwaggerModule.createDocument(app, options);
+  const document = SwaggerModule.createDocument(app, swaggerOptions);
   SwaggerModule.setup('api', app, document);
+  console.log(+process.env.SERVER_PORT)
 
   await app.listen(+process.env.SERVER_PORT);
 }

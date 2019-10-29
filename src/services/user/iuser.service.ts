@@ -5,6 +5,7 @@ export interface IUserService {
     readOne(id: number | string): Promise<User>;
     create(user: User): Promise<User>;
     update(user: User): Promise<User>;
+    delete(user: User): Promise<User>;
 
     exists(email: string): Promise<boolean>;
 }

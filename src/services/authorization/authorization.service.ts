@@ -11,9 +11,9 @@ export class AuthorizationService implements IAuthorizationService {
     ) {}
 
     public async validateUser(email: string, pass: string): Promise<User> {
-        const user: User = await User.findOne({where: { email }});
+        const user: User = await User.findOne({where: {email}, select: ['password']});
         if (user && await this.checkPassword(pass, user)) {
-            return user;
+            return await User.findOne({where: { email }});
         }
 
         return null;

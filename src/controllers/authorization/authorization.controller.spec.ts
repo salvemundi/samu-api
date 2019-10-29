@@ -55,7 +55,6 @@ describe('Authorization Controller', () => {
         email: 'admin@test.com',
         password: 'admin',
         firstName: 'Salve',
-        middleName: '',
         lastName: 'Mundi',
         address: 'Rachelsmolen 1',
         city: 'Eindhoven',
@@ -63,7 +62,7 @@ describe('Authorization Controller', () => {
         postalcode: '5612MA',
         birthday: new Date(2017, 1, 1),
         phoneNumber: '+31 6 24827777',
-        pcn: null,
+        pcn: '',
       };
 
       return request(app.getHttpServer()).post('/authorization/register').send(registerDto)
@@ -78,7 +77,6 @@ describe('Authorization Controller', () => {
         email: 'admin@gmail.com',
         password: 'admin',
         firstName: 'Salve',
-        middleName: '',
         lastName: 'Mundi',
         address: 'Rachelsmolen 1',
         city: 'Eindhoven',
@@ -86,11 +84,11 @@ describe('Authorization Controller', () => {
         postalcode: '5612MA',
         birthday: new Date(2017, 1, 1),
         phoneNumber: '+31 6 24827777',
-        pcn: null,
+        pcn: '',
       };
 
       return request(app.getHttpServer()).post('/authorization/register').send(registerDto)
-        .expect(400);
+        .expect(409);
     });
   });
 });

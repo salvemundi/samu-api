@@ -1,5 +1,5 @@
 import { ApiModelProperty } from '@nestjs/swagger';
-import { MaxLength, IsNotEmpty } from 'class-validator';
+import { MaxLength, IsNotEmpty, IsEmail } from 'class-validator';
 
 export class RegisterDTO {
     @ApiModelProperty({required: true, maxLength: 255})
@@ -8,15 +8,11 @@ export class RegisterDTO {
     firstName: string;
 
     @ApiModelProperty({required: true, maxLength: 255})
-    @MaxLength(255)
-    middleName: string;
-
-    @ApiModelProperty({required: true, maxLength: 255})
     @IsNotEmpty()
     @MaxLength(255)
     lastName: string;
 
-    @ApiModelProperty({required: true})
+    @ApiModelProperty({required: true, type: String, format: 'date'})
     @IsNotEmpty()
     birthday: Date;
 
@@ -40,9 +36,9 @@ export class RegisterDTO {
     @MaxLength(64)
     country: string;
 
-    @ApiModelProperty({required: true, maxLength: 255})
+    @ApiModelProperty({required: true, type: String, format: 'email'})
     @IsNotEmpty()
-    @MaxLength(255)
+    @IsEmail()
     email: string;
 
     @ApiModelProperty({required: true, maxLength: 14})
@@ -50,11 +46,7 @@ export class RegisterDTO {
     @MaxLength(14)
     phoneNumber: string;
 
-    @ApiModelProperty({required: true})
-    pcn: number;
-
-    @ApiModelProperty({required: true, maxLength: 64})
-    @IsNotEmpty()
-    @MaxLength(64)
-    password: string;
+    @ApiModelProperty({required: true, maxLength: 7})
+    @MaxLength(7)
+    pcn: string;
 }

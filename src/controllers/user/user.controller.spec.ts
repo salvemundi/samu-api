@@ -3,7 +3,7 @@ import * as request from 'supertest';
 import { TestModule } from 'src/test.module';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { User } from 'src/entities/user.entity';
-import { ShortedUserDto } from 'src/dto/user/shorted-user-dto';
+import { SummaryUserDto } from 'src/dto/user/summary-user-dto';
 import { UpdateUserDto } from 'src/dto/user/update-user-dto';
 import randomUser from 'src/services/user/mock.user.service';
 
@@ -52,15 +52,43 @@ describe('Users Controller', () => {
         });
     });
 
+    describe('/user/me - Get me request', () => {
+        it('Correct call - Should return 200 and a user', () => {
+            return request(app.getHttpServer()).get('/user/me')
+                .set('Cookie', ['auth=awesomeJWT; path=/; domain=localhost;'])
+                .send()
+                .expect('Content-Type', 'application/json; charset=utf-8')
+                .expect(200)
+                .expect((response: request.Response) => {
+                    response.body.user = randomUser;
+                });
+        });
+
+        it('No auth cookie - Should return 401', () => {
+            return request(app.getHttpServer()).get('/user/1')
+                .send()
+                .expect(401);
+        });
+    });
+
     describe('/user/ - Get all request', () => {
         it('Correct call - Should return 200 and the users', () => {
+            const expectedSummary: SummaryUserDto[] = [
+                {
+                    id: randomUser.id,
+                    pcn: randomUser.pcn,
+                    name: randomUser.firstName + ' ' + randomUser.lastName,
+                    memberTill: new Date(2019, 12, 31),
+                },
+            ];
+
             return request(app.getHttpServer()).get('/user/')
                 .set('Cookie', ['auth=awesomeJWT; path=/; domain=localhost;'])
                 .send()
                 .expect('Content-Type', 'application/json; charset=utf-8')
                 .expect(200)
                 .expect((response: request.Response) => {
-                    response.body.users = [randomUser] as ShortedUserDto[];
+                    response.body.users = expectedSummary;
                 });
         });
 
@@ -75,7 +103,7 @@ describe('Users Controller', () => {
         it('Correct call - Should return 200 and the users', () => {
             const userDto = new UpdateUserDto();
             userDto.id = 1;
-            userDto.pcn = 123456;
+            userDto.pcn = 'i123456';
             userDto.firstName = 'Salve';
             userDto.middleName = null;
             userDto.lastName = 'Mundi';
@@ -87,7 +115,7 @@ describe('Users Controller', () => {
             userDto.phoneNumber = '+31 6 12346789';
             userDto.email = 'no-reply@salvemundi.nl';
 
-            const expectedUser = userDto as User;
+            const expectedUser = userDto as unknown as User;
             expectedUser.member = null;
 
             return request(app.getHttpServer()).put('/user/').send(userDto)
@@ -102,7 +130,7 @@ describe('Users Controller', () => {
         it('Missing info in body - Should return 400', () => {
             const userDto = new UpdateUserDto();
             userDto.id = 1;
-            userDto.pcn = 123456;
+            userDto.pcn = 'i123456';
             userDto.firstName = 'Salve';
             userDto.middleName = null;
             userDto.lastName = 'Mundi';
@@ -121,7 +149,7 @@ describe('Users Controller', () => {
         it('Wrong id - Should return 404', () => {
             const userDto = new UpdateUserDto();
             userDto.id = 3;
-            userDto.pcn = 123456;
+            userDto.pcn = 'i123456';
             userDto.firstName = 'Salve';
             userDto.middleName = null;
             userDto.lastName = 'Mundi';
@@ -141,7 +169,7 @@ describe('Users Controller', () => {
         it('No auth cookie - Should return 401', () => {
             const userDto = new UpdateUserDto();
             userDto.id = 1;
-            userDto.pcn = 123456;
+            userDto.pcn = 'i123456';
             userDto.firstName = 'Salve';
             userDto.middleName = null;
             userDto.lastName = 'Mundi';
