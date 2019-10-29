@@ -53,7 +53,6 @@ describe('Authorization Controller', () => {
     it('Correct call - Should return 200 with a cookie', () => {
       const registerDto: RegisterDTO = {
         email: 'admin@test.com',
-        password: 'admin',
         firstName: 'Salve',
         lastName: 'Mundi',
         address: 'Rachelsmolen 1',
@@ -75,7 +74,6 @@ describe('Authorization Controller', () => {
     it('Correct call - Should return 400 without a cookie', () => {
       const registerDto: RegisterDTO = {
         email: 'admin@gmail.com',
-        password: 'admin',
         firstName: 'Salve',
         lastName: 'Mundi',
         address: 'Rachelsmolen 1',

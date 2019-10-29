@@ -47,7 +47,7 @@ import { ConfirmationService } from './services/confirmation/confirmation.servic
     PaymentService,
     ScopeSeeder,
     EmailService,
-    ConfirmationService
+    ConfirmationService,
   ],
 })
 export class AppModule {}

@@ -77,7 +77,8 @@ describe('Users Controller', () => {
                 {
                     id: randomUser.id,
                     pcn: randomUser.pcn,
-                    name: randomUser.firstName + ' ' + randomUser.lastName,
+                    firstName: randomUser.firstName,
+                    lastName: randomUser.lastName,
                     memberTill: new Date(2019, 12, 31),
                 },
             ];

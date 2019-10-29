@@ -12,7 +12,7 @@ export class ScopeSeeder {
     ];
 
     public async seed() {
-        await this.scopes.forEach(async (scope: Scope) => {
+        this.scopes.forEach(async (scope: Scope) => {
             if (await Scope.findOne({ where: {id: scope.id}})) {
                 return;
             }
