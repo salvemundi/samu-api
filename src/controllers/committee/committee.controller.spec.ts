@@ -29,7 +29,6 @@ describe('Commission Controller', () => {
     it('Correct call - Should return 200 and all of the committee', () => {
       return request(app.getHttpServer()).get('/committee')
         .set('Cookie', ['auth=awesomeJWT; path=/; domain=localhost;'])
-        .expect('Content-Type', 'application/json; charset=utf-8')
         .expect(200)
         .expect((response: request.Response) => {
           response.body.committee = [randomCommission];
@@ -41,7 +40,6 @@ describe('Commission Controller', () => {
     it('Correct call - Should return 200 and one commission', () => {
       return request(app.getHttpServer()).get('/committee/1')
         .set('Cookie', ['auth=awesomeJWT; path=/; domain=localhost;'])
-        .expect('Content-Type', 'application/json; charset=utf-8')
         .expect(200)
         .expect((response: request.Response) => {
           response.body.commission = randomCommission;
@@ -62,7 +60,6 @@ describe('Commission Controller', () => {
       return request(app.getHttpServer()).post('/committee')
         .set('Cookie', ['auth=awesomeJWT; path=/; domain=localhost;'])
         .send({name: 'ICT commissie', description: 'De ICT commissie is geweldig!', created: date})
-        .expect('Content-Type', 'application/json; charset=utf-8')
         .expect(200)
         .expect((response: request.Response) => {
           response.body.commission = new Committee('ICT commissie', 'De ICT commissie is geweldig!', date, 2);
@@ -92,7 +89,6 @@ describe('Commission Controller', () => {
       return request(app.getHttpServer()).put('/committee')
         .set('Cookie', ['auth=awesomeJWT; path=/; domain=localhost;'])
         .send({id: 1, name: 'ICT commissie', description: 'De ICT commissie is geweldig!', created: date})
-        .expect('Content-Type', 'application/json; charset=utf-8')
         .expect(200)
         .expect((response: request.Response) => {
           response.body.commission = new Committee('ICT commissie', 'De ICT commissie is geweldig!', date, 1);

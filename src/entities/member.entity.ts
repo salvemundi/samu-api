@@ -1,4 +1,4 @@
-import { BaseEntity, PrimaryGeneratedColumn, OneToMany, Entity } from 'typeorm';
+import { BaseEntity, PrimaryGeneratedColumn, OneToMany, Entity, JoinTable } from 'typeorm';
 import { Membership } from './membership.entity';
 import { ApiModelProperty } from '@nestjs/swagger';
 
@@ -16,6 +16,6 @@ export class Member extends BaseEntity {
     public id: number;
 
     @ApiModelProperty({type: Membership, isArray: true})
-    @OneToMany(type => Membership, membership => membership.member)
+    @OneToMany(() => Membership, membership => membership.member)
     public memberships: Membership[];
 }
