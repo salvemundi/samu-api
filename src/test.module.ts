@@ -13,6 +13,8 @@ import { MemberController } from './controllers/member/member.controller';
 import { MockCommissionService } from './services/committee/mock.committee.service';
 import { MockUserService } from './services/user/mock.user.service';
 import { MockAuthorizationService } from './services/authorization/mock.authorization.service';
+import { ConfirmationService } from './services/confirmation/confirmation.service';
+import { MockConfirmationService } from './services/confirmation/mock.confirmation.service';
 
 @Module({
   imports: [
@@ -44,6 +46,10 @@ import { MockAuthorizationService } from './services/authorization/mock.authoriz
     {
       provide: UserService,
       useClass: MockUserService,
+    },
+    {
+      provide: ConfirmationService,
+      useClass: MockConfirmationService,
     },
   ],
 })

@@ -36,6 +36,7 @@ export class WebhookController {
         }
 
         if (payment.isPaid() && !payment.hasRefunds()) {
+            // TODO:  Transactions gebruiken om meerdere operations te reversen als er iets fout gaat
             await this.memberService.giveMembership(user);
             await this.paymentService.transactionPaid(transaction);
 

@@ -24,6 +24,6 @@ export class Membership extends BaseEntity {
     @Column()
     public endDate: Date;
 
-    @ManyToOne(type => Member, member => member.memberships)
+    @ManyToOne(() => Member, member => member.memberships)
     public member: Member;
 }
