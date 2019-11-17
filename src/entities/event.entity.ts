@@ -6,36 +6,36 @@ import { Committee } from "./committee.entity";
 export class Event extends BaseEntity {
 
     @PrimaryGeneratedColumn()
-    private id: number;
+    public id: number;
     
     @Column() 
-    private name: string;
+    public title: string;
     
     @Column() 
-    private description: string;
+    public description: string;
     
     @Column()
-    private createdBy: User;
+    public createdBy: User;
 
     @Column()
-    private committee: Committee;
+    public committee: Committee;
 
     @Column()
-    private startDate: Date;
+    public startDate: Date;
     
     @Column()
-    private endDate: Date;
+    public endDate: Date;
     
     @Column()
-    private signupBefore: Date;
+    public signupBefore: Date;
 
     @Column()
-    private memberOnly: boolean;
+    public memberOnly: boolean;
 
     @Column()
-    private memberPrice: number;
+    public memberPrice: number;
 
     @Column()
-    private notMemberPrice: number;
+    public notMemberPrice: number;
     
 }

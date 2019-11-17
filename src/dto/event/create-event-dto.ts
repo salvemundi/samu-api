@@ -1,14 +1,14 @@
 export default class CreateEventDto {
     
-    private name: string;
-    private description: string;
-    private committeeId: number;
+    public title: string;
+    public description: string;
+    public committeeId: number;
     
-    private startDate: Date;
-    private endDate: Date;
-    private signupBefore: Date;
+    public startDate: Date;
+    public endDate: Date;
+    public signupBefore: Date;
 
-    private memberOnly: boolean;
-    private memberPrice: number;
-    private notMemberPrice: number;
+    public memberOnly: boolean;
+    public memberPrice: number;
+    public notMemberPrice: number;
 }
