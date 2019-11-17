@@ -18,6 +18,8 @@ import { EmailService } from './services/email/email.service';
 import { typeormconfig } from './typeormConfig';
 import { WebhookController } from './controllers/payment/webhook.controller';
 import { ConfirmationService } from './services/confirmation/confirmation.service';
+import { EventService } from './services/event/event.service';
+import EventController from './controllers/event/event.controller';
 
 @Module({
   imports: [
@@ -34,6 +36,7 @@ import { ConfirmationService } from './services/confirmation/confirmation.servic
     AuthorizationController,
     PaymentController,
     WebhookController,
+    EventController
   ],
   providers: [
     {
@@ -48,6 +51,7 @@ import { ConfirmationService } from './services/confirmation/confirmation.servic
     ScopeSeeder,
     EmailService,
     ConfirmationService,
+    EventService
   ],
 })
 export class AppModule {}
