@@ -2,6 +2,8 @@ import { Controller, Post, Body } from "@nestjs/common";
 import CreateEventDto from "src/dto/event/create-event-dto";
 import { EventService } from "src/services/event/event.service";
 import { Event } from "src/entities/event.entity";
+import { Me } from "src/decorators/me.decorator";
+import { User } from "src/entities/user.entity";
 
 @Controller("/events")
 export default class EventController {
@@ -10,8 +12,9 @@ export default class EventController {
     constructor(private readonly eventService: EventService) {}
 
     @Post("create")
-    async createEvent(@Body() eventDto: CreateEventDto) : Promise<Event> {
+    async createEvent(@Me() user: User, @Body() eventDto: CreateEventDto) : Promise<Event> {
         const event: Event = new Event();
+        event.createdBy = user;
         event.title = eventDto.title;
         event.description = eventDto.description;
         event.signupBefore = eventDto.signupBefore;
