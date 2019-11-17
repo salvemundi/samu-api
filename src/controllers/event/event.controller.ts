@@ -1,18 +1,18 @@
-import { Controller, Post, Body } from "@nestjs/common";
-import CreateEventDto from "src/dto/event/create-event-dto";
-import { EventService } from "src/services/event/event.service";
-import { Event } from "src/entities/event.entity";
-import { Me } from "src/decorators/me.decorator";
-import { User } from "src/entities/user.entity";
+import { Controller, Post, Body, Get } from "@nestjs/common";
+import { EventService } from "../../services/event/event.service";
+import { Me } from "../../decorators/me.decorator";
+import { User } from "../../entities/user.entity";
+import { CreateEventDto } from "../../dto/event/create-event-dto";
+import { Event } from "../../entities/event.entity";
 
 @Controller("/events")
-export default class EventController {
-
+export class EventController {
 
     constructor(private readonly eventService: EventService) {}
 
     @Post("create")
     async createEvent(@Me() user: User, @Body() eventDto: CreateEventDto) : Promise<Event> {
+        console.log(user)
         const event: Event = new Event();
         event.createdBy = user;
         event.title = eventDto.title;
@@ -24,6 +24,11 @@ export default class EventController {
         event.memberPrice = eventDto.memberPrice;
         event.notMemberPrice = eventDto.notMemberPrice;
         return await event.save();
+    }
+
+    @Get()
+    async getEvents() {
+        return await event.getAll();
     }
 
 }

@@ -1,4 +1,4 @@
-export default class CreateEventDto {
+export class CreateEventDto {
     
     public title: string;
     public description: string;

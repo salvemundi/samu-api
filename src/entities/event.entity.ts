@@ -13,11 +13,8 @@ export class Event extends BaseEntity {
     
     @Column() 
     public description: string;
-    
-    @Column()
-    public createdBy: User;
 
-    @Column()
+    public createdBy: User;
     public committee: Committee;
 
     @Column()
