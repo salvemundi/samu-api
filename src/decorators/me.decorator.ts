@@ -1,3 +1,5 @@
-import { SetMetadata } from '@nestjs/common';
+import { createParamDecorator } from '@nestjs/common';
 
-export const Auth = () => SetMetadata('me', );
+export const Me = createParamDecorator((data, req) => {
+  return req.user;
+});
