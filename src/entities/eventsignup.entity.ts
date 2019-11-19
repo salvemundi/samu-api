@@ -1,4 +1,4 @@
-import { Entity, BaseEntity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, ManyToMany, ManyToOne } from "typeorm";
 import { User } from "./user.entity";
 import { Event } from "./event.entity";
 import { Transaction } from "./transaction.entity";
@@ -9,14 +9,15 @@ export class EventSignup extends BaseEntity {
     @PrimaryGeneratedColumn()
     public id: number;
 
-    @Column()
+    @ManyToOne(type => User)
     public user: User;
 
-    @Column()
+    @ManyToOne(type => Event)
     public event: Event;
 
-    @Column({ nullable: true })
+    @ManyToOne(type => Transaction, {nullable: true})
     public transaction?: Transaction;
+    
 
     @Column({ default: false })
     public cancelled: boolean;

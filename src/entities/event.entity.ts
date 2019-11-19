@@ -1,6 +1,7 @@
-import { BaseEntity, PrimaryColumn, PrimaryGeneratedColumn, Column, OneToMany, Entity, ManyToOne } from "typeorm";
+import { BaseEntity, PrimaryColumn, PrimaryGeneratedColumn, Column, OneToMany, Entity, ManyToOne, ManyToMany } from "typeorm";
 import { User } from "./user.entity";
 import { Committee } from "./committee.entity";
+import { EventSignup } from "./eventsignup.entity";
 
 @Entity()
 export class Event extends BaseEntity {
@@ -37,5 +38,8 @@ export class Event extends BaseEntity {
 
     @Column()
     public notMemberPrice: number;
+
+    @ManyToMany(type => EventSignup, eventSignup => eventSignup.user)
+    public eventSignUps: EventSignup[];
 
 }
