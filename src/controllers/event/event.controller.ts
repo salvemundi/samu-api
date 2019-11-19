@@ -25,10 +25,4 @@ export class EventController {
         event.notMemberPrice = eventDto.notMemberPrice;
         return await event.save();
     }
-
-    @Get()
-    async getEvents() {
-        return await event.getAll();
-    }
-
 }
