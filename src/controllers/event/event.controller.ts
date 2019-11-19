@@ -16,7 +16,7 @@ export class EventController {
     @Post("create")
     async createEvent(@Me() user: User, @Body() eventDto: CreateEventDto): Promise<Event> {
         const event: Event = new Event();
-        event.user = user;
+        event.createdBy = user;
         event.title = eventDto.title;
         event.description = eventDto.description;
         event.signupBefore = eventDto.signupBefore;
@@ -39,7 +39,7 @@ export class EventController {
     @Put("update")
     async updateEvent(@Me() user: User, updateEventDto: UpdateEventDto) {
         var event: Event = await this.eventService.readOne(updateEventDto.eventId);
-        event.user = user;
+        event.createdBy = user;
         event.title = updateEventDto.title;
         event.description = updateEventDto.description;
         event.signupBefore = updateEventDto.signupBefore;
