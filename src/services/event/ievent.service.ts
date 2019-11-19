@@ -3,5 +3,5 @@ import { User } from '../../entities/user.entity';
 
 export interface IEventService {
     create(event: Event): Promise<Event>;
-    readOne(token: string): Promise<Event>;
+    readOne(id: number): Promise<Event>;
 }

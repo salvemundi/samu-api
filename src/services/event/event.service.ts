@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { IEventService } from "./ievent.service";
+import { Event } from "src/entities/event.entity";
 
 @Injectable()
 export class EventService implements IEventService {
@@ -8,7 +9,7 @@ export class EventService implements IEventService {
         throw new Error("Method not implemented.");
     }    
     
-    async readOne(token: string): Promise<Event> {
+    async readOne(token: number): Promise<Event> {
         throw new Error("Method not implemented.");
     }
 

@@ -1,4 +1,4 @@
-import { BaseEntity, PrimaryColumn, PrimaryGeneratedColumn, Column, OneToMany, Entity } from "typeorm";
+import { BaseEntity, PrimaryColumn, PrimaryGeneratedColumn, Column, OneToMany, Entity, ManyToOne } from "typeorm";
 import { User } from "./user.entity";
 import { Committee } from "./committee.entity";
 
@@ -7,22 +7,25 @@ export class Event extends BaseEntity {
 
     @PrimaryGeneratedColumn()
     public id: number;
-    
-    @Column() 
+
+    @Column()
     public title: string;
-    
-    @Column() 
+
+    @Column()
     public description: string;
 
+    @ManyToOne(type => User)
     public createdBy: User;
+
+    @ManyToOne(type => Committee)
     public committee: Committee;
 
     @Column()
     public startDate: Date;
-    
+
     @Column()
     public endDate: Date;
-    
+
     @Column()
     public signupBefore: Date;
 
@@ -34,5 +37,5 @@ export class Event extends BaseEntity {
 
     @Column()
     public notMemberPrice: number;
-    
+
 }
