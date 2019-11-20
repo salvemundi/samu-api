@@ -15,13 +15,14 @@ import { ScopeSeeder } from './seed/scope.seed';
 import { PaymentController } from './controllers/payment/payment.controller';
 import { PaymentService } from './services/payment/payment.service';
 import { EmailService } from './services/email/email.service';
-import { typeormconfig } from './typeormConfig';
 import { WebhookController } from './controllers/payment/webhook.controller';
 import { ConfirmationService } from './services/confirmation/confirmation.service';
+import {EventController} from './controllers/event/event.controller';
+import { EventService } from './services/event/event.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot(typeormconfig),
+    TypeOrmModule.forRoot(require("./typeormConfig")),
     JwtModule.register({
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '15m' },
@@ -34,6 +35,7 @@ import { ConfirmationService } from './services/confirmation/confirmation.servic
     AuthorizationController,
     PaymentController,
     WebhookController,
+    EventController
   ],
   providers: [
     {
@@ -48,6 +50,7 @@ import { ConfirmationService } from './services/confirmation/confirmation.servic
     ScopeSeeder,
     EmailService,
     ConfirmationService,
+    EventService
   ],
 })
 export class AppModule {}
