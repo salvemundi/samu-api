@@ -1,6 +1,8 @@
 import { IUserService } from './iuser.service';
 import { User } from '../../entities/user.entity';
 
+export const USER_RELATIONS = ['scopes', 'member', 'member.memberships'];
+
 export class UserService implements IUserService {
     readAll(skip: number, take: number): Promise<User[]> {
         return User.find({ skip, take, relations: ['member', 'member.memberships'] });
@@ -13,7 +15,7 @@ export class UserService implements IUserService {
             whereQuery['email'] = email;
         }
 
-        return User.findOne({ where: whereQuery, relations: ['scopes', 'member', 'member.memberships'] });
+        return User.findOne({ where: whereQuery, relations: USER_RELATIONS });
     }
 
     async create(user: User): Promise<User> {

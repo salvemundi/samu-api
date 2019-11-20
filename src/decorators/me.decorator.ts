@@ -3,6 +3,9 @@ import { Request } from "express";
 import { User } from "../entities/user.entity";
 import * as jwt from 'jsonwebtoken';
 import { JWT } from "../services/authorization/authorization.service";
+import randomUser from "../services/user/mock.user.service";
+import { USER_RELATIONS } from "../services/user/user.service";
+import { testJWToken } from "src/services/authorization/mock.authorization.service";
 
 export const Me = createParamDecorator(async (data: any, request: Request): Promise<User> => {
     if (!request.headers.cookie) {
@@ -22,9 +25,9 @@ export const Me = createParamDecorator(async (data: any, request: Request): Prom
         throw new UnauthorizedException('No authorizatie koekje gevonden... Zorg ervoor dat deze meegestuurd wordt met iedere request!');
     }
 
-    const decodedJWT = jwt.verify(auth, process.env.JWT_SECRET).data as JWT;
-    if (decodedJWT) {
-        const user: User = await User.findOne({where: {id: decodedJWT.userId, email: decodedJWT.email}});
+    try {
+        const decodedJWT = decodeJWT(auth);
+        const user: User = await getUser(decodedJWT.userId, decodedJWT.email);
 
         if (!user) {
             throw new NotFoundException("User not found...")
@@ -32,7 +35,37 @@ export const Me = createParamDecorator(async (data: any, request: Request): Prom
 
         return user; 
 
-    } else {
+    } catch {
         throw new UnauthorizedException('Token incorrect of verlopen...');
     }
 });
+
+function decodeJWT(token: string): JWT {
+    if (token === testJWToken) {
+        // App is in test mode
+        return {
+            email: 'admin@gmail.com',
+            userId: 1,
+        };
+
+    } else {
+        // App is not in test mode
+        return jwt.verify(token, process.env.JWT_SECRET).data as JWT;
+    }
+}
+
+async function getUser(userId: number, email: string) {
+    try {
+        // Used when app is not being tested
+        return await User.findOne({where: {id: userId, email}, relations: USER_RELATIONS});
+
+    } catch {
+        // Used when the app is being tested
+        if (userId === 1) {
+            return randomUser;
+
+        } else {
+            return undefined;
+        }
+    }
+}
