@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CommitteeController } from './controllers/committee/committee.controller';
 import { CommitteeService } from './services/committee/committee.service';
-import { MemberController } from './controllers/member/member.controller';
 import { MemberService } from './services/member/member.service';
 import { UserService } from './services/user/user.service';
 import { UserController } from './controllers/user/user.controller';
@@ -25,7 +24,6 @@ import { EventService } from './services/event/event.service';
   ],
   controllers: [
     CommitteeController,
-    MemberController,
     UserController,
     AuthorizationController,
     PaymentController,
