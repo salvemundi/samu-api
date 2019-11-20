@@ -1,5 +1,4 @@
-import { Confirmation } from '../../entities/confirmation.entity';
-import { User } from '../../entities/user.entity';
+import { Event } from "../../entities/event.entity";
 
 export interface IEventService {
     create(event: Event): Promise<Event>;

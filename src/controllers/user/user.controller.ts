@@ -23,9 +23,10 @@ export class UserController {
         description: 'This call is used to get the current user',
     })
     @ApiResponse({ status: 200, description: 'Found you', type: User })
+    @ApiResponse({ status: 404, description: 'Did not found you' })
     @ApiResponse({ status: 500, description: 'Internal server error...' })
     async readMe(@Me() me: Promise<User>) {
-        console.log(me)
+        return me;
     }
 
     @Get('/:id')

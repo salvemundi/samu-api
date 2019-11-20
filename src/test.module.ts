@@ -6,8 +6,7 @@ import { AuthorizationService } from './services/authorization/authorization.ser
 import { UserService } from './services/user/user.service';
 import { UserController } from './controllers/user/user.controller';
 import { APP_GUARD } from '@nestjs/core';
-import { DefaultGuard } from './guards/default.guard';
-import { JwtModule } from '@nestjs/jwt';
+import { AuthorizationGuard } from './guards/auth.guard';
 import { CommitteeController } from './controllers/committee/committee.controller';
 import { MemberController } from './controllers/member/member.controller';
 import { MockCommissionService } from './services/committee/mock.committee.service';
@@ -17,12 +16,6 @@ import { ConfirmationService } from './services/confirmation/confirmation.servic
 import { MockConfirmationService } from './services/confirmation/mock.confirmation.service';
 
 @Module({
-  imports: [
-    JwtModule.register({
-      secret: 'VerySecretToken',
-      signOptions: { expiresIn: '15m' },
-    }),
-  ],
   controllers: [
     CommitteeController,
     MemberController,
@@ -32,7 +25,7 @@ import { MockConfirmationService } from './services/confirmation/mock.confirmati
   providers: [
     {
       provide: APP_GUARD,
-      useClass: DefaultGuard,
+      useClass: AuthorizationGuard,
     },
     {
       provide: CommitteeService,

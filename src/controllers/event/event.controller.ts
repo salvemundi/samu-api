@@ -4,9 +4,9 @@ import { Me } from "../../decorators/me.decorator";
 import { User } from "../../entities/user.entity";
 import { CreateEventDto } from "../../dto/event/create-event-dto";
 import { Event } from "../../entities/event.entity";
-import EventSignupDto from "src/dto/event/signup-event-dto";
-import { EventSignup } from "src/entities/eventsignup.entity";
-import UpdateEventDto from "src/dto/event/update-event-dto";
+import EventSignupDto from "../../dto/event/signup-event-dto";
+import { EventSignup } from "../../entities/eventsignup.entity";
+import UpdateEventDto from "../../dto/event/update-event-dto";
 
 @Controller("/events")
 export class EventController {

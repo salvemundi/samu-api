@@ -5,7 +5,7 @@ import { UserService } from '../services/user/user.service';
 import { User } from '../entities/user.entity';
 
 @Injectable()
-export class DefaultGuard implements CanActivate {
+export class AuthorizationGuard implements CanActivate {
   constructor(
     private readonly reflector: Reflector,
     private readonly authService: AuthorizationService,
