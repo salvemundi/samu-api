@@ -3,7 +3,7 @@ import { User } from '../../entities/user.entity';
 import randomUser from '../user/mock.user.service';
 import { JWT } from './authorization.service';
 
-const JWToken = 'awesomeJWT';
+export const testJWToken = 'awesomeJWT';
 
 export default JWT;
 export class MockAuthorizationService implements IAuthorizationService {
@@ -20,16 +20,16 @@ export class MockAuthorizationService implements IAuthorizationService {
 
     genJWT(userId: number, email: string): Promise<string> {
         return new Promise<string>((resolve) => {
-            resolve(JWToken);
+            resolve(testJWToken);
         });
     }
 
     verifyJWT(jwt: string): boolean {
-        return (jwt === JWToken);
+        return (jwt === testJWToken);
     }
 
     decodeJWT(jwt: any): JWT {
-        if (jwt === JWToken) {
+        if (jwt === testJWToken) {
             return {
                 email: 'admin@gmail.com',
                 userId: 1,
