@@ -5,7 +5,7 @@ import * as jwt from 'jsonwebtoken';
 import { JWT } from "../services/authorization/authorization.service";
 import randomUser from "../services/user/mock.user.service";
 import { USER_RELATIONS } from "../services/user/user.service";
-import { testJWToken } from "src/services/authorization/mock.authorization.service";
+import { testJWToken } from "../services/authorization/mock.authorization.service";
 
 export const Me = createParamDecorator(async (data: any, request: Request): Promise<User> => {
     if (!request.headers.cookie) {

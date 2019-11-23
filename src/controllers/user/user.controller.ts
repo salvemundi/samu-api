@@ -1,4 +1,4 @@
-import { Controller, Get, Param, HttpCode, NotFoundException, Body, Put, Req, UnauthorizedException, Delete } from '@nestjs/common';
+import { Controller, Get, Param, HttpCode, NotFoundException, Body, Put, Delete } from '@nestjs/common';
 import { UserService } from '../../services/user/user.service';
 import { User } from '../../entities/user.entity';
 import { ApiResponse, ApiUseTags, ApiImplicitParam, ApiOperation } from '@nestjs/swagger';
