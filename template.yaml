@@ -1,0 +1,132 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: salvemundi
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: salvemundi
+spec:
+  selector:
+    matchLabels:
+      app: salvemundi-backend
+      tier: backend
+  replicas: 1
+  template:
+    metadata:
+      name: salvemundi-backend
+      namespace: salvemundi
+      labels:
+        app: salvemundi-backend
+        tier: backend
+    spec:
+      containers:
+      - name: salvemundi-backend
+        image: svsalvemundi/backend:{{samu_backend_version}}
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        env:
+        - name: GET_HOSTS_FROM
+          value: dns
+        - name: DB_HOST
+          value: 78.47.75.84
+        - name: DB_PORT
+          value: "3306"
+        - name: DB_USER
+          value: root
+        - name: DB_PASSWORD
+          value: "210798"
+        - name: DB_NAME
+          value: salvemundi_api
+        - name: SERVER_PORT
+          value: "1337"
+        - name: JWT_SECRET
+          value: secret
+        - name: MOLLIE_API_KEY
+          value: live_DDfAS28dSVdKfpVD4kJ7fSfwgyQuy7
+        - name: MOLLIE_REDIRECT_URL
+          value: https://salvemundi.nl/home
+        - name: MOLLIE_WEBHOOK_URL
+          value: https://api.salvemundi.nl/webhook
+        - name: SENDGRID_USERNAME
+          value: x
+        - name: SENDGRID_APIKEY
+          value: x
+        ports:
+        - containerPort: 1337
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+  namespace: salvemundi
+spec:
+  type: NodePort
+  selector:
+    app: salvemundi-backend
+    tier: backend
+  ports:
+    - port: 1337
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: ci-service
+  namespace: salvemundi
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    name: ci-site
+    protocol: TCP
+    targetPort: 8111
+
+---
+
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: ci-service
+  namespace: salvemundi
+subsets:
+- addresses:
+  - ip: 78.47.75.84
+  ports:
+  - name: ci-site
+    port: 8111
+    protocol: TCP
+
+---
+
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: ingress
+  namespace: salvemundi
+spec:
+  rules:
+  - host: api.salvemundi.nl
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: backend-service
+          servicePort: 1337
+
+  - host: ci.salvemundi.nl
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: ci-service
+          servicePort: 8111

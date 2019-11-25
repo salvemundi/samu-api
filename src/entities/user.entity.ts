@@ -11,7 +11,7 @@ export class User extends BaseEntity {
     @PrimaryGeneratedColumn()
     public id: number;
 
-    @Column({select: false})
+    @Column({select: false, nullable: true})
     public password: string;
 
     @ApiModelProperty()
@@ -62,7 +62,7 @@ export class User extends BaseEntity {
     @Column()
     public activated: boolean;
 
-    @ApiModelProperty({type: Member})
+    @ApiModelProperty({type: Member, required: false})
     @OneToOne(type => Member)
     @JoinColumn()
     public member: Member;

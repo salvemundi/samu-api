@@ -1,8 +1,8 @@
 import { User } from '../../entities/user.entity';
 import { IUserService } from './iuser.service';
-import { Scope } from 'src/entities/scope.entity';
-import { Member } from 'src/entities/member.entity';
-import { Membership } from 'src/entities/membership.entity';
+import { Scope } from '../../entities/scope.entity';
+import { Member } from '../../entities/member.entity';
+import { Membership } from '../../entities/membership.entity';
 
 const randomUser: User = new User();
 randomUser.id = 1;

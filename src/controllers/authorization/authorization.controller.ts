@@ -47,7 +47,7 @@ export class AuthorizationController {
         title: 'register',
         description: 'This call is used to register an user',
     })
-    @ApiResponse({ status: 200, description: 'Registered!' })
+    @ApiResponse({ status: 200, description: 'Registered!', type: User })
     @ApiResponse({ status: 400, description: 'Validation error...'})
     @ApiResponse({ status: 409, description: 'Er bestaat al een gebruiker met die email adres...' })
     @ApiResponse({ status: 500, description: 'Internal server error...' })
@@ -73,7 +73,7 @@ export class AuthorizationController {
         user.member = null;
 
         await this.userService.create(user);
-        return null;
+        return user;
     }
 
     @Get('me')

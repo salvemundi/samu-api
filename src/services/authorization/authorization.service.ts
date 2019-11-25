@@ -1,15 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { User } from '../../entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { IAuthorizationService } from './iAuthorization.service';
+import * as jwt from 'jsonwebtoken';
 
 @Injectable()
 export class AuthorizationService implements IAuthorizationService {
-    constructor(
-        private readonly jwtService: JwtService,
-    ) {}
-
     public async validateUser(email: string, pass: string): Promise<User> {
         const user: User = await User.findOne({where: {email}, select: ['password']});
         if (user && await this.checkPassword(pass, user)) {
@@ -21,20 +17,23 @@ export class AuthorizationService implements IAuthorizationService {
 
     public async genJWT(userId: number, email: string): Promise<string> {
         const data: JWT = { userId, email };
-        return this.jwtService.sign(data);
+        return jwt.sign({
+            exp: Math.floor(Date.now() / 1000) + (60 * 15),
+            data
+        }, process.env.JWT_SECRET);
     }
 
-    public verifyJWT(jwt: string): boolean {
+    public verifyJWT(token: string): boolean {
         try {
-            return !!this.jwtService.verify(jwt);
+            return !!jwt.verify(token, process.env.JWT_SECRET);
 
         } catch (err) {
             return false;
         }
     }
 
-    public decodeJWT(jwt): JWT {
-        return this.jwtService.decode(jwt) as JWT;
+    public decodeJWT(token: string): JWT {
+        return jwt.verify(token, process.env.JWT_SECRET) as JWT;
     }
 
     private checkPassword(password: string, user: User): Promise<boolean> {
