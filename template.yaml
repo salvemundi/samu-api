@@ -44,9 +44,9 @@ spec:
         - name: MOLLIE_API_KEY
           value: "{{mollie_key}}"
         - name: MOLLIE_REDIRECT_URL
-          value: "https://salvemundi.nl/home"
+          value: "https://salvemundi.nl/home/"
         - name: MOLLIE_WEBHOOK_URL
-          value: "https://api.salvemundi.nl/webhook"
+          value: "https://api.salvemundi.nl/webhook/"
         - name: SENDGRID_USERNAME
           value: "{{sendgrid_user}}"
         - name: SENDGRID_APIKEY
