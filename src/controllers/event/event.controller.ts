@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Put } from "@nestjs/common";
+import { Controller, Post, Body, Get, Put, Delete } from "@nestjs/common";
 import { EventService } from "../../services/event/event.service";
 import { Me } from "../../decorators/me.decorator";
 import { User } from "../../entities/user.entity";
@@ -7,6 +7,7 @@ import { Event } from "../../entities/event.entity";
 import EventSignupDto from "../../dto/event/signup-event-dto";
 import { EventSignup } from "../../entities/eventsignup.entity";
 import UpdateEventDto from "../../dto/event/update-event-dto";
+import DeleteEventDto from "src/dto/event/delete-event-dto";
 
 @Controller("/events")
 export class EventController {
@@ -49,5 +50,11 @@ export class EventController {
         event.memberPrice = updateEventDto.memberPrice;
         event.notMemberPrice = updateEventDto.notMemberPrice;
         return await event.save();
+    }
+
+    @Delete("delete")
+    async deleteEvent(@Me() user: User, deleteEventDto: DeleteEventDto) {
+        var event: Event = await this.eventService.readOne(deleteEventDto.eventId);
+        this.eventService.deleteEvent(deleteEventDto.eventId, deleteEventDto.contactSignups);
     }
 }

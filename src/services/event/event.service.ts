@@ -10,16 +10,24 @@ import { sign } from "crypto";
 export class EventService implements IEventService {
 
     async create(event: Event): Promise<Event> {
-        throw new Error("Method not implemented.");
+        return event.save();
     }
 
-    async readOne(token: number): Promise<Event> {
-        throw new Error("Method not implemented.");
+    async readOne(id: number): Promise<Event> {
+        return Event.findOne({ where: { id } });
     }
 
     async getUserSignup(user: User, event: Event): Promise<EventSignup> {
-        throw new Error("Method not implemented.");
+        return event.eventSignUps.find((eventSignup) => eventSignup.user.id === user.id);
     }
 
+    async deleteEvent(id: number, contactSignups: boolean) {
+        const event = await this.readOne(id);
 
+        if (contactSignups) {
+            // TODO send signups mails
+        }
+
+        event.remove();
+    }
 }
