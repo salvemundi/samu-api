@@ -59,7 +59,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: backend-service
+  name: {{beta}}backend-service
   namespace: salvemundi
 spec:
   type: NodePort

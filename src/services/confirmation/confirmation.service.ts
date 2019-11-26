@@ -10,6 +10,7 @@ export class ConfirmationService implements IConfirmationService {
         const confirmation = new Confirmation();
         confirmation.user = user;
         confirmation.token = uuidv4();
+        console.log(confirmation);
 
         return confirmation.save();
     }
