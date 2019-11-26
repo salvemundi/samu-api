@@ -1,15 +1,21 @@
 import { Controller, Post, Body, HttpCode, Get, Query, Param, Put, NotFoundException, Delete } from '@nestjs/common';
-import { CommitteeService } from '../../services/committee/committee.service';
+import { CommitteeService } from "../../services/committee/committee.service";
 import { Committee } from '../../entities/committee.entity';
-import { CreateCommissionDto } from '../../dto/commission/create-commission-dto';
+import { CreateCommissionDto } from '../../dto/committee/create-commission-dto';
 import { ApiUseTags, ApiResponse, ApiOperation } from '@nestjs/swagger';
-import { UpdateCommissionDto } from '../../dto/commission/update-commission-dto';
+import { UpdateCommissionDto } from '../../dto/committee/update-commission-dto';
 import { Auth } from '../../decorators/auth.decorator';
+import AddCommitteeMemberDto from 'src/dto/committee/add-committee-member-dto';
+import { UserService } from 'src/services/user/user.service';
+import { User } from 'src/entities/user.entity';
 
 @ApiUseTags('Committee')
 @Controller('committee')
 export class CommitteeController {
-    constructor(private readonly committeeService: CommitteeService) {}
+    constructor(
+        private readonly committeeService: CommitteeService,
+        private readonly userService: UserService
+    ) { }
 
     @Get('/:id')
     @HttpCode(200)
@@ -97,4 +103,20 @@ export class CommitteeController {
 
         this.committeeService.delete(committee);
     }
+
+    @Get("/{committeeName}")
+    async getCommittee(@Param("committeeName") committeeName: string) {
+
+    }
+
+    @Post("/{committeeName}/members/add")
+    async addCommitteeMember(@Param("committeeName") committeeName: string, @Body() addCommitteeMemberDto: AddCommitteeMemberDto) {
+        const user: User = await this.userService.readOne(addCommitteeMemberDto.userId);
+        const committee: Committee = await this.committeeService.getCommitteeByName(committeeName);
+
+        this.committeeService.addMember(committee, user);
+    }
+
+    @Delete("/{committeeName}/members/remove")
+    async removeMembers(@Param("committeeName") committeeName: string, @Body() removeCommitteeMemberDto: RemoveCommitteeMemberDto) { }
 }

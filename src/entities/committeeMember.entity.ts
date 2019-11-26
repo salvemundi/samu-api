@@ -20,4 +20,5 @@ export default class CommitteeMember extends BaseEntity {
     @ManyToOne(type => Committee)
     public committee: Committee;
 
+
 }

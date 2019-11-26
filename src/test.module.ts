@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MemberService } from './services/member/member.service';
 import { AuthorizationController } from './controllers/authorization/authorization.controller';
-import { CommitteeService } from './services/committee/committee.service';
+import { CommitteeService } from "./services/committee/committee.service";
 import { AuthorizationService } from './services/authorization/authorization.service';
 import { UserService } from './services/user/user.service';
 import { UserController } from './controllers/user/user.controller';
@@ -44,4 +44,4 @@ import { MockConfirmationService } from './services/confirmation/mock.confirmati
     },
   ],
 })
-export class TestModule {}
+export class TestModule { }
