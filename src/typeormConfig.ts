@@ -1,6 +1,5 @@
 import * as path from 'path';
 import * as dotenv from 'dotenv';
-import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 
 dotenv.config();
 
@@ -15,4 +14,8 @@ export = {
     database: process.env.DB_NAME,
     synchronize: false,
     migrationsRun: true,
+    cli: {
+        migrationsDir: 'src/migrations',
+        entitiesDir: 'scr/entities'
+    }
 };

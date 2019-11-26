@@ -13,7 +13,7 @@ export class PaymentService {
         this.mollieClient = createMollieClient({ apiKey: process.env.MOLLIE_API_KEY });
     }
 
-    async createPayment(user: User, product: IPurchasable): Promise<Payment> {
+    async createPayment(user: User, product: IPurchasable, redirectUrl: string, webhookUrl: string): Promise<Payment> {
         const transaction: Transaction = new Transaction();
         transaction.price = product.price;
         transaction.description = product.description + user.firstName + ' ' + user.lastName;
@@ -29,8 +29,8 @@ export class PaymentService {
             metadata: [
                 { transaction_id: transaction.id },
             ],
-            redirectUrl: process.env.MOLLIE_REDIRECT_URL,
-            webhookUrl: process.env.MOLLIE_WEBHOOK_URL + '/webhook/membership',
+            redirectUrl: process.env.MOLLIE_REDIRECT_URL + redirectUrl,
+            webhookUrl: process.env.MOLLIE_WEBHOOK_URL + webhookUrl,
         });
 
         transaction.status = payment.status;
