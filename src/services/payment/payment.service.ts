@@ -53,7 +53,7 @@ export class PaymentService {
         return this.mollieClient.payments.get(paymentId);
     }
 
-    async getTransaction(id: number) {
-        return Transaction.findOne({where: {id}});
+    async getTransaction(id: number): Promise<Transaction> {
+        return await Transaction.findOne({ where: { id } });
     }
 }

@@ -10,6 +10,7 @@ import { PaymentDTO } from '../../dto/payment/paymentDTO';
 import { Me } from 'src/decorators/me.decorator';
 import { Event } from 'src/entities/event.entity';
 import { EventService } from 'src/services/event/event.service';
+import { EventSignup } from 'src/entities/eventsignup.entity';
 
 @Controller('/payments')
 @ApiUseTags('Payments')
@@ -63,7 +64,13 @@ export class PaymentController {
             description: event.title,
         };
 
-        const payment: Payment = await this.paymentService.createPayment(user, eventSignup, 'checkMail', 'event')
+        const payment: Payment = await this.paymentService.createPayment(user, eventSignup, 'checkMail', 'event');
+        const signUp: EventSignup = await this.eventService.getUserSignup(user, event);
+        const metadata: any = payment.metadata;
+
+        // watch out this might break at some point.
+        signUp.transaction = metadata[0].transaction_id;
+        signUp.save();
 
         const result: PaymentDTO = {
             expiresAt: payment.expiresAt,
