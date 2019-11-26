@@ -18,6 +18,7 @@ export class PaymentService {
         transaction.price = product.price;
         transaction.description = product.description + user.firstName + ' ' + user.lastName;
         transaction.user = user;
+        transaction.status = PaymentStatus.OPEN;
         await transaction.save();
 
         const payment: Payment = await this.mollieClient.payments.create({
