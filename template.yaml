@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: backend
+  name: salvemundi-backend
   namespace: salvemundi
 spec:
   selector:
@@ -65,7 +65,7 @@ spec:
   type: NodePort
   selector:
     app: salvemundi-backend
-    tier: salvemundiBackend
+    tier: backend
   ports:
     - port: 1337
 
