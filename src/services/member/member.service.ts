@@ -25,22 +25,28 @@ export class MemberService implements IMemberService {
 
     async giveMembership(user: User, startDate: Date = new Date(), endDate: Date = null) {
         if (!endDate) {
-            endDate = new Date(new Date().setFullYear(new Date().getFullYear() + 1));
+            endDate = new Date(new Date().setFullYear(startDate.getFullYear() + 1));
         }
 
+        console.log(endDate)
         if (user.member == null) {
-            user.member = new Member();
+            user.member = await new Member().save();
             await user.save();
         }
 
+        console.log(user.member)
         const membership: Membership = new Membership(startDate, endDate);
         membership.member = user.member;
         membership.save();
+        console.log(membership)
     }
 
     async removeMembership(user: User) {
         const memberships: Membership[] = user.member.memberships;
         const activeMembership = memberships.find(x => x.startDate >= new Date() && x.endDate <= new Date());
-        await activeMembership.remove();
+
+        if (activeMembership) {
+            await activeMembership.remove();
+        }
     }
 }

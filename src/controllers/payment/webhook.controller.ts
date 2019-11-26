@@ -2,7 +2,6 @@ import { Body, Post, Controller, HttpCode, BadRequestException, NotFoundExceptio
 import { PaymentService } from '../../services/payment/payment.service';
 import { MemberService } from '../../services/member/member.service';
 import { UserService } from '../../services/user/user.service';
-import { User } from '../../entities/user.entity';
 import { EmailService } from '../../services/email/email.service';
 import { ConfirmationService } from '../../services/confirmation/confirmation.service';
 
@@ -11,7 +10,6 @@ export class WebhookController {
 
     constructor(private readonly paymentService: PaymentService,
                 private readonly memberService: MemberService,
-                private readonly userService: UserService,
                 private readonly emailService: EmailService,
                 private readonly confirmationService: ConfirmationService) {
     }
