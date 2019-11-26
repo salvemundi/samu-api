@@ -7,10 +7,10 @@ import { membershipPrice, membershipDescription } from '../../../constants';
 import { ApiUseTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Payment } from '@mollie/api-client';
 import { PaymentDto } from '../../dto/payment/payment-dto';
-import { Me } from 'src/decorators/me.decorator';
-import { Event } from 'src/entities/event.entity';
-import { EventService } from 'src/services/event/event.service';
-import { EventSignup } from 'src/entities/eventsignup.entity';
+import { Event } from '../../entities/event.entity';
+import { EventService } from '../../services/event/event.service';
+import { EventSignup } from '../../entities/eventsignup.entity';
+import { Me } from '../../decorators/me.decorator';
 
 @Controller('/payments')
 @ApiUseTags('Payments')

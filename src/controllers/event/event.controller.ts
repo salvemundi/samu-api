@@ -7,10 +7,10 @@ import { Event } from "../../entities/event.entity";
 import EventSignupDto from "../../dto/event/signup-event-dto";
 import { EventSignup } from "../../entities/eventsignup.entity";
 import UpdateEventDto from "../../dto/event/update-event-dto";
-import DeleteEventDto from "src/dto/event/delete-event-dto";
-import EventResponseDto from "src/dto/event/event-response-dto";
-import EventPreviewResponseDto from "src/dto/event/event-preview-response-dto";
-import EventSignupResponseDto from "src/dto/event/event-signup-response-dto";
+import DeleteEventDto from "../../dto/event/delete-event-dto";
+import EventResponseDto from "../../dto/event/event-response-dto";
+import EventPreviewResponseDto from "../../dto/event/event-preview-response-dto";
+import EventSignupResponseDto from "../../dto/event/event-signup-response-dto";
 
 @Controller("/events")
 export class EventController {

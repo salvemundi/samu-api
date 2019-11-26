@@ -1,10 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { IEventService } from "./ievent.service";
-import { Event } from "src/entities/event.entity";
-import { User } from "src/entities/user.entity";
-import { promises } from "dns";
-import { EventSignup } from "src/entities/eventsignup.entity";
-import { sign } from "crypto";
+import { Event } from "../../entities/event.entity";
+import { User } from "../../entities/user.entity";
+import { EventSignup } from "../../entities/eventsignup.entity";
 
 @Injectable()
 export class EventService implements IEventService {
