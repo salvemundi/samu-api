@@ -63,7 +63,7 @@ export class User extends BaseEntity {
     public activated: boolean;
 
     @ApiModelProperty({type: Member, required: false})
-    @OneToOne(type => Member)
+    @OneToOne(type => Member, { onDelete: "CASCADE" })
     @JoinColumn()
     public member: Member;
 
@@ -72,6 +72,6 @@ export class User extends BaseEntity {
     @JoinTable()
     public scopes: Scope[];
 
-    @OneToMany(type => Transaction, transaction => transaction.user)
+    @OneToMany(type => Transaction, transaction => transaction.user, { onDelete: "CASCADE" })
     public transactions: Transaction[];
 }
