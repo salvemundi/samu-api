@@ -3,6 +3,7 @@ import { Member } from './member.entity';
 import { Scope } from './scope.entity';
 import { Transaction } from '../entities/transaction.entity';
 import { ApiModelProperty } from '@nestjs/swagger';
+import { Confirmation } from './confirmation.entity';
 
 @Entity()
 export class User extends BaseEntity {
@@ -74,4 +75,7 @@ export class User extends BaseEntity {
 
     @OneToMany(type => Transaction, transaction => transaction.user)
     public transactions: Transaction[];
+
+    @OneToMany(() => Confirmation, c => c.user)
+    public confirmations: Confirmation[];
 }
