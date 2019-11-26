@@ -19,6 +19,7 @@ export class WebhookController {
     @Post('/membership')
     @HttpCode(200)
     async confirmWebhookMembership(@Body() body: any) {
+        console.log(body);
         const payment = await this.paymentService.getMolliePayment(body.id);
         if (!payment) {
             throw new NotFoundException('Payment is not found by Mollie');
