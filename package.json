@@ -4,6 +4,9 @@
   "description": "",
   "author": "",
   "license": "GPL-2.0",
+  "repository": {
+    "url": "https://github.com/salvemundi/samu-api"
+  },
   "scripts": {
     "build": "rm -rf ./dist && tsc -p tsconfig.build.json && ./node_modules/copyfiles/copyfiles -u 1 \"**/*.hbs\" dist/src",
     "start": "nodemon src/main.ts",

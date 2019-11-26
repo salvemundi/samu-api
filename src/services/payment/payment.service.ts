@@ -32,10 +32,12 @@ export class PaymentService {
             ],
             redirectUrl: process.env.MOLLIE_REDIRECT_URL + redirectUrl,
             webhookUrl: process.env.MOLLIE_WEBHOOK_URL + webhookUrl,
-        });
+        }).catch(async () => {
+            transaction.status = PaymentStatus.FAILED;
+            await transaction.save();
 
-        transaction.status = payment.status;
-        await transaction.save();
+            return null;
+        });
 
         return payment;
     }
