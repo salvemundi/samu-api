@@ -1,6 +1,5 @@
 import * as path from 'path';
 import * as dotenv from 'dotenv';
-import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 
 dotenv.config();
 
