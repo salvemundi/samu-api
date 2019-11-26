@@ -10,7 +10,7 @@ export class EmailService {
     private fromEmailAddress = 'noreply@salvemundi.nl';
     private sgOptions  = {
         auth: {
-            api_user: process.env.SENDGRID_USER,
+            api_user: process.env.SENDGRID_USERNAME,
             api_key: process.env.SENDGIRD_APIKEY,
         },
     };
