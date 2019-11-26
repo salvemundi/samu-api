@@ -28,29 +28,29 @@ spec:
         - name: GET_HOSTS_FROM
           value: dns
         - name: DB_HOST
-          value: {{db_host}}
+          value: "{{db_host}}"
         - name: DB_PORT
           value: "{{db_port}}"
         - name: DB_USER
-          value: {{db_user}}
+          value: "{{db_user}}"
         - name: DB_PASSWORD
           value: "{{db_password}}"
         - name: DB_NAME
-          value: {{db_db}}
+          value: "{{db_name}}"
         - name: SERVER_PORT
           value: "1337"
         - name: JWT_SECRET
-          value: {{jwt_secret}}
+          value: "{{jwt_secret}}"
         - name: MOLLIE_API_KEY
-          value: {{mollie_key}}
+          value: "{{mollie_key}}"
         - name: MOLLIE_REDIRECT_URL
-          value: https://salvemundi.nl/home
+          value: "https://salvemundi.nl/home"
         - name: MOLLIE_WEBHOOK_URL
-          value: https://api.salvemundi.nl/webhook
+          value: "https://api.salvemundi.nl/webhook"
         - name: SENDGRID_USERNAME
-          value: {{sendgrid_user}}
+          value: "{{sendgrid_user}}"
         - name: SENDGRID_APIKEY
-          value: {{sendgrid_api}}
+          value: "{{sendgrid_api}}"
         ports:
         - containerPort: 1337
 
