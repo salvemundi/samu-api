@@ -44,9 +44,9 @@ spec:
         - name: MOLLIE_API_KEY
           value: "{{mollie_key}}"
         - name: MOLLIE_REDIRECT_URL
-          value: "https://{{beta-site-link}}salvemundi.nl/home/"
+          value: "https://{{beta_site_link}}salvemundi.nl/home/"
         - name: MOLLIE_WEBHOOK_URL
-          value: "https://{{beta-link}}api.salvemundi.nl/webhook/"
+          value: "https://{{beta_link}}api.salvemundi.nl/webhook/"
         - name: SENDGRID_APIKEY
           value: "{{sendgrid_api}}"
         ports:
