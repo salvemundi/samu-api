@@ -9,7 +9,7 @@ class Url {
 }
 
 // tslint:disable-next-line: max-classes-per-file
-export class PaymentDTO {
+export class PaymentDto {
     @ApiModelProperty({required: true, type: Url})
     public url: Url;
 

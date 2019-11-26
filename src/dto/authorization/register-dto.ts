@@ -1,7 +1,7 @@
 import { ApiModelProperty } from '@nestjs/swagger';
 import { MaxLength, IsNotEmpty, IsEmail } from 'class-validator';
 
-export class RegisterDTO {
+export class RegisterDto {
     @ApiModelProperty({required: true, maxLength: 255})
     @IsNotEmpty()
     @MaxLength(255)

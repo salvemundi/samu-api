@@ -1,7 +1,7 @@
 import { ApiModelProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsUUID } from 'class-validator';
 
-export class ConfirmationDTO {
+export class ConfirmationDto {
     @ApiModelProperty()
     @IsNotEmpty()
     @IsUUID('4')

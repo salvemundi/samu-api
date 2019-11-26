@@ -1,15 +1,15 @@
 import { Controller, Post, Res, Body, UnauthorizedException, BadRequestException, HttpCode, Get, Query, ConflictException, NotFoundException } from '@nestjs/common';
 import { Response } from 'express';
 import { AuthorizationService } from '../../services/authorization/authorization.service';
-import { RegisterDTO } from '../../dto/authorization/RegisterDTO';
-import { LoginDTO } from '../../dto/authorization/LoginDTO';
+import { RegisterDto } from '../../dto/authorization/register-dto';
+import { LoginDto } from '../../dto/authorization/login-dto';
 import { User } from '../../entities/user.entity';
 import { UserService } from '../../services/user/user.service';
 import * as bcrypt from 'bcrypt';
 import { ApiResponse, ApiUseTags, ApiOperation } from '@nestjs/swagger';
 import axios from 'axios';
-import { MeDTO } from '../../dto/authorization/MeDTO';
-import { ConfirmationDTO } from '../../dto/authorization/confirmationDTO';
+import { MeDto } from '../../dto/authorization/me-dto';
+import { ConfirmationDto } from '../../dto/authorization/confirmation-dto';
 import { ConfirmationService } from '../../services/confirmation/confirmation.service';
 
 @ApiUseTags('Authorization')
@@ -31,7 +31,7 @@ export class AuthorizationController {
     @ApiResponse({ status: 200, description: 'Logged in!' })
     @ApiResponse({ status: 401, description: 'Email or password is incorrect...' })
     @ApiResponse({ status: 500, description: 'Internal server error...' })
-    async login(@Res() res: any, @Body() body: LoginDTO) {
+    async login(@Res() res: any, @Body() body: LoginDto) {
         const user: User = await this.authorizationService.validateUser(body.email, body.password);
         if (user === null) {
             throw new UnauthorizedException('Email or password is incorrect...');
@@ -51,7 +51,7 @@ export class AuthorizationController {
     @ApiResponse({ status: 400, description: 'Validation error...'})
     @ApiResponse({ status: 409, description: 'Er bestaat al een gebruiker met die email adres...' })
     @ApiResponse({ status: 500, description: 'Internal server error...' })
-    async regiser(@Body() body: RegisterDTO) {
+    async regiser(@Body() body: RegisterDto) {
         if (await this.userService.exists(body.email)) {
             throw new ConflictException('Er bestaat al een gebruiker met die email adres...');
         }
@@ -82,13 +82,13 @@ export class AuthorizationController {
         title: 'me',
         description: 'This call is used to get the user from the FHICT api',
     })
-    @ApiResponse({ status: 200, description: 'Geregisteerd!', type: MeDTO })
+    @ApiResponse({ status: 200, description: 'Geregisteerd!', type: MeDto })
     @ApiResponse({ status: 400, description: 'Incorrecte Oauth token verkregen...' })
     @ApiResponse({ status: 500, description: 'Internal server error...' })
     async me(@Query('token') token: string) {
         try {
             const {data} = await axios.get('https://api.fhict.nl/people/me', {headers: {Authorization: 'bearer ' + token}});
-            const me: MeDTO = {
+            const me: MeDto = {
                 firstName: data.givenName,
                 lastName: data.surName,
                 email: data.mail,
@@ -111,7 +111,7 @@ export class AuthorizationController {
     @ApiResponse({ status: 400, description: 'Validation error...' })
     @ApiResponse({ status: 404, description: 'The token does not correspond to a confirmation...'})
     @ApiResponse({ status: 500, description: 'Internal server error...' })
-    async confirmEmail(@Res() res: Response, @Body() body: ConfirmationDTO) {
+    async confirmEmail(@Res() res: Response, @Body() body: ConfirmationDto) {
         const confirmation = await this.confirmationService.readOne(body.token);
         if (!confirmation) {
             throw new NotFoundException('Confirmation not found...');

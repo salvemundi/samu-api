@@ -2,8 +2,8 @@ import { Test } from '@nestjs/testing';
 import * as request from 'supertest';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { TestModule } from '../../test.module';
-import { LoginDTO } from '../../dto/authorization/LoginDTO';
-import { RegisterDTO } from 'src/dto/authorization/RegisterDTO';
+import { LoginDto } from '../../dto/authorization/login-dto';
+import { RegisterDto } from 'src/dto/authorization/register-dto';
 
 describe('Authorization Controller', () => {
   let app: INestApplication;
@@ -26,7 +26,7 @@ describe('Authorization Controller', () => {
   // Tests
   describe('/authentication/login - Login user', () => {
     it('Correct call - Should return 200 with a cookie', () => {
-      const loginDto: LoginDTO = {
+      const loginDto: LoginDto = {
         email: 'admin@test.com',
         password: 'admin',
       };
@@ -39,7 +39,7 @@ describe('Authorization Controller', () => {
     });
 
     it('Wrong credentials - Should return 401', () => {
-      const loginDto: LoginDTO = {
+      const loginDto: LoginDto = {
         email: 'admin@gmail.com',
         password: 'admin',
       };
@@ -51,7 +51,7 @@ describe('Authorization Controller', () => {
 
   describe('/authentication/register - Register user', () => {
     it('Correct call - Should return 200 with a cookie', () => {
-      const registerDto: RegisterDTO = {
+      const registerDto: RegisterDto = {
         email: 'admin@test.com',
         firstName: 'Salve',
         lastName: 'Mundi',
@@ -72,7 +72,7 @@ describe('Authorization Controller', () => {
     });
 
     it('Correct call - Should return 400 without a cookie', () => {
-      const registerDto: RegisterDTO = {
+      const registerDto: RegisterDto = {
         email: 'admin@gmail.com',
         firstName: 'Salve',
         lastName: 'Mundi',

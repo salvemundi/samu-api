@@ -6,7 +6,7 @@ import IPurchasable from '../../entities/interface/purchasable.interface';
 import { membershipPrice, membershipDescription } from '../../../constants';
 import { ApiUseTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Payment } from '@mollie/api-client';
-import { PaymentDTO } from '../../dto/payment/paymentDTO';
+import { PaymentDto } from '../../dto/payment/payment-dto';
 import { Me } from 'src/decorators/me.decorator';
 import { Event } from 'src/entities/event.entity';
 import { EventService } from 'src/services/event/event.service';
@@ -26,10 +26,10 @@ export class PaymentController {
         title: 'membership',
         description: 'This call is creates a payment for a new membership',
     })
-    @ApiResponse({ status: 200, description: 'Payment created', type: PaymentDTO })
+    @ApiResponse({ status: 200, description: 'Payment created', type: PaymentDto })
     @ApiResponse({ status: 404, description: 'User is not found' })
     @ApiResponse({ status: 500, description: 'Internal server error...' })
-    public async createPaymentForMembership(@Query('id') userId: number): Promise<PaymentDTO> {
+    public async createPaymentForMembership(@Query('id') userId: number): Promise<PaymentDto> {
         const user: User = await this.userService.readOne(userId);
         if (!user) {
             throw new NotFoundException('User is not found...');
@@ -41,7 +41,7 @@ export class PaymentController {
         };
 
         const payment: Payment = await this.paymentService.createPayment(user, membership, 'checkEmail', 'membership');
-        const result: PaymentDTO = {
+        const result: PaymentDto = {
             expiresAt: payment.expiresAt,
             url: payment._links.checkout,
         };
@@ -54,9 +54,9 @@ export class PaymentController {
         title: 'event',
         description: 'This call is creates a payment for an event',
     })
-    @ApiResponse({ status: 200, description: 'Payment created', type: PaymentDTO })
+    @ApiResponse({ status: 200, description: 'Payment created', type: PaymentDto })
     @ApiResponse({ status: 500, description: 'Internal server error...' })
-    async createPaymentForEvent(@Me() user: User, @Param("id") eventId: number): Promise<PaymentDTO> {
+    async createPaymentForEvent(@Me() user: User, @Param("id") eventId: number): Promise<PaymentDto> {
         const event: Event = await this.eventService.readOne(eventId);
 
         const eventSignup: IPurchasable = {
@@ -72,7 +72,7 @@ export class PaymentController {
         signUp.transaction = metadata[0].transaction_id;
         signUp.save();
 
-        const result: PaymentDTO = {
+        const result: PaymentDto = {
             expiresAt: payment.expiresAt,
             url: payment._links.checkout,
         };

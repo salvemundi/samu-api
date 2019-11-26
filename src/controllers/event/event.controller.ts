@@ -46,8 +46,8 @@ export class EventController {
     @Post("signup")
     async signup(@Me() user: User, @Body() eventSignupDto: EventSignupDto): Promise<EventSignupResponseDto> {
         const event: Event = await this.eventService.readOne(eventSignupDto.eventId);
-        await this.eventService.signUp(user, event);
-
+        const signup: EventSignup = await this.eventService.signUp(user, event);
+        return new EventSignupResponseDto(signup);
     }
 
     @Put("update")
