@@ -31,11 +31,16 @@ export class WebhookController {
         }
 
         if (payment.isPaid() && !payment.hasRefunds()) {
+            console.log(payment);
             await this.memberService.giveMembership(transaction.user);
+            console.log('membership given')
             await this.paymentService.transactionPaid(transaction);
+            console.log('transaction paid')
 
             const confirmation = await this.confirmationService.create(transaction.user);
+            console.log('confirmation created')
             await this.emailService.sendEmailConfirmationEmail(transaction.user, confirmation);
+            console.log('email send')
             return;
 
         } else if (payment.hasRefunds) {
