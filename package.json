@@ -5,7 +5,7 @@
   "author": "",
   "license": "GPL-2.0",
   "scripts": {
-    "build": "tsc -p tsconfig.build.json && ./node_modules/copyfiles/copyfiles -u 1 \"**/*.hbs\" dist/src",
+    "build": "rm -rf ./dist && tsc -p tsconfig.build.json && ./node_modules/copyfiles/copyfiles -u 1 \"**/*.hbs\" dist/src",
     "start": "nodemon src/main.ts",
     "test": "jest --coverage --coverageReporters=text-lcov | coveralls",
     "testLocal": "jest --coverage",
