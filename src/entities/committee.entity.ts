@@ -1,5 +1,6 @@
-import { PrimaryGeneratedColumn, Column, BaseEntity, Entity } from 'typeorm';
+import { PrimaryGeneratedColumn, Column, BaseEntity, Entity, OneToMany } from 'typeorm';
 import { ApiModelProperty } from '@nestjs/swagger';
+import CommitteeMember from './committeeMember.entity';
 
 @Entity()
 export class Committee extends BaseEntity {
@@ -26,4 +27,7 @@ export class Committee extends BaseEntity {
     @ApiModelProperty({type: String, format: 'date'})
     @Column({name: 'created'})
     public created: Date;
+
+    @OneToMany(type => CommitteeMember, committeeMember => committeeMember.committee)
+    public members: CommitteeMember[];
 }
