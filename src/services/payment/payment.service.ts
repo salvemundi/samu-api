@@ -57,6 +57,6 @@ export class PaymentService {
     }
 
     async getTransaction(id: number) {
-        return Transaction.findOne({where: {id}});
+        return Transaction.findOne({where: {id}, relations: ['user']});
     }
 }
