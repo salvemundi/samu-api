@@ -6,19 +6,19 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: salvemundi-backend
+      app: {{beta}}salvemundi-backend
       tier: backend
   replicas: 1
   template:
     metadata:
-      name: salvemundi-backend
+      name: {{beta}}salvemundi-backend
       namespace: salvemundi
       labels:
-        app: salvemundi-backend
+        app: {{beta}}salvemundi-backend
         tier: backend
     spec:
       containers:
-      - name: salvemundi-backend
+      - name: {{beta}}salvemundi-backend
         image: svsalvemundi/backend:{{samu_backend_version}}
         resources:
           requests:
@@ -62,7 +62,7 @@ metadata:
 spec:
   type: NodePort
   selector:
-    app: salvemundi-backend
+    app: {{beta}}salvemundi-backend
     tier: backend
   ports:
     - port: 1337
