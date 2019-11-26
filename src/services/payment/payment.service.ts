@@ -16,7 +16,7 @@ export class PaymentService {
     async createPayment(user: User, product: IPurchasable, redirectUrl: string, webhookUrl: string): Promise<Payment> {
         const transaction: Transaction = new Transaction();
         transaction.price = product.price;
-        transaction.description = product.description + user.firstName + ' ' + user.lastName;
+        transaction.description = `${product.description} - ${user.firstName} ${user.lastName}`;
         transaction.user = user;
         await transaction.save();
 

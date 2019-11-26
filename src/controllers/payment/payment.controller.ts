@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Query, NotFoundException } from '@nestjs/common';
+import { Controller, Post, Body, Get, Query, NotFoundException, Param } from '@nestjs/common';
 import { PaymentService } from '../../services/payment/payment.service';
 import { UserService } from '../../services/user/user.service';
 import { User } from '../../entities/user.entity';
@@ -9,6 +9,7 @@ import { Payment } from '@mollie/api-client';
 import { PaymentDTO } from '../../dto/payment/paymentDTO';
 import { Me } from 'src/decorators/me.decorator';
 import { Event } from 'src/entities/event.entity';
+import { EventService } from 'src/services/event/event.service';
 
 @Controller('/payments')
 @ApiUseTags('Payments')
@@ -16,6 +17,7 @@ export class PaymentController {
     constructor(
         readonly paymentService: PaymentService,
         readonly userService: UserService,
+        readonly eventService: EventService
     ) { }
 
     @Get('/membership')
@@ -46,21 +48,23 @@ export class PaymentController {
     }
 
 
-    @Get('/event')
+    @Get('/event/{id}')
     @ApiOperation({
-        title: 'membership',
-        description: 'This call is creates a payment for a new membership',
+        title: 'event',
+        description: 'This call is creates a payment for an event',
     })
     @ApiResponse({ status: 200, description: 'Payment created', type: PaymentDTO })
     @ApiResponse({ status: 500, description: 'Internal server error...' })
-    public async createPaymentForEvent(@Me() user: User, event: Event): Promise<PaymentDTO> {
+    async createPaymentForEvent(@Me() user: User, @Param("id") eventId: number): Promise<PaymentDTO> {
+        const event: Event = await this.eventService.readOne(eventId);
+
         const eventSignup: IPurchasable = {
             price: event.memberPrice,
-            description: membershipDescription,
+            description: event.title,
         };
 
-        const payment: Payment = await this.paymentService.createPayment(user, eventSignup);
-        
+        const payment: Payment = await this.paymentService.createPayment(user, eventSignup, 'checkMail', 'event')
+
         const result: PaymentDTO = {
             expiresAt: payment.expiresAt,
             url: payment._links.checkout,

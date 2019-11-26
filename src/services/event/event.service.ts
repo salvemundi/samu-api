@@ -35,4 +35,11 @@ export class EventService implements IEventService {
     async getUserSignup(user: User, event: Event): Promise<EventSignup> {
         return event.eventSignUps.find((eventSignup) => eventSignup.user.id === user.id);
     }
+
+    async signUp(user: User, event: Event): Promise<EventSignup> {
+        const eventSignup: EventSignup = new EventSignup();
+        eventSignup.user = user;
+        eventSignup.event = event;
+        return await eventSignup.save();
+    }
 }

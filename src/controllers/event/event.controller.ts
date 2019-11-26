@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Put, Delete } from "@nestjs/common";
+import { Controller, Post, Body, Get, Put, Delete, Param } from "@nestjs/common";
 import { EventService } from "../../services/event/event.service";
 import { Me } from "../../decorators/me.decorator";
 import { User } from "../../entities/user.entity";
@@ -8,11 +8,25 @@ import EventSignupDto from "../../dto/event/signup-event-dto";
 import { EventSignup } from "../../entities/eventsignup.entity";
 import UpdateEventDto from "../../dto/event/update-event-dto";
 import DeleteEventDto from "src/dto/event/delete-event-dto";
+import EventResponseDto from "src/dto/event/event-response-dto";
+import EventPreviewResponseDto from "src/dto/event/event-preview-response-dto";
+import EventSignupResponseDto from "src/dto/event/event-signup-response-dto";
 
 @Controller("/events")
 export class EventController {
 
     constructor(private readonly eventService: EventService) { }
+
+    @Get("/page/{page}")
+    async getEvents(@Param("page") page: number): Promise<EventPreviewResponseDto[]> {
+        // return this.eventService.
+        return null;
+    }
+
+    @Get("{id}")
+    async getEvent(@Param("id") id: number): Promise<EventResponseDto> {
+        return new EventResponseDto(await this.eventService.readOne(id));
+    }
 
     @Post("create")
     async createEvent(@Me() user: User, @Body() eventDto: CreateEventDto): Promise<Event> {
@@ -30,11 +44,10 @@ export class EventController {
     }
 
     @Post("signup")
-    async signup(@Me() user: User, @Body() eventSignupDto: EventSignupDto) {
-        let eventSignup: EventSignup = new EventSignup();
-        eventSignup.user = user;
-        eventSignup.event = await this.eventService.readOne(eventSignupDto.eventId);
-        await eventSignup.save();
+    async signup(@Me() user: User, @Body() eventSignupDto: EventSignupDto) : Promise<EventSignupResponseDto> {
+        const event: Event = await this.eventService.readOne(eventSignupDto.eventId);
+        await this.eventService.signUp(user, event);
+        
     }
 
     @Put("update")

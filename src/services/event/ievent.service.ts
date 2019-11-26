@@ -8,5 +8,5 @@ export interface IEventService {
     update(event: Event): Promise<Event>;
     remove(id: number, contactSignups?: boolean): void;
     getUserSignup(user: User, event: Event): Promise<EventSignup>;
-
+    signUp(user: User, event: Event): void;
 }
