@@ -72,6 +72,6 @@ export class User extends BaseEntity {
     @JoinTable()
     public scopes: Scope[];
 
-    @OneToMany(type => Transaction, transaction => transaction.user, { onDelete: "CASCADE" })
+    @OneToMany(type => Transaction, transaction => transaction.user)
     public transactions: Transaction[];
 }
