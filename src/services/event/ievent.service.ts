@@ -5,8 +5,8 @@ import { EventSignup } from "src/entities/eventsignup.entity";
 export interface IEventService {
     create(event: Event): Promise<Event>;
     readOne(id: number): Promise<Event>;
-
-    deleteEvent(id: number, contactSignups: boolean);
+    update(event: Event): Promise<Event>;
+    remove(id: number, contactSignups?: boolean): void;
     getUserSignup(user: User, event: Event): Promise<EventSignup>;
 
 }

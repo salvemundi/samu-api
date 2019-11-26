@@ -9,6 +9,9 @@ export class Event extends BaseEntity {
     @PrimaryGeneratedColumn()
     public id: number;
 
+    @Column({ default: true })
+    public active: boolean;
+
     @Column()
     public title: string;
 

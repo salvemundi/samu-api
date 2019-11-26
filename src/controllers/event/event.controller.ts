@@ -55,6 +55,6 @@ export class EventController {
     @Delete("delete")
     async deleteEvent(@Me() user: User, deleteEventDto: DeleteEventDto) {
         var event: Event = await this.eventService.readOne(deleteEventDto.eventId);
-        this.eventService.deleteEvent(deleteEventDto.eventId, deleteEventDto.contactSignups);
+        this.eventService.remove(deleteEventDto.eventId, deleteEventDto.contactSignups);
     }
 }

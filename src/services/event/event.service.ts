@@ -9,6 +9,10 @@ import { sign } from "crypto";
 @Injectable()
 export class EventService implements IEventService {
 
+    async update(event: Event): Promise<Event> {
+        return await event.save();
+    }
+
     async create(event: Event): Promise<Event> {
         return event.save();
     }
@@ -17,17 +21,18 @@ export class EventService implements IEventService {
         return Event.findOne({ where: { id } });
     }
 
-    async getUserSignup(user: User, event: Event): Promise<EventSignup> {
-        return event.eventSignUps.find((eventSignup) => eventSignup.user.id === user.id);
-    }
-
-    async deleteEvent(id: number, contactSignups: boolean) {
+    async remove(id: number, contactSignups?: boolean) {
         const event = await this.readOne(id);
 
         if (contactSignups) {
             // TODO send signups mails
         }
 
-        event.remove();
+        event.active = false;
+        await this.update(event);
+    }
+
+    async getUserSignup(user: User, event: Event): Promise<EventSignup> {
+        return event.eventSignUps.find((eventSignup) => eventSignup.user.id === user.id);
     }
 }
