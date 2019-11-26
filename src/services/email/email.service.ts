@@ -9,7 +9,7 @@ import { Confirmation } from '../../entities/confirmation.entity';
 export class EmailService {
     private fromEmailAddress = 'noreply@salvemundi.nl';
     private sgOptions  = {
-        apiKey: process.env.SENDGIRD_APIKEY,
+        apiKey: process.env.SENDGRID_APIKEY,
     };
 
     private hbsOptions = {
