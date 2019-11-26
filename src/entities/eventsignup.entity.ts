@@ -15,9 +15,8 @@ export class EventSignup extends BaseEntity {
     @ManyToOne(type => Event)
     public event: Event;
 
-    @ManyToOne(type => Transaction, {nullable: true})
+    @ManyToOne(type => Transaction, { nullable: true })
     public transaction?: Transaction;
-    
 
     @Column({ default: false })
     public cancelled: boolean;
