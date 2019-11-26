@@ -19,7 +19,4 @@ export class Transaction extends BaseEntity {
 
     @Column()
     public description: string;
-
-    @Column({name: 'transaction_id'})
-    public transactionId: number;
 }
