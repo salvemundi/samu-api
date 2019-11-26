@@ -33,9 +33,7 @@ export class WebhookController {
             await this.paymentService.transactionPaid(transaction);
 
             const confirmation = await this.confirmationService.create(transaction.user);
-            console.log('confirmation created')
             await this.emailService.sendEmailConfirmationEmail(transaction.user, confirmation);
-            console.log('email send')
             return;
 
         } else if (payment.hasRefunds) {

@@ -17,10 +17,7 @@ export class AuthorizationService implements IAuthorizationService {
 
     public async genJWT(userId: number, email: string): Promise<string> {
         const data: JWT = { userId, email };
-        return jwt.sign({
-            exp: Math.floor(Date.now() / 1000) + (60 * 15),
-            data
-        }, process.env.JWT_SECRET);
+        return jwt.sign(data, process.env.JWT_SECRET , { expiresIn: '1h'});
     }
 
     public verifyJWT(token: string): boolean {

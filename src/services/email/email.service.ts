@@ -32,6 +32,7 @@ export class EmailService {
             context: {
                 firstName: user.firstName,
                 lastName: user.lastName,
+                baseUrl: process.env.REDIRECT_URL,
                 token: confirmation.token,
             },
         };

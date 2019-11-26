@@ -121,6 +121,8 @@ export class AuthorizationController {
         user.password = await this.encryptPassword(body.password);
 
         await this.userService.update(user);
+        await confirmation.remove();
+
         res.cookie('auth', await this.authorizationService.genJWT(user.id, user.email));
         res.status(200).send(user);
     }

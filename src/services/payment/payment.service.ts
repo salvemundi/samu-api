@@ -30,7 +30,7 @@ export class PaymentService {
             metadata: [
                 { transaction_id: transaction.id },
             ],
-            redirectUrl: process.env.MOLLIE_REDIRECT_URL + redirectUrl,
+            redirectUrl: process.env.REDIRECT_URL + redirectUrl,
             webhookUrl: process.env.MOLLIE_WEBHOOK_URL + webhookUrl,
         }).catch(async (err) => {
             console.error(err);
