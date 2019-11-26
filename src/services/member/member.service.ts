@@ -28,17 +28,14 @@ export class MemberService implements IMemberService {
             endDate = new Date(new Date().setFullYear(startDate.getFullYear() + 1));
         }
 
-        console.log(endDate)
         if (user.member == null) {
             user.member = await new Member().save();
             await user.save();
         }
 
-        console.log(user.member)
         const membership: Membership = new Membership(startDate, endDate);
         membership.member = user.member;
         membership.save();
-        console.log(membership)
     }
 
     async removeMembership(user: User) {
