@@ -1,8 +1,8 @@
 {
   "name": "@salvemundi/samu-api",
-  "version": "2.2.3-beta1",
-  "description": "",
-  "author": "",
+  "version": "2.2.3-beta2",
+  "description": "Salve Mundi API",
+  "author": "SV Salve Mundi",
   "license": "GPL-2.0",
   "repository": {
     "url": "https://github.com/salvemundi/samu-api"

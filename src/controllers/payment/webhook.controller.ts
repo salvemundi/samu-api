@@ -26,12 +26,14 @@ export class WebhookController {
         }
 
         const paymentMetadata: any[] = payment.metadata;
+        console.log(payment);
         const transaction = await this.paymentService.getTransaction(+paymentMetadata[0].transaction_id);
         if (!transaction) {
             throw new NotFoundException('Transaction is not found...');
         }
 
         const user: User = await this.userService.readOne(payment.customerId);
+        console.log(user);
         if (!user) {
             throw new NotFoundException('User is not found...');
         }
