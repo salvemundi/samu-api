@@ -8,6 +8,9 @@ import { Auth } from '../../decorators/auth.decorator';
 import AddCommitteeMemberDto from 'src/dto/committee/add-committee-member-dto';
 import { UserService } from 'src/services/user/user.service';
 import { User } from 'src/entities/user.entity';
+import RemoveCommitteeMemberDto from 'src/dto/committee/remove-committee-member-dto';
+import EditCommitteeMemberDto from 'src/dto/committee/edit-committee-member-dto';
+import CommitteeMember from 'src/entities/committeeMember.entity';
 
 @ApiUseTags('Committee')
 @Controller('committee')
@@ -118,5 +121,20 @@ export class CommitteeController {
     }
 
     @Delete("/{committeeName}/members/remove")
-    async removeMembers(@Param("committeeName") committeeName: string, @Body() removeCommitteeMemberDto: RemoveCommitteeMemberDto) { }
+    async removeMembers(@Param("committeeName") committeeName: string, @Body() removeCommitteeMemberDto: RemoveCommitteeMemberDto) {
+        let committee = await this.committeeService.getCommitteeByName(committeeName);
+
+    }
+
+    @Put("/{committeeName}/members/{memberId}/edit")
+    async editMember(@Param("committeeName") committeeName: string, @Param("memberId") memberId: number, editCommitteeMemberDto: EditCommitteeMemberDto) {
+
+    }
+
+    @Get("/{committeeName}/members/{memberId}")
+    async getCommitteeMember(@Param("committeeName") committeeName: string, @Param("memberId") memberId: number): Promsie<CommitteeMember> {
+        return await this.getCommitteeMember(committeeName, memberId);
+    }
+
+
 }
