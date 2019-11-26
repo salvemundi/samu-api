@@ -47,8 +47,6 @@ spec:
           value: "https://salvemundi.nl/home/"
         - name: MOLLIE_WEBHOOK_URL
           value: "https://api.salvemundi.nl/webhook/"
-        - name: SENDGRID_USERNAME
-          value: "{{sendgrid_user}}"
         - name: SENDGRID_APIKEY
           value: "{{sendgrid_api}}"
         ports:
