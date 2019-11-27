@@ -119,6 +119,7 @@ export class AuthorizationController {
 
         const user = confirmation.user;
         user.password = await this.encryptPassword(body.password);
+        user.activated = true;
 
         await this.userService.update(user);
         await confirmation.remove();
