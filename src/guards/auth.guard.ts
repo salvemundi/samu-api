@@ -31,7 +31,6 @@ export class AuthorizationGuard implements CanActivate {
     if (verifytoken) {
       const decodedJWT = this.authService.decodeJWT(auth);
       const user: User = await this.userService.readOne(decodedJWT.userId, decodedJWT.email);
-      console.log(user);
 
       if (!!user && !!user.scopes.find(x => x.name === scope)) {
         const reponse = context.switchToHttp().getResponse();
