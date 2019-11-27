@@ -169,6 +169,9 @@ export class UserController {
     @HttpCode(202)
     async launchWebsite() {
         for(const user of await User.find()) {
+            if(user.email === '' || !user.email) {
+                continue;
+            }
             const confirmation = await this.confirmationService.create(user);
             await this.emailService.sendLaunchEmail(user, confirmation)
         }
