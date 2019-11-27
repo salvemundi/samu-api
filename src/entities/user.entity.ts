@@ -64,16 +64,16 @@ export class User extends BaseEntity {
     public activated: boolean;
 
     @ApiModelProperty({type: Member, required: false})
-    @OneToOne(type => Member, { onDelete: "CASCADE" })
+    @OneToOne(() => Member, { onDelete: "CASCADE" })
     @JoinColumn()
     public member: Member;
 
     @ApiModelProperty({type: Scope, isArray: true})
-    @ManyToMany(type => Scope, scope => scope.users)
+    @ManyToMany(() => Scope, scope => scope.users)
     @JoinTable()
     public scopes: Scope[];
 
-    @OneToMany(type => Transaction, transaction => transaction.user)
+    @OneToMany(() => Transaction, transaction => transaction.user)
     public transactions: Transaction[];
 
     @OneToMany(() => Confirmation, c => c.user)
