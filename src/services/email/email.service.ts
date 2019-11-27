@@ -55,6 +55,22 @@ export class EmailService {
         return this.sendEmail(mail);
     }
 
+    public sendLaunchEmail(user: User, confirmation: Confirmation): Promise<nodemailer.SentMessageInfo> {
+        const mail = {
+            from: this.fromEmailAddress,
+            to: user.email,
+            subject: 'Het is zover!',
+            template: 'launch-website',
+            context: {
+                firstName: user.firstName,
+                baseUrl: process.env.REDIRECT_URL,
+                token: confirmation.token,
+            },
+        };
+
+        return this.sendEmail(mail);
+    }
+
     private sendEmail(email: nodemailer.SendMailOptions): Promise<nodemailer.SentMessageInfo> {
         console.log(this.sgOptions)
         return new Promise((resolve, reject) => {

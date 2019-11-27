@@ -4,16 +4,18 @@ import { User } from '../../entities/user.entity';
 import { ApiResponse, ApiUseTags, ApiImplicitParam, ApiOperation } from '@nestjs/swagger';
 import { UpdateUserDto } from '../../dto/user/update-user-dto';
 import { Auth } from '../../decorators/auth.decorator';
-import { AuthorizationService } from '../../services/authorization/authorization.service';
 import { SummaryUserDto } from '../../dto/user/summary-user-dto';
 import { Me } from '../../decorators/me.decorator';
+import { EmailService } from '../../services/email/email.service';
+import { ConfirmationService } from '../../services/confirmation/confirmation.service';
 
 @ApiUseTags('User')
 @Controller('user')
 export class UserController {
     constructor(
         private readonly userService: UserService,
-        private readonly authService: AuthorizationService,
+        private readonly emailService: EmailService,
+        private readonly confirmationService: ConfirmationService,
     ) { }
 
     @Get('/me')
@@ -161,5 +163,14 @@ export class UserController {
         }
 
         this.userService.delete(user);
+    }
+
+    @Post('launch')
+    @HttpCode(202)
+    async launchWebsite() {
+        for(const user of await User.find()) {
+            const confirmation = await this.confirmationService.create(user);
+            await this.emailService.sendLaunchEmail(user, confirmation)
+        }
     }
 }
