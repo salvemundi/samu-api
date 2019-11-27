@@ -1,5 +1,5 @@
 import * as nodemailer from 'nodemailer';
-import * as sendgridTransporter from 'nodemailer-sendgrid';
+import * as sendgridTransporter from 'nodemailer-sendgrid-transport';
 import * as hbs from 'nodemailer-express-handlebars';
 import { Injectable } from '@nestjs/common';
 import { User } from '../../entities/user.entity';
@@ -9,7 +9,11 @@ import { Confirmation } from '../../entities/confirmation.entity';
 export class EmailService {
     private fromEmailAddress = 'noreply@salvemundi.nl';
     private sgOptions  = {
-        apiKey: process.env.SENDGRID_APIKEY,
+        service: 'SendGrid',
+        auth: {
+          user: process.env.SENDGRID_USER,
+          pass: process.env.SENDGRID_PASS
+        }
     };
 
     private hbsOptions = {
@@ -72,9 +76,8 @@ export class EmailService {
     }
 
     private sendEmail(email: nodemailer.SendMailOptions): Promise<nodemailer.SentMessageInfo> {
-        console.log(this.sgOptions)
         return new Promise((resolve, reject) => {
-            const mailer = nodemailer.createTransport(sendgridTransporter(this.sgOptions));
+            const mailer = nodemailer.createTransport(this.sgOptions);
             mailer.use('compile', hbs(this.hbsOptions));
 
             mailer.sendMail(email, (err, response) => {

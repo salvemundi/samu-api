@@ -14,4 +14,10 @@ export class MockEmailService {
             resolve(null);
         });
     }
+
+    public sendLaunchEmail(user: User, confirmation: Confirmation): Promise<nodemailer.SentMessageInfo> {
+        return new Promise<nodemailer.SentMessageInfo>((resolve) => {
+            resolve(null);
+        });
+    }
 }
