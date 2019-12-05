@@ -117,7 +117,6 @@ describe('Users Controller', () => {
             userDto.email = 'no-reply@salvemundi.nl';
 
             const expectedUser = userDto as unknown as User;
-            expectedUser.member = null;
 
             return request(app.getHttpServer()).put('/user/').send(userDto)
                 .set('Cookie', ['auth=awesomeJWT; path=/; domain=localhost;'])
