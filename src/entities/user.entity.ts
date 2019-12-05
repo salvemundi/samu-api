@@ -1,9 +1,9 @@
 import { BaseEntity, PrimaryGeneratedColumn, Column, OneToOne, Entity, ManyToMany, JoinTable, JoinColumn, OneToMany } from 'typeorm';
-import { Member } from './member.entity';
 import { Scope } from './scope.entity';
 import { Transaction } from '../entities/transaction.entity';
 import { ApiModelProperty } from '@nestjs/swagger';
 import { Confirmation } from './confirmation.entity';
+import { Membership } from './membership.entity';
 
 @Entity()
 export class User extends BaseEntity {
@@ -63,10 +63,9 @@ export class User extends BaseEntity {
     @Column()
     public activated: boolean;
 
-    @ApiModelProperty({type: Member, required: false})
-    @OneToOne(() => Member, { onDelete: "CASCADE" })
-    @JoinColumn()
-    public member: Member;
+    @ApiModelProperty({type: Membership, isArray: true})
+    @OneToMany(() => Membership, membership => membership.user)
+    public memberships: Membership[];
 
     @ApiModelProperty({type: Scope, isArray: true})
     @ManyToMany(() => Scope, scope => scope.users)
