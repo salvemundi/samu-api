@@ -9,7 +9,6 @@ export class RemovedMemberStructure1575564861294 implements MigrationInterface {
         await queryRunner.query("DROP INDEX `REL_a82e919c7608211cdfa42c57ff` ON `user`", undefined);
         await queryRunner.query("ALTER TABLE `membership` CHANGE `memberId` `userId` int NULL", undefined);
         await queryRunner.query("ALTER TABLE `user` DROP COLUMN `memberId`", undefined);
-        await queryRunner.query("ALTER TABLE `event` DROP COLUMN `active`", undefined);
         await queryRunner.query("ALTER TABLE `membership` ADD CONSTRAINT `FK_eef2d9d9c70cd13bed868afedf4` FOREIGN KEY (`userId`) REFERENCES `user`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION", undefined);
         await queryRunner.query("DROP TABLE `member`");
     }
