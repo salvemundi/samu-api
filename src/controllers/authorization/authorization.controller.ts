@@ -70,7 +70,7 @@ export class AuthorizationController {
         user.activated = false;
         user.pcn = body.pcn;
         user.scopes = [];
-        user.member = null;
+        user.memberships = [];
 
         await this.userService.create(user);
         return user;

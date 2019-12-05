@@ -1,7 +1,6 @@
 import { User } from '../../entities/user.entity';
 import { IUserService } from './iuser.service';
 import { Scope } from '../../entities/scope.entity';
-import { Member } from '../../entities/member.entity';
 import { Membership } from '../../entities/membership.entity';
 
 const randomUser: User = new User();
@@ -18,7 +17,6 @@ randomUser.phoneNumber = '+31 6 12346789';
 randomUser.email = 'admin@gmail.com';
 randomUser.password = 'admin';
 randomUser.registeredSince = new Date();
-randomUser.member = new Member (1, [new Membership(new Date(2019, 1, 1), new Date(2019, 12, 31), 1)]);
 randomUser.scopes = [
     new Scope('user:read', 'Lid bekijken', 1),
     new Scope('user:write', 'Lid bewerken', 2),

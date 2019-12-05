@@ -1,6 +1,6 @@
 import { BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne, Entity } from 'typeorm';
-import { Member } from './member.entity';
 import { ApiModelProperty } from '@nestjs/swagger';
+import { User } from './user.entity';
 
 @Entity()
 export class Membership extends BaseEntity {
@@ -24,6 +24,6 @@ export class Membership extends BaseEntity {
     @Column()
     public endDate: Date;
 
-    @ManyToOne(() => Member, member => member.memberships)
-    public member: Member;
+    @ManyToOne(() => User, user => user.memberships)
+    public user: User;
 }

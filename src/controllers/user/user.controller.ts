@@ -93,8 +93,8 @@ export class UserController {
 
         users.forEach(user => {
             let memberTill = new Date(0);
-            if (user.member) {
-                user.member.memberships.forEach(membership => {
+            if (user.memberships) {
+                user.memberships.forEach(membership => {
                     if (memberTill < membership.endDate) {
                         memberTill = membership.endDate;
                     }
