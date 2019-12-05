@@ -1,4 +1,4 @@
-import { Controller, Post, Res, Body, UnauthorizedException, BadRequestException, HttpCode, Get, Query, ConflictException, NotFoundException } from '@nestjs/common';
+import { Controller, Post, Res, Body, UnauthorizedException, BadRequestException, HttpCode, Get, Query, ConflictException, NotFoundException, InternalServerErrorException } from '@nestjs/common';
 import { Response } from 'express';
 import { AuthorizationService } from '../../services/authorization/authorization.service';
 import { RegisterDTO } from '../../dto/authorization/RegisterDTO';
@@ -87,17 +87,19 @@ export class AuthorizationController {
     @ApiResponse({ status: 500, description: 'Internal server error...' })
     async me(@Query('token') token: string) {
         try {
-            const {data} = await axios.get('https://api.fhict.nl/people/me', {headers: {Authorization: 'bearer ' + token}});
+            const accessData = await axios.post('https://identity.fhict.nl/connect/token', 'grant_type=authorization_code&code=' + token + '&redirect_uri=https://salvemundi.nl/callback&client_id=' + process.env.CLIENT_ID + '&client_secret=' + process.env.CLIENT_SECRET, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } });
+
+            const userData = await axios.get('https://api.fhict.nl/people/me', {headers: {Authorization: accessData.data.token_type + ' ' + accessData.data.access_token}});
             const me: MeDTO = {
-                firstName: data.givenName,
-                lastName: data.surName,
-                email: data.mail,
-                pcn: data.id,
+                firstName: userData.data.givenName,
+                lastName: userData.data.surName,
+                email: userData.data.mail,
+                pcn: userData.data.id,
             };
             return me;
-
         } catch (err) {
-            throw new BadRequestException('Incorrecte Oauth token verkregen...');
+            console.log(err.response);
+            throw new InternalServerErrorException(err);
         }
     }
 
