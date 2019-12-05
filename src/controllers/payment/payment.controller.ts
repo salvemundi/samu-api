@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Query, NotFoundException } from '@nestjs/common';
+import { Controller, Post, Body, Get, Query, NotFoundException, ServiceUnavailableException } from '@nestjs/common';
 import { PaymentService } from '../../services/payment/payment.service';
 import { UserService } from '../../services/user/user.service';
 import { User } from '../../entities/user.entity';
@@ -36,6 +36,10 @@ export class PaymentController {
         };
 
         const payment: Payment = await this.paymentService.createPayment(user, membership, 'checkEmail', 'membership');
+        if (!payment) {
+            throw new ServiceUnavailableException();
+        }
+
         const result: PaymentDTO = {
             expiresAt: payment.expiresAt,
             url: payment._links.checkout,

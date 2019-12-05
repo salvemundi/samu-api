@@ -18,6 +18,7 @@ export class PaymentService {
         transaction.price = product.price;
         transaction.description = product.description + user.firstName + ' ' + user.lastName;
         transaction.user = user;
+        transaction.status = PaymentStatus.OPEN;
         await transaction.save();
 
         const payment: Payment = await this.mollieClient.payments.create({
@@ -29,12 +30,15 @@ export class PaymentService {
             metadata: [
                 { transaction_id: transaction.id },
             ],
-            redirectUrl: process.env.MOLLIE_REDIRECT_URL + redirectUrl,
+            redirectUrl: process.env.REDIRECT_URL + redirectUrl,
             webhookUrl: process.env.MOLLIE_WEBHOOK_URL + webhookUrl,
-        });
+        }).catch(async (err) => {
+            console.error(err);
+            transaction.status = PaymentStatus.FAILED;
+            await transaction.save();
 
-        transaction.status = payment.status;
-        await transaction.save();
+            return null;
+        });
 
         return payment;
     }
@@ -54,6 +58,6 @@ export class PaymentService {
     }
 
     async getTransaction(id: number) {
-        return Transaction.findOne({where: {id}});
+        return Transaction.findOne({where: {id}, relations: ['user']});
     }
 }

@@ -13,6 +13,8 @@ import { MockUserService } from './services/user/mock.user.service';
 import { MockAuthorizationService } from './services/authorization/mock.authorization.service';
 import { ConfirmationService } from './services/confirmation/confirmation.service';
 import { MockConfirmationService } from './services/confirmation/mock.confirmation.service';
+import { EmailService } from './services/email/email.service';
+import { MockEmailService } from './services/email/mock.email.service';
 
 @Module({
   controllers: [
@@ -42,6 +44,10 @@ import { MockConfirmationService } from './services/confirmation/mock.confirmati
       provide: ConfirmationService,
       useClass: MockConfirmationService,
     },
+    {
+      provide: EmailService,
+      useClass: MockEmailService,
+    }
   ],
 })
 export class TestModule {}

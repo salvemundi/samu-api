@@ -34,7 +34,7 @@ export class AuthorizationGuard implements CanActivate {
 
       if (!!user && !!user.scopes.find(x => x.name === scope)) {
         const reponse = context.switchToHttp().getResponse();
-        reponse.cookie('auth', await this.authService.genJWT(user.id, user.email), {secure: false, httpOnly: true});
+        reponse.cookie('auth', await this.authService.genJWT(user.id, user.email));
         return true;
       }
 

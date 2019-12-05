@@ -8,7 +8,7 @@ export class Transaction extends BaseEntity {
     @PrimaryGeneratedColumn()
     public id: number;
 
-    @ManyToOne(type => User, user => user.transactions)
+    @ManyToOne(() => User, user => user.transactions,  { onDelete: "CASCADE" })
     public user: User;
 
     @Column()
@@ -19,7 +19,4 @@ export class Transaction extends BaseEntity {
 
     @Column()
     public description: string;
-
-    @Column({name: 'transaction_id'})
-    public transactionId: number;
 }

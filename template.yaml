@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: backend
+  name: {{beta}}backend
   namespace: salvemundi
 spec:
   selector:
     matchLabels:
-      app: salvemundi-backend
+      app: {{beta}}salvemundi-backend
       tier: backend
   replicas: 1
   template:
     metadata:
-      name: salvemundi-backend
+      name: {{beta}}salvemundi-backend
       namespace: salvemundi
       labels:
-        app: salvemundi-backend
+        app: {{beta}}salvemundi-backend
         tier: backend
     spec:
       containers:
-      - name: salvemundi-backend
+      - name: {{beta}}salvemundi-backend
         image: svsalvemundi/backend:{{samu_backend_version}}
         resources:
           requests:
@@ -43,14 +43,14 @@ spec:
           value: "{{jwt_secret}}"
         - name: MOLLIE_API_KEY
           value: "{{mollie_key}}"
-        - name: MOLLIE_REDIRECT_URL
-          value: "https://salvemundi.nl/home"
+        - name: REDIRECT_URL
+          value: "https://{{beta_site_link}}salvemundi.nl/home/"
         - name: MOLLIE_WEBHOOK_URL
-          value: "https://api.salvemundi.nl/webhook"
-        - name: SENDGRID_USERNAME
+          value: "https://{{beta_link}}api.salvemundi.nl/webhook/"
+        - name: SENDGRID_PASS
+          value: "{{sendgrid_password}}"
+        - name: SENDGRID_USER
           value: "{{sendgrid_user}}"
-        - name: SENDGRID_APIKEY
-          value: "{{sendgrid_api}}"
         ports:
         - containerPort: 1337
 
@@ -59,12 +59,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: backend-service
+  name: {{beta}}backend-service
   namespace: salvemundi
 spec:
   type: NodePort
   selector:
-    app: salvemundi-backend
+    app: {{beta}}salvemundi-backend
     tier: backend
   ports:
     - port: 1337

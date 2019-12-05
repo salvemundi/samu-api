@@ -1,9 +1,12 @@
 {
   "name": "@salvemundi/samu-api",
-  "version": "2.2.0",
-  "description": "",
-  "author": "",
+  "version": "2.2.3",
+  "description": "Salve Mundi API",
+  "author": "SV Salve Mundi",
   "license": "GPL-2.0",
+  "repository": {
+    "url": "https://github.com/salvemundi/samu-api"
+  },
   "scripts": {
     "build": "rm -rf ./dist && tsc -p tsconfig.build.json && ./node_modules/copyfiles/copyfiles -u 1 \"**/*.hbs\" dist/src",
     "start": "nodemon src/main.ts",

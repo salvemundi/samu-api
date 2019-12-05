@@ -35,7 +35,7 @@ export const Me = createParamDecorator(async (data: any, request: Request): Prom
 
         return user; 
 
-    } catch {
+    } catch(err) {
         throw new UnauthorizedException('Token incorrect of verlopen...');
     }
 });
@@ -50,7 +50,7 @@ function decodeJWT(token: string): JWT {
 
     } else {
         // App is not in test mode
-        return jwt.verify(token, process.env.JWT_SECRET).data as JWT;
+        return jwt.verify(token, process.env.JWT_SECRET) as JWT;
     }
 }
 

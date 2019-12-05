@@ -1,7 +1,7 @@
 ![Salve Mundi Logo](/Logo_paars.png)
 # Salve Mundi website API
-[![Coverage Status](https://coveralls.io/repos/github/salvemundi/samu-api/badge.svg?branch=feature/coverall)](https://coveralls.io/github/salvemundi/samu-api?branch=feature/coverall)
-[![Build Status](https://travis-ci.com/salvemundi/samu-api.svg?branch=master)](https://travis-ci.com/salvemundi/samu-api)
+[![Coverage Status](https://coveralls.io/repos/github/salvemundi/samu-api/badge.svg?branch=master)](https://coveralls.io/github/salvemundi/samu-api?branch=master)
+[![Build Status](http://ci.salvemundi.nl/teamcity/app/rest/builds/buildType:(id:SamuApi_Build)/statusIcon)](http://ci.salvemundi.nl)
 
 ## Description
 

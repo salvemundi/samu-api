@@ -1,19 +1,21 @@
-import { Controller, Get, Param, HttpCode, NotFoundException, Body, Put, Delete } from '@nestjs/common';
+import { Controller, Get, Param, HttpCode, NotFoundException, Body, Put, Delete, Post } from '@nestjs/common';
 import { UserService } from '../../services/user/user.service';
 import { User } from '../../entities/user.entity';
 import { ApiResponse, ApiUseTags, ApiImplicitParam, ApiOperation } from '@nestjs/swagger';
 import { UpdateUserDto } from '../../dto/user/update-user-dto';
 import { Auth } from '../../decorators/auth.decorator';
-import { AuthorizationService } from '../../services/authorization/authorization.service';
 import { SummaryUserDto } from '../../dto/user/summary-user-dto';
 import { Me } from '../../decorators/me.decorator';
+import { EmailService } from '../../services/email/email.service';
+import { ConfirmationService } from '../../services/confirmation/confirmation.service';
 
 @ApiUseTags('User')
 @Controller('user')
 export class UserController {
     constructor(
         private readonly userService: UserService,
-        private readonly authService: AuthorizationService,
+        private readonly emailService: EmailService,
+        private readonly confirmationService: ConfirmationService,
     ) { }
 
     @Get('/me')
@@ -27,6 +29,30 @@ export class UserController {
     @ApiResponse({ status: 500, description: 'Internal server error...' })
     async readMe(@Me() me: Promise<User>) {
         return me;
+    }
+
+    @Put('/me')
+    @HttpCode(200)
+    @ApiOperation({
+        title: 'me',
+        description: 'This call is used to update the current user',
+    })
+    @ApiResponse({ status: 200, description: 'Updated you', type: User })
+    @ApiResponse({ status: 404, description: 'Did not found you' })
+    @ApiResponse({ status: 500, description: 'Internal server error...' })
+    async updateMe(@Me() me: User, @Body() body: UpdateUserDto) {
+        me.pcn = body.pcn;
+        me.firstName = body.firstName;
+        me.lastName = body.lastName;
+        me.birthday = body.birthday;
+        me.address = body.address;
+        me.postalcode = body.postalcode;
+        me.city = body.city;
+        me.country = body.country;
+        me.phoneNumber = body.phoneNumber;
+        me.email = body.email;
+
+        return await me.save();
     }
 
     @Get('/:id')
@@ -116,7 +142,7 @@ export class UserController {
         user.phoneNumber = body.phoneNumber;
         user.email = body.email;
 
-        return { User: await this.userService.update(user) };
+        return await this.userService.update(user);
     }
 
     @Delete('/:id')
@@ -137,5 +163,17 @@ export class UserController {
         }
 
         this.userService.delete(user);
+    }
+
+    @Post('launch')
+    @HttpCode(202)
+    async launchWebsite() {
+        for(const user of await User.find()) {
+            if(user.email === '' || !user.email) {
+                continue;
+            }
+            const confirmation = await this.confirmationService.create(user);
+            await this.emailService.sendLaunchEmail(user, confirmation)
+        }
     }
 }

@@ -2,7 +2,6 @@ import { Body, Post, Controller, HttpCode, BadRequestException, NotFoundExceptio
 import { PaymentService } from '../../services/payment/payment.service';
 import { MemberService } from '../../services/member/member.service';
 import { UserService } from '../../services/user/user.service';
-import { User } from '../../entities/user.entity';
 import { EmailService } from '../../services/email/email.service';
 import { ConfirmationService } from '../../services/confirmation/confirmation.service';
 
@@ -11,7 +10,6 @@ export class WebhookController {
 
     constructor(private readonly paymentService: PaymentService,
                 private readonly memberService: MemberService,
-                private readonly userService: UserService,
                 private readonly emailService: EmailService,
                 private readonly confirmationService: ConfirmationService) {
     }
@@ -24,29 +22,23 @@ export class WebhookController {
             throw new NotFoundException('Payment is not found by Mollie');
         }
 
-        const paymentMetadata: any[] = payment.metadata;
+        const paymentMetadata: {transaction_id: number}[] = payment.metadata;
         const transaction = await this.paymentService.getTransaction(+paymentMetadata[0].transaction_id);
         if (!transaction) {
             throw new NotFoundException('Transaction is not found...');
         }
 
-        const user: User = await this.userService.readOne(payment.customerId);
-        if (!user) {
-            throw new NotFoundException('User is not found...');
-        }
-
         if (payment.isPaid() && !payment.hasRefunds()) {
-            // TODO:  Transactions gebruiken om meerdere operations te reversen als er iets fout gaat
-            await this.memberService.giveMembership(user);
+            await this.memberService.giveMembership(transaction.user);
             await this.paymentService.transactionPaid(transaction);
 
-            const confirmation = await this.confirmationService.create(user);
-            await this.emailService.sendEmailConfirmationEmail(user, confirmation);
+            const confirmation = await this.confirmationService.create(transaction.user);
+            await this.emailService.sendEmailConfirmationEmail(transaction.user, confirmation);
             return;
 
         } else if (payment.hasRefunds) {
             await this.paymentService.transactionRefunded(transaction);
-            await this.memberService.removeMembership(user);
+            await this.memberService.removeMembership(transaction.user);
             return;
         }
 

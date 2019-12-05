@@ -3,6 +3,7 @@ import { Member } from './member.entity';
 import { Scope } from './scope.entity';
 import { Transaction } from '../entities/transaction.entity';
 import { ApiModelProperty } from '@nestjs/swagger';
+import { Confirmation } from './confirmation.entity';
 
 @Entity()
 export class User extends BaseEntity {
@@ -63,15 +64,18 @@ export class User extends BaseEntity {
     public activated: boolean;
 
     @ApiModelProperty({type: Member, required: false})
-    @OneToOne(type => Member, { onDelete: "CASCADE" })
+    @OneToOne(() => Member, { onDelete: "CASCADE" })
     @JoinColumn()
     public member: Member;
 
     @ApiModelProperty({type: Scope, isArray: true})
-    @ManyToMany(type => Scope, scope => scope.users)
+    @ManyToMany(() => Scope, scope => scope.users)
     @JoinTable()
     public scopes: Scope[];
 
-    @OneToMany(type => Transaction, transaction => transaction.user, { onDelete: "CASCADE" })
+    @OneToMany(() => Transaction, transaction => transaction.user)
     public transactions: Transaction[];
+
+    @OneToMany(() => Confirmation, c => c.user)
+    public confirmations: Confirmation[];
 }

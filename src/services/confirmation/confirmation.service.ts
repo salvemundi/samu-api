@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { User } from '../../entities/user.entity';
 import { Confirmation } from '../../entities/confirmation.entity';
-import { uuidv4 } from 'uuid/v4';
+import * as uuidv4 from 'uuid/v4';
 import { IConfirmationService } from './iconfirmation.service';
 
 @Injectable()

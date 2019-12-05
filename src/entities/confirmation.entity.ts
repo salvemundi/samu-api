@@ -1,4 +1,4 @@
-import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, OneToOne } from 'typeorm';
+import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { User } from './user.entity';
 
 @Entity()
@@ -9,6 +9,6 @@ export class Confirmation extends BaseEntity {
     @Column()
     public token: string;
 
-    @OneToOne(type => User)
+    @ManyToOne(() => User, user => user.confirmations, {onDelete: "CASCADE"})
     public user: User;
 }
