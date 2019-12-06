@@ -12,7 +12,7 @@ export class User extends BaseEntity {
     @PrimaryGeneratedColumn()
     public id: number;
 
-    @Column({select: false, nullable: true})
+    @Column({ select: false, nullable: true })
     public password: string;
 
     @ApiModelProperty()
@@ -23,7 +23,7 @@ export class User extends BaseEntity {
     @Column()
     public lastName: string;
 
-    @ApiModelProperty({type: String, format: 'date'})
+    @ApiModelProperty({ type: String, format: 'date' })
     @Column()
     public birthday: Date;
 
@@ -48,10 +48,10 @@ export class User extends BaseEntity {
     public phoneNumber: string;
 
     @ApiModelProperty()
-    @Column()
+    @Column({ unique: true })
     public email: string;
 
-    @ApiModelProperty({type: String, format: 'date'})
+    @ApiModelProperty({ type: String, format: 'date' })
     @Column()
     public registeredSince: Date;
 
@@ -63,11 +63,11 @@ export class User extends BaseEntity {
     @Column()
     public activated: boolean;
 
-    @ApiModelProperty({type: Membership, isArray: true})
+    @ApiModelProperty({ type: Membership, isArray: true })
     @OneToMany(() => Membership, membership => membership.user)
     public memberships: Membership[];
 
-    @ApiModelProperty({type: Scope, isArray: true})
+    @ApiModelProperty({ type: Scope, isArray: true })
     @ManyToMany(() => Scope, scope => scope.users)
     @JoinTable()
     public scopes: Scope[];
