@@ -1,7 +1,7 @@
 import { BaseEntity, PrimaryGeneratedColumn, Column, Entity, ManyToMany, JoinTable, OneToMany } from 'typeorm';
 import { Scope } from './scope.entity';
 import { Transaction } from '../entities/transaction.entity';
-import { ApiProperty, ApiExtraModels, getSchemaPath } from '@nestjs/swagger';
+import { ApiProperty, getSchemaPath } from '@nestjs/swagger';
 import { Confirmation } from './confirmation.entity';
 import { Membership } from './membership.entity';
 
@@ -63,7 +63,7 @@ export class User extends BaseEntity {
     @Column()
     public activated: boolean;
 
-    @ApiProperty({isArray: true, type: getSchemaPath('Membership')})
+    @ApiProperty({type: 'array', items: { $ref: getSchemaPath('Membership')} })
     @OneToMany(() => Membership, membership => membership.user)
     public memberships: Membership[];
 
@@ -72,6 +72,7 @@ export class User extends BaseEntity {
     @JoinTable()
     public scopes: Scope[];
 
+    @ApiProperty({isArray: true, type: Transaction})
     @OneToMany(() => Transaction, transaction => transaction.user)
     public transactions: Transaction[];
 
