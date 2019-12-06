@@ -1,15 +1,15 @@
-import { ApiModelProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class MeDTO {
-    @ApiModelProperty()
+    @ApiProperty()
     firstName: string;
 
-    @ApiModelProperty()
+    @ApiProperty()
     lastName: string;
 
-    @ApiModelProperty()
+    @ApiProperty()
     email: string;
 
-    @ApiModelProperty()
+    @ApiProperty()
     pcn: string;
 }

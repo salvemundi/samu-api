@@ -1,5 +1,5 @@
 import { BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne, Entity } from 'typeorm';
-import { ApiModelProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { User } from './user.entity';
 
 @Entity()
@@ -12,15 +12,15 @@ export class Membership extends BaseEntity {
         this.id = id;
     }
 
-    @ApiModelProperty()
+    @ApiProperty()
     @PrimaryGeneratedColumn()
     public id: number;
 
-    @ApiModelProperty({type: String, format: 'date'})
+    @ApiProperty({type: String, format: 'date'})
     @Column()
     public startDate: Date;
 
-    @ApiModelProperty({type: String, format: 'date'})
+    @ApiProperty({type: String, format: 'date'})
     @Column()
     public endDate: Date;
 

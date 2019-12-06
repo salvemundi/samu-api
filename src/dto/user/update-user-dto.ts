@@ -1,51 +1,51 @@
 import { IsNotEmpty } from 'class-validator';
-import { ApiModelProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateUserDto {
-    @ApiModelProperty({required: true})
+    @ApiProperty({required: true})
     @IsNotEmpty()
     public id: number;
 
-    @ApiModelProperty({required: true})
+    @ApiProperty({required: true})
     @IsNotEmpty()
     public pcn: string;
 
-    @ApiModelProperty({required: true, maxLength: 255})
+    @ApiProperty({required: true, maxLength: 255})
     @IsNotEmpty()
     public firstName: string;
 
-    @ApiModelProperty({required: false, maxLength: 255})
+    @ApiProperty({required: false, maxLength: 255})
     public middleName: string;
 
-    @ApiModelProperty({required: true, maxLength: 255})
+    @ApiProperty({required: true, maxLength: 255})
     @IsNotEmpty()
     public lastName: string;
 
-    @ApiModelProperty({required: true, type: String, format: 'date'})
+    @ApiProperty({required: true, type: String, format: 'date'})
     @IsNotEmpty()
     public birthday: Date;
 
-    @ApiModelProperty({required: true, maxLength: 255})
+    @ApiProperty({required: true, maxLength: 255})
     @IsNotEmpty()
     public address: string;
 
-    @ApiModelProperty({required: true, maxLength: 255})
+    @ApiProperty({required: true, maxLength: 255})
     @IsNotEmpty()
     public postalcode: string;
 
-    @ApiModelProperty({required: true, maxLength: 255})
+    @ApiProperty({required: true, maxLength: 255})
     @IsNotEmpty()
     public city: string;
 
-    @ApiModelProperty({required: true, maxLength: 255})
+    @ApiProperty({required: true, maxLength: 255})
     @IsNotEmpty()
     public country: string;
 
-    @ApiModelProperty({required: true, maxLength: 10})
+    @ApiProperty({required: true, maxLength: 10})
     @IsNotEmpty()
     public phoneNumber: string;
 
-    @ApiModelProperty({required: true, maxLength: 255})
+    @ApiProperty({required: true, maxLength: 255})
     @IsNotEmpty()
     public email: string;
 }

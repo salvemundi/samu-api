@@ -4,12 +4,12 @@ import { UserService } from '../../services/user/user.service';
 import { User } from '../../entities/user.entity';
 import IPurchasable from '../../entities/interface/purchasable.interface';
 import { membershipPrice, membershipDescription } from '../../../constants';
-import { ApiUseTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Payment } from '@mollie/api-client';
 import { PaymentDTO } from '../../dto/payment/paymentDTO';
 
 @Controller('/payments')
-@ApiUseTags('Payments')
+@ApiTags('Payments')
 export class PaymentController {
     constructor(
         readonly paymentService: PaymentService,
@@ -18,7 +18,7 @@ export class PaymentController {
 
     @Get('/membership')
     @ApiOperation({
-        title: 'membership',
+        summary: 'membership',
         description: 'This call is creates a payment for a new membership',
     })
     @ApiResponse({ status: 200, description: 'Payment created', type: PaymentDTO })

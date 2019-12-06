@@ -1,18 +1,18 @@
-import { ApiModelProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class SummaryUserDto {
-    @ApiModelProperty()
+    @ApiProperty()
     id: number;
 
-    @ApiModelProperty()
+    @ApiProperty()
     pcn: string;
 
-    @ApiModelProperty()
+    @ApiProperty()
     firstName: string;
 
-    @ApiModelProperty()
+    @ApiProperty()
     lastName: string;
 
-    @ApiModelProperty({type: String, format: 'date'})
+    @ApiProperty({type: String, format: 'date'})
     memberTill: Date;
 }
