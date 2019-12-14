@@ -6,13 +6,13 @@ import { LoginDTO } from '../../dto/authorization/LoginDTO';
 import { User } from '../../entities/user.entity';
 import { UserService } from '../../services/user/user.service';
 import * as bcrypt from 'bcrypt';
-import { ApiResponse, ApiUseTags, ApiOperation } from '@nestjs/swagger';
+import { ApiResponse, ApiTags, ApiOperation } from '@nestjs/swagger';
 import axios from 'axios';
 import { MeDTO } from '../../dto/authorization/MeDTO';
 import { ConfirmationDTO } from '../../dto/authorization/confirmationDTO';
 import { ConfirmationService } from '../../services/confirmation/confirmation.service';
 
-@ApiUseTags('Authorization')
+@ApiTags('Authorization')
 @Controller('/authorization')
 export class AuthorizationController {
 
@@ -25,7 +25,7 @@ export class AuthorizationController {
     @Post('/login')
     @HttpCode(200)
     @ApiOperation({
-        title: 'login',
+        summary: 'login',
         description: 'This call is used to login an user. It will return an authorization cookie when succesful',
     })
     @ApiResponse({ status: 200, description: 'Logged in!' })
@@ -44,7 +44,7 @@ export class AuthorizationController {
     @Post('/register')
     @HttpCode(200)
     @ApiOperation({
-        title: 'register',
+        summary: 'register',
         description: 'This call is used to register an user',
     })
     @ApiResponse({ status: 200, description: 'Registered!', type: User })
@@ -79,7 +79,7 @@ export class AuthorizationController {
     @Get('me')
     @HttpCode(200)
     @ApiOperation({
-        title: 'me',
+        summary: 'me',
         description: 'This call is used to get the user from the FHICT api',
     })
     @ApiResponse({ status: 200, description: 'Geregisteerd!', type: MeDTO })
@@ -106,7 +106,7 @@ export class AuthorizationController {
     @Post('confirmation')
     @HttpCode(200)
     @ApiOperation({
-        title: 'confirmation',
+        summary: 'confirmation',
         description: 'This call is used to activate an user. It will return an authorization cookie when succesful',
     })
     @ApiResponse({ status: 200, description: 'Activated!', type: User })

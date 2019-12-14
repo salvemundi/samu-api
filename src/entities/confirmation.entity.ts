@@ -9,6 +9,6 @@ export class Confirmation extends BaseEntity {
     @Column()
     public token: string;
 
-    @ManyToOne(() => User, user => user.confirmations, {onDelete: "CASCADE"})
+    @ManyToOne(() => User, user => user.confirmations, {onDelete: 'CASCADE'})
     public user: User;
 }

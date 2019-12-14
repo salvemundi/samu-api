@@ -1,5 +1,5 @@
 import { PrimaryGeneratedColumn, Column, BaseEntity, Entity } from 'typeorm';
-import { ApiModelProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()
 export class Committee extends BaseEntity {
@@ -11,19 +11,19 @@ export class Committee extends BaseEntity {
         this.created = created;
     }
 
-    @ApiModelProperty()
+    @ApiProperty()
     @PrimaryGeneratedColumn()
     public id: number;
 
-    @ApiModelProperty()
+    @ApiProperty()
     @Column({name: 'name'})
     public name: string;
 
-    @ApiModelProperty()
+    @ApiProperty()
     @Column({name: 'description'})
     public description: string;
 
-    @ApiModelProperty({type: String, format: 'date'})
+    @ApiProperty({type: String, format: 'date'})
     @Column({name: 'created'})
     public created: Date;
 }
