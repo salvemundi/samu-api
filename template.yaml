@@ -85,11 +85,13 @@ spec:
         - name: REDIRECT_URL
           value: "https://{{beta_site_link}}salvemundi.nl/home/"
         - name: MOLLIE_WEBHOOK_URL
-          value: "https://{{beta_link}}api.salvemundi.nl/webhook/"
+          value: "https://{{beta}}api.salvemundi.nl/webhook/"
         - name: SENDGRID_PASS
           value: "{{sendgrid_password}}"
         - name: SENDGRID_USER
           value: "{{sendgrid_user}}"
+        - name: STORAGE_PATH
+          value: "{{storage}}"
         ports:
         - containerPort: 1337
 

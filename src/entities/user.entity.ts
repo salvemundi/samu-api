@@ -61,6 +61,10 @@ export class User extends BaseEntity {
 
     @ApiProperty()
     @Column()
+    public profilePicture: string;
+
+    @ApiProperty()
+    @Column()
     public activated: boolean;
 
     @ApiProperty({ type: 'array', items: { $ref: getSchemaPath('Membership') } })

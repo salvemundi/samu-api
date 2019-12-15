@@ -49,4 +49,7 @@ export class RegisterDTO {
     @ApiProperty({required: true, maxLength: 7})
     @MaxLength(7)
     pcn: string;
+
+    @ApiProperty({ type: 'string', format: 'binary' })
+    profilePicture: any;
 }

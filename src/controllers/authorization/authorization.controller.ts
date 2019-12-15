@@ -1,16 +1,18 @@
-import { Controller, Post, Res, Body, UnauthorizedException, BadRequestException, HttpCode, Get, Query, ConflictException, NotFoundException, InternalServerErrorException } from '@nestjs/common';
+import { Controller, Post, Res, Body, UnauthorizedException, HttpCode, Get, Query, NotFoundException, InternalServerErrorException, UseInterceptors, UploadedFile, ConflictException } from '@nestjs/common';
 import { Response } from 'express';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthorizationService } from '../../services/authorization/authorization.service';
 import { RegisterDTO } from '../../dto/authorization/RegisterDTO';
 import { LoginDTO } from '../../dto/authorization/LoginDTO';
 import { User } from '../../entities/user.entity';
 import { UserService } from '../../services/user/user.service';
 import * as bcrypt from 'bcrypt';
-import { ApiResponse, ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiResponse, ApiTags, ApiOperation, ApiConsumes } from '@nestjs/swagger';
 import axios from 'axios';
 import { MeDTO } from '../../dto/authorization/MeDTO';
 import { ConfirmationDTO } from '../../dto/authorization/confirmationDTO';
 import { ConfirmationService } from '../../services/confirmation/confirmation.service';
+import { FileService, FileInterface } from '../../services/file/file.service';
 
 @ApiTags('Authorization')
 @Controller('/authorization')
@@ -20,6 +22,7 @@ export class AuthorizationController {
         private readonly authorizationService: AuthorizationService,
         private readonly userService: UserService,
         private readonly confirmationService: ConfirmationService,
+        private readonly fileService: FileService,
     ) { }
 
     @Post('/login')
@@ -42,6 +45,8 @@ export class AuthorizationController {
     }
 
     @Post('/register')
+    @UseInterceptors(FileInterceptor('profilePicture'))
+    @ApiConsumes('multipart/form-data')
     @HttpCode(200)
     @ApiOperation({
         summary: 'register',
@@ -49,12 +54,14 @@ export class AuthorizationController {
     })
     @ApiResponse({ status: 200, description: 'Registered!', type: User })
     @ApiResponse({ status: 400, description: 'Validation error...'})
-    @ApiResponse({ status: 409, description: 'Er bestaat al een gebruiker met die email adres...' })
+    @ApiResponse({ status: 409, description: 'Er bestaat al een gebruiker met dat email adres...' })
     @ApiResponse({ status: 500, description: 'Internal server error...' })
-    async regiser(@Body() body: RegisterDTO) {
+    async regiser(@Body() body: RegisterDTO, @UploadedFile() profilePicture: FileInterface) {
         if (await this.userService.exists(body.email)) {
-            throw new ConflictException('Er bestaat al een gebruiker met die email adres...');
+            throw new ConflictException('Er bestaat al een gebruiker met dat email adres...');
         }
+
+        await this.fileService.saveProfilePicture(profilePicture.originalname, profilePicture.buffer);
 
         const user = new User();
         user.firstName = body.firstName;
@@ -69,6 +76,7 @@ export class AuthorizationController {
         user.registeredSince = new Date();
         user.activated = false;
         user.pcn = body.pcn;
+        user.profilePicture = profilePicture.originalname;
         user.scopes = [];
         user.memberships = [];
 
