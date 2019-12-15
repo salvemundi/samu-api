@@ -21,7 +21,7 @@
     "@nestjs/common": "^6.8.5",
     "@nestjs/core": "^6.8.5",
     "@nestjs/platform-express": "^6.8.5",
-    "@nestjs/swagger": "^3.1.0",
+    "@nestjs/swagger": "^4.0.9",
     "@nestjs/typeorm": "^6.2.0",
     "@types/dotenv": "^8.2.0",
     "@types/nodemailer": "^6.2.2",
