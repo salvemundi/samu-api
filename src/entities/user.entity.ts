@@ -22,8 +22,8 @@ export class User extends BaseEntity {
     @ApiProperty()
     @Column()
     public lastName: string;
-  
-    @ApiModelProperty({ type: String, format: 'date' })
+
+    @ApiProperty({ type: String, format: 'date' })
     @Column()
     public birthday: Date;
 
@@ -47,11 +47,11 @@ export class User extends BaseEntity {
     @Column()
     public phoneNumber: string;
 
-    @ApiModelProperty()
+    @ApiProperty()
     @Column({ unique: true })
     public email: string;
 
-    @ApiModelProperty({ type: String, format: 'date' })
+    @ApiProperty({ type: String, format: 'date' })
     @Column()
     public registeredSince: Date;
 
