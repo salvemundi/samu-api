@@ -23,6 +23,6 @@ export class Scope extends BaseEntity {
     @Column()
     public description: string;
 
-    @ManyToMany(() => User, user => user.scopes)
+    @ManyToMany(() => User, user => user.scopes, { onDelete: 'CASCADE' })
     public users: User[];
 }
