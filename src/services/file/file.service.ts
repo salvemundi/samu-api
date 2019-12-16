@@ -9,7 +9,6 @@ export class FileService {
             this.ensureDirectoryExistence(process.env.STORAGE_PATH + type + name);
             fs.writeFile(process.env.STORAGE_PATH + type + name, buffer, (err) => {
                 if (err) {
-                    console.log(err);
                     rejects(err);
                 }
 
@@ -29,6 +28,10 @@ export class FileService {
 
     public async saveProfilePicture(name: string, buffer: Buffer): Promise<void> {
         await this.saveFile(FileType.PROFILE_PICTURE, name, buffer);
+    }
+
+    public getProfilePicturePath(name: string): string {
+        return process.env.STORAGE_PATH + FileType.PROFILE_PICTURE + name;
     }
 }
 
