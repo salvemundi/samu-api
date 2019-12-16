@@ -56,10 +56,6 @@ spec:
       containers:
       - name: {{beta}}salvemundi-backend
         image: svsalvemundi/backend:{{samu_backend_version}}
-        resources:
-          requests:
-            cpu: 100m
-            memory: 100Mi
         volumeMounts:
           - mountPath: {{storage}}
             name: {{beta}}backend-storage
