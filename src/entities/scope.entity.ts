@@ -1,6 +1,6 @@
 import { BaseEntity, PrimaryGeneratedColumn, Column, ManyToMany, Entity } from 'typeorm';
 import { User } from './user.entity';
-import { ApiModelProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()
 export class Scope extends BaseEntity {
@@ -11,18 +11,18 @@ export class Scope extends BaseEntity {
         this.description = description;
     }
 
-    @ApiModelProperty()
+    @ApiProperty()
     @PrimaryGeneratedColumn()
     public id: number;
 
-    @ApiModelProperty()
+    @ApiProperty()
     @Column()
     public name: string;
 
-    @ApiModelProperty()
+    @ApiProperty()
     @Column()
     public description: string;
 
-    @ManyToMany(type => User, user => user.scopes)
+    @ManyToMany(() => User, user => user.scopes, { onDelete: 'CASCADE' })
     public users: User[];
 }

@@ -1,27 +1,29 @@
-import { Controller, Get, Param, HttpCode, NotFoundException, Body, Put, Delete, Post } from '@nestjs/common';
+import { Controller, Get, Param, HttpCode, NotFoundException, Body, Put, Delete, Res } from '@nestjs/common';
 import { UserService } from '../../services/user/user.service';
 import { User } from '../../entities/user.entity';
-import { ApiResponse, ApiUseTags, ApiImplicitParam, ApiOperation } from '@nestjs/swagger';
+import { ApiResponse, ApiTags, ApiOperation, ApiParam, ApiExtraModels } from '@nestjs/swagger';
 import { UpdateUserDto } from '../../dto/user/update-user-dto';
 import { Auth } from '../../decorators/auth.decorator';
 import { SummaryUserDto } from '../../dto/user/summary-user-dto';
 import { Me } from '../../decorators/me.decorator';
-import { EmailService } from '../../services/email/email.service';
-import { ConfirmationService } from '../../services/confirmation/confirmation.service';
+import { Membership } from '../../entities/membership.entity';
+import { FileService } from '../../services/file/file.service';
+import { Response } from 'express';
 
-@ApiUseTags('User')
+@ApiTags('User')
+@ApiExtraModels(Membership)
 @Controller('user')
 export class UserController {
     constructor(
         private readonly userService: UserService,
-        private readonly emailService: EmailService,
-        private readonly confirmationService: ConfirmationService,
+        private readonly fileService: FileService,
     ) { }
 
     @Get('/me')
     @HttpCode(200)
     @ApiOperation({
-        title: 'me',
+        operationId: 'userReadMe',
+        summary: 'me',
         description: 'This call is used to get the current user',
     })
     @ApiResponse({ status: 200, description: 'Found you', type: User })
@@ -34,7 +36,8 @@ export class UserController {
     @Put('/me')
     @HttpCode(200)
     @ApiOperation({
-        title: 'me',
+        operationId: 'userUpdateMe',
+        summary: 'me',
         description: 'This call is used to update the current user',
     })
     @ApiResponse({ status: 200, description: 'Updated you', type: User })
@@ -59,7 +62,8 @@ export class UserController {
     @Auth('user:read')
     @HttpCode(200)
     @ApiOperation({
-        title: 'getOne',
+        operationId: 'userReadOne',
+        summary: 'getOne',
         description: 'This call is used to get a specific user',
     })
     @ApiResponse({ status: 200, description: 'User found!', type: User })
@@ -79,11 +83,12 @@ export class UserController {
     @Auth('user:read')
     @HttpCode(200)
     @ApiOperation({
-        title: 'getAll',
+        operationId: 'userReadAll',
+        summary: 'getAll',
         description: 'This call is used to get a summary of all the users',
     })
-    @ApiImplicitParam({name: 'skip', required: false, type: Number })
-    @ApiImplicitParam({name: 'take', required: false, type: Number })
+    @ApiParam({name: 'skip', required: false, type: Number })
+    @ApiParam({name: 'take', required: false, type: Number })
     @ApiResponse({ status: 200, description: 'Users within the skip and take parameter', type: SummaryUserDto, isArray: true })
     @ApiResponse({ status: 403, description: 'U do not have the permission to do this...' })
     @ApiResponse({ status: 500, description: 'Internal server error...' })
@@ -117,7 +122,8 @@ export class UserController {
     @Auth('user:write')
     @HttpCode(200)
     @ApiOperation({
-        title: 'update',
+        operationId: 'userUpdateOne',
+        summary: 'update',
         description: 'This call is used to update a user',
     })
     @ApiResponse({ status: 200, description: 'User has been updated!', type: User })
@@ -149,7 +155,8 @@ export class UserController {
     @Auth('user:delete')
     @HttpCode(200)
     @ApiOperation({
-        title: 'delete',
+        operationId: 'userDeleteOne',
+        summary: 'delete',
         description: 'This call is used to delete a user',
     })
     @ApiResponse({ status: 200, description: 'User is deleted!' })
@@ -163,5 +170,16 @@ export class UserController {
         }
 
         this.userService.delete(user);
+    }
+
+    @Get('/:id/photo')
+    @HttpCode(200)
+    async getPicture(@Param('id') id: number, @Res() res: Response) {
+        const user: User = await this.userService.readOne(+id);
+        if (!user) {
+            throw new NotFoundException(`No user found with id: ${id}`);
+        }
+
+        res.download(this.fileService.getProfilePicturePath(user.profilePicture));
     }
 }

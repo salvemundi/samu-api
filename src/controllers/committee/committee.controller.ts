@@ -2,11 +2,11 @@ import { Controller, Post, Body, HttpCode, Get, Query, Param, Put, NotFoundExcep
 import { CommitteeService } from '../../services/committee/committee.service';
 import { Committee } from '../../entities/committee.entity';
 import { CreateCommissionDto } from '../../dto/commission/create-commission-dto';
-import { ApiUseTags, ApiResponse, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiResponse, ApiOperation } from '@nestjs/swagger';
 import { UpdateCommissionDto } from '../../dto/commission/update-commission-dto';
 import { Auth } from '../../decorators/auth.decorator';
 
-@ApiUseTags('Committee')
+@ApiTags('Committee')
 @Controller('committee')
 export class CommitteeController {
     constructor(private readonly committeeService: CommitteeService) {}
@@ -14,7 +14,8 @@ export class CommitteeController {
     @Get('/:id')
     @HttpCode(200)
     @ApiOperation({
-        title: 'getOne',
+        operationId: 'committeeReadOne',
+        summary: 'getOne',
         description: 'This call is used to get a specific committee',
     })
     @ApiResponse({ status: 200, description: 'The committee found', type: Committee })
@@ -32,7 +33,8 @@ export class CommitteeController {
     @Get()
     @HttpCode(200)
     @ApiOperation({
-        title: 'getAll',
+        operationId: 'committeeReadAll',
+        summary: 'getAll',
         description: 'This call is used to get a summary of all the committees',
     })
     @ApiResponse({ status: 200, description: 'Committees within the skip en take parameters', type: Committee, isArray: true })
@@ -45,7 +47,8 @@ export class CommitteeController {
     @Auth('committee:write')
     @HttpCode(200)
     @ApiOperation({
-        title: 'create',
+        operationId: 'committeeCreateOne',
+        summary: 'create',
         description: 'This call is used to create a committee',
     })
     @ApiResponse({ status: 200, description: 'The committee has been created!', type: Committee })
@@ -60,7 +63,8 @@ export class CommitteeController {
     @Auth('committee:write')
     @HttpCode(200)
     @ApiOperation({
-        title: 'update',
+        operationId: 'committeeUpdateOne',
+        summary: 'update',
         description: 'This call is used to update a committee',
     })
     @ApiResponse({ status: 200, description: 'The committee has been updated!', type: Committee })
@@ -83,7 +87,8 @@ export class CommitteeController {
     @Auth('committee:delete')
     @HttpCode(200)
     @ApiOperation({
-        title: 'delete',
+        operationId: 'committeeDeleteOne',
+        summary: 'delete',
         description: 'This call is used to delete a committee',
     })
     @ApiResponse({ status: 200, description: 'Committee deleted!' })

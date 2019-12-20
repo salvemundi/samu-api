@@ -1,3 +1,35 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{beta}}backend-volume
+  namespace: salvemundi
+spec:
+  capacity:
+    storage: 20Gi
+  accessModes:
+  - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: manual
+  hostPath:
+    path: {{storage}}
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{beta}}backend-volume-claim
+  namespace: salvemundi
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 3Gi
+
+---
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -17,13 +49,16 @@ spec:
         app: {{beta}}salvemundi-backend
         tier: backend
     spec:
+      volumes:
+        - name: {{beta}}backend-storage
+          persistentVolumeClaim:
+            claimName: {{beta}}backend-volume-claim
       containers:
       - name: {{beta}}salvemundi-backend
         image: svsalvemundi/backend:{{samu_backend_version}}
-        resources:
-          requests:
-            cpu: 100m
-            memory: 100Mi
+        volumeMounts:
+          - mountPath: {{storage}}
+            name: {{beta}}backend-storage
         env:
         - name: GET_HOSTS_FROM
           value: dns
@@ -46,11 +81,13 @@ spec:
         - name: REDIRECT_URL
           value: "https://{{beta_site_link}}salvemundi.nl/home/"
         - name: MOLLIE_WEBHOOK_URL
-          value: "https://{{beta_link}}api.salvemundi.nl/webhook/"
+          value: "https://{{beta}}api.salvemundi.nl/webhook/"
         - name: SENDGRID_PASS
           value: "{{sendgrid_password}}"
         - name: SENDGRID_USER
           value: "{{sendgrid_user}}"
+        - name: STORAGE_PATH
+          value: "{{storage}}"
         ports:
         - containerPort: 1337
 
@@ -68,4 +105,3 @@ spec:
     tier: backend
   ports:
     - port: 1337
-

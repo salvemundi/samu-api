@@ -1,18 +1,18 @@
-import { ApiModelProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 
 class Url {
-    @ApiModelProperty()
+    @ApiProperty()
     public href: string;
 
-    @ApiModelProperty()
+    @ApiProperty()
     public type: string;
 }
 
 // tslint:disable-next-line: max-classes-per-file
 export class PaymentDTO {
-    @ApiModelProperty({required: true, type: Url})
+    @ApiProperty({required: true, type: Url})
     public url: Url;
 
-    @ApiModelProperty({required: true, type: String, format: 'date-time'})
+    @ApiProperty({required: true, type: String, format: 'date-time'})
     public expiresAt: Date;
 }

@@ -1,18 +1,20 @@
-import { Controller, Post, Res, Body, UnauthorizedException, BadRequestException, HttpCode, Get, Query, ConflictException, NotFoundException, InternalServerErrorException } from '@nestjs/common';
+import { Controller, Post, Res, Body, UnauthorizedException, HttpCode, Get, Query, NotFoundException, InternalServerErrorException, UseInterceptors, UploadedFile, ConflictException } from '@nestjs/common';
 import { Response } from 'express';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthorizationService } from '../../services/authorization/authorization.service';
 import { RegisterDTO } from '../../dto/authorization/RegisterDTO';
 import { LoginDTO } from '../../dto/authorization/LoginDTO';
 import { User } from '../../entities/user.entity';
 import { UserService } from '../../services/user/user.service';
 import * as bcrypt from 'bcrypt';
-import { ApiResponse, ApiUseTags, ApiOperation } from '@nestjs/swagger';
+import { ApiResponse, ApiTags, ApiOperation, ApiConsumes } from '@nestjs/swagger';
 import axios from 'axios';
 import { MeDTO } from '../../dto/authorization/MeDTO';
 import { ConfirmationDTO } from '../../dto/authorization/confirmationDTO';
 import { ConfirmationService } from '../../services/confirmation/confirmation.service';
+import { FileService, FileInterface } from '../../services/file/file.service';
 
-@ApiUseTags('Authorization')
+@ApiTags('Authorization')
 @Controller('/authorization')
 export class AuthorizationController {
 
@@ -20,12 +22,13 @@ export class AuthorizationController {
         private readonly authorizationService: AuthorizationService,
         private readonly userService: UserService,
         private readonly confirmationService: ConfirmationService,
+        private readonly fileService: FileService,
     ) { }
 
     @Post('/login')
     @HttpCode(200)
     @ApiOperation({
-        title: 'login',
+        summary: 'login',
         description: 'This call is used to login an user. It will return an authorization cookie when succesful',
     })
     @ApiResponse({ status: 200, description: 'Logged in!' })
@@ -42,19 +45,23 @@ export class AuthorizationController {
     }
 
     @Post('/register')
+    @UseInterceptors(FileInterceptor('profilePicture'))
+    @ApiConsumes('multipart/form-data')
     @HttpCode(200)
     @ApiOperation({
-        title: 'register',
+        summary: 'register',
         description: 'This call is used to register an user',
     })
     @ApiResponse({ status: 200, description: 'Registered!', type: User })
     @ApiResponse({ status: 400, description: 'Validation error...'})
-    @ApiResponse({ status: 409, description: 'Er bestaat al een gebruiker met die email adres...' })
+    @ApiResponse({ status: 409, description: 'Er bestaat al een gebruiker met dat email adres...' })
     @ApiResponse({ status: 500, description: 'Internal server error...' })
-    async regiser(@Body() body: RegisterDTO) {
+    async regiser(@Body() body: RegisterDTO, @UploadedFile() profilePicture: FileInterface) {
         if (await this.userService.exists(body.email)) {
-            throw new ConflictException('Er bestaat al een gebruiker met die email adres...');
+            throw new ConflictException('Er bestaat al een gebruiker met dat email adres...');
         }
+
+        await this.fileService.saveProfilePicture(profilePicture.originalname, profilePicture.buffer);
 
         const user = new User();
         user.firstName = body.firstName;
@@ -69,6 +76,7 @@ export class AuthorizationController {
         user.registeredSince = new Date();
         user.activated = false;
         user.pcn = body.pcn;
+        user.profilePicture = profilePicture.originalname;
         user.scopes = [];
         user.memberships = [];
 
@@ -79,7 +87,7 @@ export class AuthorizationController {
     @Get('me')
     @HttpCode(200)
     @ApiOperation({
-        title: 'me',
+        summary: 'me',
         description: 'This call is used to get the user from the FHICT api',
     })
     @ApiResponse({ status: 200, description: 'Geregisteerd!', type: MeDTO })
@@ -106,7 +114,7 @@ export class AuthorizationController {
     @Post('confirmation')
     @HttpCode(200)
     @ApiOperation({
-        title: 'confirmation',
+        summary: 'confirmation',
         description: 'This call is used to activate an user. It will return an authorization cookie when succesful',
     })
     @ApiResponse({ status: 200, description: 'Activated!', type: User })
