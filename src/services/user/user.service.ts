@@ -1,7 +1,7 @@
 import { IUserService } from './iuser.service';
 import { User } from '../../entities/user.entity';
 
-export const USER_RELATIONS = ['scopes', 'scopes.hatoesLinks', 'memberships'];
+export const USER_RELATIONS = ['scopes', 'memberships'];
 
 export class UserService implements IUserService {
     readAll(skip: number, take: number): Promise<User[]> {

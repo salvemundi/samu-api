@@ -1,16 +1,14 @@
-import { BaseEntity, PrimaryGeneratedColumn, Column, ManyToMany, Entity, OneToMany } from 'typeorm';
+import { BaseEntity, PrimaryGeneratedColumn, Column, ManyToMany, Entity } from 'typeorm';
 import { User } from './user.entity';
 import { ApiProperty } from '@nestjs/swagger';
-import { HatoesLink } from './hateosLink.entity';
 
 @Entity()
 export class Scope extends BaseEntity {
-    constructor(name: string, description: string, id?: number, links?: HatoesLink[]) {
+    constructor(name: string, description: string, id?: number) {
         super();
         this.id = id;
         this.name = name;
         this.description = description;
-        this.hatoesLinks = links;
     }
 
     @ApiProperty()
@@ -27,7 +25,4 @@ export class Scope extends BaseEntity {
 
     @ManyToMany(() => User, user => user.scopes, { onDelete: 'CASCADE' })
     public users: User[];
-
-    @OneToMany(() => HatoesLink, link => link.scope)
-    public hatoesLinks: HatoesLink[];
 }
