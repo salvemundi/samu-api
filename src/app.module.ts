@@ -7,7 +7,7 @@ import { UserService } from './services/user/user.service';
 import { UserController } from './controllers/user/user.controller';
 import { AuthorizationController } from './controllers/authorization/authorization.controller';
 import { AuthorizationService } from './services/authorization/authorization.service';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { AuthorizationGuard } from './guards/auth.guard';
 import { ScopeSeeder } from './seed/scope.seed';
 import { PaymentController } from './controllers/payment/payment.controller';
@@ -18,6 +18,7 @@ import { ConfirmationService } from './services/confirmation/confirmation.servic
 import {EventController} from './controllers/event/event.controller';
 import { EventService } from './services/event/event.service';
 import { FileService } from './services/file/file.service';
+import { HateosInterceptor } from './interceptors/hateosInterceptor';
 
 @Module({
   imports: [
@@ -35,6 +36,10 @@ import { FileService } from './services/file/file.service';
     {
       provide: APP_GUARD,
       useClass: AuthorizationGuard,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: HateosInterceptor,
     },
     CommitteeService,
     MemberService,
