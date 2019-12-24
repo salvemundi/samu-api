@@ -1,4 +1,4 @@
-import { Controller, Get, Param, HttpCode, NotFoundException, Body, Put, Delete, Post } from '@nestjs/common';
+import { Controller, Get, Param, HttpCode, NotFoundException, Body, Put, Delete, Res } from '@nestjs/common';
 import { UserService } from '../../services/user/user.service';
 import { User } from '../../entities/user.entity';
 import { ApiResponse, ApiTags, ApiOperation, ApiParam, ApiExtraModels } from '@nestjs/swagger';
@@ -7,6 +7,8 @@ import { Auth } from '../../decorators/auth.decorator';
 import { SummaryUserDto } from '../../dto/user/summary-user-dto';
 import { Me } from '../../decorators/me.decorator';
 import { Membership } from '../../entities/membership.entity';
+import { FileService } from '../../services/file/file.service';
+import { Response } from 'express';
 
 @ApiTags('User')
 @ApiExtraModels(Membership)
@@ -14,6 +16,7 @@ import { Membership } from '../../entities/membership.entity';
 export class UserController {
     constructor(
         private readonly userService: UserService,
+        private readonly fileService: FileService,
     ) { }
 
     @Get('/me')
@@ -167,5 +170,16 @@ export class UserController {
         }
 
         this.userService.delete(user);
+    }
+
+    @Get('/:id/photo')
+    @HttpCode(200)
+    async getPicture(@Param('id') id: number, @Res() res: Response) {
+        const user: User = await this.userService.readOne(+id);
+        if (!user) {
+            throw new NotFoundException(`No user found with id: ${id}`);
+        }
+
+        res.download(this.fileService.getProfilePicturePath(user.profilePicture));
     }
 }

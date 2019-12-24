@@ -24,6 +24,6 @@ export class Membership extends BaseEntity {
     @Column()
     public endDate: Date;
 
-    @ManyToOne(() => User, user => user.memberships)
+    @ManyToOne(() => User, user => user.memberships, { onDelete: 'CASCADE' })
     public user: User;
 }

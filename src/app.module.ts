@@ -17,10 +17,11 @@ import { WebhookController } from './controllers/payment/webhook.controller';
 import { ConfirmationService } from './services/confirmation/confirmation.service';
 import {EventController} from './controllers/event/event.controller';
 import { EventService } from './services/event/event.service';
+import { FileService } from './services/file/file.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot(require("./typeormConfig")),
+    TypeOrmModule.forRoot(require('./typeormConfig')),
   ],
   controllers: [
     CommitteeController,
@@ -28,7 +29,7 @@ import { EventService } from './services/event/event.service';
     AuthorizationController,
     PaymentController,
     WebhookController,
-    EventController
+    EventController,
   ],
   providers: [
     {
@@ -43,7 +44,8 @@ import { EventService } from './services/event/event.service';
     ScopeSeeder,
     EmailService,
     ConfirmationService,
-    EventService
+    EventService,
+    FileService,
   ],
 })
 export class AppModule {}
