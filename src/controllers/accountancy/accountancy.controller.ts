@@ -22,6 +22,7 @@ export class AccountancyController {
     @ApiResponse({ status: 400, description: 'Validation error...'})
     @ApiResponse({ status: 410, description: 'Authorization code already used...'})
     async ActivateApi(@Body() body: SaveAuthorizationDTO) {
+        // Redeem Authorization code and saves the access & refresh token
         try {
             const response: AccessResponse = (await axios.post(process.env.RABOBANK_URL + '/oauth2/token',
                                                 'grant_type=authorization_code&code=' + body.code,
@@ -37,6 +38,7 @@ export class AccountancyController {
             throw new GoneException('Authorization code already used...');
         }
 
+        // Get the account_id and saves it
         const currentDate = new Date();
         const response2 = (await axios.get(process.env.RABOBANK_URL + '/payments/account-information/ais/v3/accounts',
                                                 { headers: {
