@@ -19,10 +19,14 @@ import {EventController} from './controllers/event/event.controller';
 import { EventService } from './services/event/event.service';
 import { FileService } from './services/file/file.service';
 import { ScopeInterceptor } from './interceptor/scope.interceptor';
+import { AccountancyJop } from './jops/accountancy.jop';
+import { ScheduleModule } from 'nest-schedule';
+import { AccountancyController } from './controllers/accountancy/accountancy.controller';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot(require('./typeormConfig')),
+    ScheduleModule.register(),
   ],
   controllers: [
     CommitteeController,
@@ -31,6 +35,7 @@ import { ScopeInterceptor } from './interceptor/scope.interceptor';
     PaymentController,
     WebhookController,
     EventController,
+    AccountancyController,
   ],
   providers: [
     {
@@ -41,6 +46,7 @@ import { ScopeInterceptor } from './interceptor/scope.interceptor';
       provide: APP_INTERCEPTOR,
       useClass: ScopeInterceptor,
     },
+    AccountancyJop,
     CommitteeService,
     MemberService,
     UserService,

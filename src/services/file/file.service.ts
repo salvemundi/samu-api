@@ -4,6 +4,9 @@ import * as path from 'path';
 
 @Injectable()
 export class FileService {
+    private pathAccountancyAccessToken = process.env.STORAGE_PATH + '/accountancy/accessToken.txt';
+    private pathAccountancyRefreshToken = process.env.STORAGE_PATH + '/accountancy/refreshToken.txt';
+
     private async saveFile(type: FileType, name: string, buffer: Buffer): Promise<void> {
         return new Promise<void>((resolve, rejects) => {
             this.ensureDirectoryExistence(process.env.STORAGE_PATH + type + name);
@@ -32,6 +35,24 @@ export class FileService {
 
     public getProfilePicturePath(name: string): string {
         return process.env.STORAGE_PATH + FileType.PROFILE_PICTURE + name;
+    }
+
+    public saveAccessTokenAccountancy(token: string) {
+        this.ensureDirectoryExistence(this.pathAccountancyAccessToken);
+        fs.writeFileSync(this.pathAccountancyAccessToken, token);
+    }
+
+    public getAccessTokenAccountancy() {
+        return fs.readFileSync(this.pathAccountancyAccessToken).toString('utf8');
+    }
+
+    public saveRefreshTokenAccountancy(token: string) {
+        this.ensureDirectoryExistence(this.pathAccountancyRefreshToken);
+        fs.writeFileSync(this.pathAccountancyRefreshToken, token);
+    }
+
+    public getRefreshTokenAccountancy() {
+        return fs.readFileSync(this.pathAccountancyRefreshToken).toString('utf8');
     }
 }
 
