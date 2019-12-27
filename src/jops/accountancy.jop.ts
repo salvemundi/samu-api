@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { Cron, NestSchedule } from 'nest-schedule';
 import { FileService } from '../services/file/file.service';
-import * as axios from 'axios';
+import axios from 'axios';
 import * as shajs from 'sha.js';
 import * as nodeRSA from 'node-rsa';
 import * as https from 'https';
 import * as fs from 'fs';
 import * as uuid from 'uuid/v4';
+import { TransactionDTO } from '../dto/accountancy/transaction.dto';
 
 @Injectable()
 export class AccountancyJop extends NestSchedule {
@@ -23,6 +24,15 @@ export class AccountancyJop extends NestSchedule {
       const accessToken = this.fileService.getAccessTokenAccountancy();
       if (accessToken === '') {
           return;
+      }
+
+      const response: TransactionDTO = (await axios.get(process.env.RABOBANK_URL + '/payments/account-information/ais/v3/accounts/' + this.fileService.getResourceIdAccountancy() + '/transactions?bookingStatus=booked',
+                                        { headers: AccountancyJop.getHttpsHeader(this.fileService.getAccessTokenAccountancy()),
+                                        httpsAgent: AccountancyJop.getAccountancyHttpAgent(),
+                                    })).data;
+
+      for (const mutation of response.transactions.booked) {
+
       }
   }
 
