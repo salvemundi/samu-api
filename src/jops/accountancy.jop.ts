@@ -16,7 +16,7 @@ export class AccountancyJop extends NestSchedule {
         private fileService: FileService,
     ) {
         super();
-        this.ensureTokenFilesExists();
+        this.ensureAccountancyFilesExists();
     }
 
   @Cron('45 * * * * *')
@@ -81,7 +81,7 @@ export class AccountancyJop extends NestSchedule {
       return fs.readFileSync(process.env.RABOBANK_PRIVATE_KEY_PATH);
   }
 
-  private ensureTokenFilesExists() {
+  private ensureAccountancyFilesExists() {
     try {
         this.fileService.getAccessTokenAccountancy();
     } catch (e) {
