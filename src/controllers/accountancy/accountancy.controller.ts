@@ -1,13 +1,12 @@
 import { Controller, Post, Body, HttpCode, GoneException, InternalServerErrorException } from '@nestjs/common';
 import { SaveAuthorizationDTO } from '../../dto/accountancy/saveAuthorization.dto';
 import { FileService } from '../../services/file/file.service';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import axios from 'axios';
 import { AccountancyJop } from '../../jops/accountancy.jop';
-import * as https from 'https';
-import * as fs from 'fs';
 
 @Controller('accountancy')
+@ApiTags('Accountancy')
 export class AccountancyController {
     constructor(
         private fileService: FileService,
@@ -55,6 +54,7 @@ export class AccountancyController {
     }
 }
 
+// Only needed once in this controller, that is why it is not globally available
 interface AccessResponse {
     token_type: string;
     access_token: string;
