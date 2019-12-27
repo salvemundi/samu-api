@@ -6,6 +6,7 @@ import * as path from 'path';
 export class FileService {
     private pathAccountancyAccessToken = process.env.STORAGE_PATH + '/accountancy/accessToken.txt';
     private pathAccountancyRefreshToken = process.env.STORAGE_PATH + '/accountancy/refreshToken.txt';
+    private pathAccountancyResourceId = process.env.STORAGE_PATH + '/accountancy/resourceId.txt';
 
     private async saveFile(type: FileType, name: string, buffer: Buffer): Promise<void> {
         return new Promise<void>((resolve, rejects) => {
@@ -37,22 +38,31 @@ export class FileService {
         return process.env.STORAGE_PATH + FileType.PROFILE_PICTURE + name;
     }
 
-    public saveAccessTokenAccountancy(token: string) {
+    public saveAccessTokenAccountancy(token: string): void {
         this.ensureDirectoryExistence(this.pathAccountancyAccessToken);
         fs.writeFileSync(this.pathAccountancyAccessToken, token);
     }
 
-    public getAccessTokenAccountancy() {
+    public getAccessTokenAccountancy(): string {
         return fs.readFileSync(this.pathAccountancyAccessToken).toString('utf8');
     }
 
-    public saveRefreshTokenAccountancy(token: string) {
+    public saveRefreshTokenAccountancy(token: string): void {
         this.ensureDirectoryExistence(this.pathAccountancyRefreshToken);
         fs.writeFileSync(this.pathAccountancyRefreshToken, token);
     }
 
-    public getRefreshTokenAccountancy() {
+    public getRefreshTokenAccountancy(): string {
         return fs.readFileSync(this.pathAccountancyRefreshToken).toString('utf8');
+    }
+
+    public saveResourceIdAccountancy(id: string): void {
+        this.ensureDirectoryExistence(this.pathAccountancyResourceId);
+        fs.writeFileSync(this.pathAccountancyResourceId, id);
+    }
+
+    public getResourceIdAccountancy(): string {
+        return fs.readFileSync(this.pathAccountancyResourceId).toString('utf8');
     }
 }
 

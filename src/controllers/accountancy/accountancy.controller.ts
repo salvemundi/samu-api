@@ -1,9 +1,11 @@
-import { Controller, Post, Body, HttpCode, GoneException } from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, GoneException, InternalServerErrorException } from '@nestjs/common';
 import { SaveAuthorizationDTO } from '../../dto/accountancy/saveAuthorization.dto';
 import { FileService } from '../../services/file/file.service';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import axios from 'axios';
-import uuid from 'uuid/v4';
+import { AccountancyJop } from '../../jops/accountancy.jop';
+import * as https from 'https';
+import * as fs from 'fs';
 
 @Controller('accountancy')
 export class AccountancyController {
@@ -35,30 +37,44 @@ export class AccountancyController {
             this.fileService.saveAccessTokenAccountancy(response.access_token);
             this.fileService.saveRefreshTokenAccountancy(response.refresh_token);
         } catch (e) {
-            throw new GoneException('Authorization code already used...');
+            throw new GoneException('Authorization code already used or invalid...');
         }
 
         // Get the account_id and saves it
-        const currentDate = new Date();
-        const response2 = (await axios.get(process.env.RABOBANK_URL + '/payments/account-information/ais/v3/accounts',
-                                                { headers: {
-                                                    'Authorization': 'Bearer ' + this.fileService.getAccessTokenAccountancy(),
-                                                    'Date': currentDate.getMonth() + '/' + currentDate.getDate() + '/' + currentDate.getFullYear(),
-                                                    'X-Request-ID': uuid(),
-                                                    'Digest': '',
-                                                    'Signature': '',
-                                                    'TPP-Signature-Certificate': '',
-                                                }},
-                                    )).data;
+        try {
+            const response2: AccountsResponse = (await axios.get(process.env.RABOBANK_URL + '/payments/account-information/ais/v3/accounts',
+                                                    { headers: AccountancyJop.getHttpsHeader(this.fileService.getAccessTokenAccountancy()),
+                                                    httpsAgent: AccountancyJop.getAccountancyHttpAgent(),
+                                                },
+                                        )).data;
+
+            this.fileService.saveResourceIdAccountancy(response2.accounts[0].resourceId);
+        } catch (e) {
+            throw new InternalServerErrorException('Failed to get ResourceId');
+        }
     }
 }
 
 interface AccessResponse {
-    'token_type': string;
-    'access_token': string;
-    'expires_in': number;
-    'consented_on': number;
-    'scope': string;
-    'refresh_token': string;
-    'refresh_token_expires_in': number;
+    token_type: string;
+    access_token: string;
+    expires_in: number;
+    consented_on: number;
+    scope: string;
+    refresh_token: string;
+    refresh_token_expires_in: number;
+}
+
+interface AccountsResponse {
+    accounts: Array<{
+            resourceId: string;
+            iban: string;
+            currency: string;
+            status: string;
+            name: string;
+            _links: {
+                balances: string;
+                transactions: string;
+            },
+        }>;
 }
