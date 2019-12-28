@@ -1,18 +1,26 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AccountancyController } from './accountancy.controller';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
+import { TestModule } from '../../test.module';
 
 describe('Accountancy Controller', () => {
-  let controller: AccountancyController;
+  let app: INestApplication;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      controllers: [AccountancyController],
-    }).compile();
+  beforeAll(async () => {
+    const module = await Test.createTestingModule({
+      imports: [TestModule],
+    })
+    .compile();
 
-    controller = module.get<AccountancyController>(AccountancyController);
+    app = module.createNestApplication();
+    app.useGlobalPipes(new ValidationPipe());
+    await app.init();
+  });
+
+  afterAll(async () => {
+    await app.close();
   });
 
   it('should be defined', () => {
-    expect(controller).toBeDefined();
+    expect(app).toBeDefined();
   });
 });

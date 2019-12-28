@@ -10,8 +10,8 @@
   "scripts": {
     "build": "rm -rf ./dist && tsc -p tsconfig.build.json && ./node_modules/copyfiles/copyfiles -u 1 \"**/*.hbs\" dist/src",
     "start": "nodemon src/main.ts",
-    "test": "jest --coverage --coverageReporters=text-lcov | coveralls",
-    "testLocal": "jest --coverage",
+    "test": "CI=true ./node_modules/.bin/jest --coverage --coverageReporters=text-lcov | coveralls",
+    "testLocal": "CI=true ./node_modules/.bin/jest --coverage",
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js --config src/typeormConfig.ts",
     "deploy": "npm run build && ./node_modules/.bin/now --token=$NOW_TOKEN",
     "generate-services": "ts-node src/swagger/swaggerBuilder.ts && ./node_modules/@openapitools/openapi-generator-cli//bin/openapi-generator generate -g typescript-inversify -i swagger-spec.json -o ../salvemundi.nl/src/openapi --additional-properties=\"useRxJS6=true\""

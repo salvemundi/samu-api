@@ -51,20 +51,18 @@ describe('Authorization Controller', () => {
 
   describe('/authentication/register - Register user', () => {
     it('Correct call - Should return 200 with a cookie', () => {
-      const registerDto: RegisterDTO = {
-        email: 'admin@test.com',
-        firstName: 'Salve',
-        lastName: 'Mundi',
-        address: 'Rachelsmolen 1',
-        city: 'Eindhoven',
-        country: 'Nederland',
-        postalcode: '5612MA',
-        birthday: new Date(2017, 1, 1),
-        phoneNumber: '+31 6 24827777',
-        pcn: '',
-      };
-
-      return request(app.getHttpServer()).post('/authorization/register').send(registerDto)
+      return request(app.getHttpServer()).post('/authorization/register')
+        .attach('profilePicture', __dirname + '/../../../Logo_paars.png')
+        .field('email', 'admin@test.com')
+        .field('firstName', 'Salve')
+        .field('lastName', 'Mundi')
+        .field('address', 'Rachelsmolen 1')
+        .field('city', 'Eindhoven')
+        .field('country', 'Nederland')
+        .field('postalcode', '5612MA')
+        .field('birthday', (new Date(2017, 1, 1)).toString())
+        .field('phoneNumber', '+31 6 24827777')
+        .field('pcn', '')
         .expect(200)
         .expect((response: request.Response) => {
             response.header.Cookie = 'awesomeJWT';
@@ -72,20 +70,18 @@ describe('Authorization Controller', () => {
     });
 
     it('Correct call - Should return 400 without a cookie', () => {
-      const registerDto: RegisterDTO = {
-        email: 'admin@gmail.com',
-        firstName: 'Salve',
-        lastName: 'Mundi',
-        address: 'Rachelsmolen 1',
-        city: 'Eindhoven',
-        country: 'Nederland',
-        postalcode: '5612MA',
-        birthday: new Date(2017, 1, 1),
-        phoneNumber: '+31 6 24827777',
-        pcn: '',
-      };
-
-      return request(app.getHttpServer()).post('/authorization/register').send(registerDto)
+      return request(app.getHttpServer()).post('/authorization/register')
+        .attach('profilePicture', __dirname + '/../../../Logo_paars.png')
+        .field('email', 'admin@gmail.com')
+        .field('firstName', 'Salve')
+        .field('lastName', 'Mundi')
+        .field('address', 'Rachelsmolen 1')
+        .field('city', 'Eindhoven')
+        .field('country', 'Nederland')
+        .field('postalcode', '5612MA')
+        .field('birthday', (new Date(2017, 1, 1)).toString())
+        .field('phoneNumber', '+31 6 24827777')
+        .field('pcn', '')
         .expect(409);
     });
   });

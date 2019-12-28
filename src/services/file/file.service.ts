@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import * as fs from 'fs';
 import * as path from 'path';
+import { FileServiceInterface } from './file.service.interface';
 
 @Injectable()
-export class FileService {
+export class FileService implements FileServiceInterface {
     private pathAccountancyAccessToken = process.env.STORAGE_PATH + '/accountancy/accessToken.txt';
     private pathAccountancyRefreshToken = process.env.STORAGE_PATH + '/accountancy/refreshToken.txt';
     private pathAccountancyResourceId = process.env.STORAGE_PATH + '/accountancy/resourceId.txt';
@@ -28,7 +29,7 @@ export class FileService {
         }
         this.ensureDirectoryExistence(dirname);
         fs.mkdirSync(dirname);
-      }
+    }
 
     public async saveProfilePicture(name: string, buffer: Buffer): Promise<void> {
         await this.saveFile(FileType.PROFILE_PICTURE, name, buffer);

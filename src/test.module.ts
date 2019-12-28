@@ -15,12 +15,16 @@ import { ConfirmationService } from './services/confirmation/confirmation.servic
 import { MockConfirmationService } from './services/confirmation/mock.confirmation.service';
 import { EmailService } from './services/email/email.service';
 import { MockEmailService } from './services/email/mock.email.service';
+import { FileService } from './services/file/file.service';
+import { MockFileService } from './services/file/file.service.mock';
+import { AccountancyController } from './controllers/accountancy/accountancy.controller';
 
 @Module({
   controllers: [
     CommitteeController,
     AuthorizationController,
     UserController,
+    AccountancyController,
   ],
   providers: [
     {
@@ -47,7 +51,11 @@ import { MockEmailService } from './services/email/mock.email.service';
     {
       provide: EmailService,
       useClass: MockEmailService,
-    }
+    },
+    {
+      provide: FileService,
+      useClass: MockFileService,
+    },
   ],
 })
 export class TestModule {}
