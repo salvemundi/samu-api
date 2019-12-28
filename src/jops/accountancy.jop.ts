@@ -114,11 +114,11 @@ export class AccountancyJop extends NestSchedule {
     };
   }
 
-  private static getCertificate(): Buffer {
+  public static getCertificate(): Buffer {
       return fs.readFileSync(process.env.RABOBANK_CERTIFICATE_PATH);
   }
 
-  private static getPrivateKey(): Buffer {
+  public static getPrivateKey(): Buffer {
       return fs.readFileSync(process.env.RABOBANK_PRIVATE_KEY_PATH);
   }
 

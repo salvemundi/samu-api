@@ -43,7 +43,7 @@ export class AccountancyController {
         // Get the account_id and saves it
         try {
             const response2: AccountsResponse = (await axios.get(process.env.RABOBANK_URL + '/payments/account-information/ais/v3/accounts',
-                                                    { headers: AccountancyJop.getHttpsHeader(this.fileService.getAccessTokenAccountancy()),
+                                                    { headers: AccountancyJop.getHttpsHeader(this.fileService.getAccessTokenAccountancy(), AccountancyJop.getCertificate(), AccountancyJop.getPrivateKey(), process.env.RABOBANK_CLIENT_ID, +process.env.RABOBANK_CERTIFICATE_KEY_ID),
                                                     httpsAgent: AccountancyJop.getAccountancyHttpAgent(),
                                                 },
                                         )).data;
