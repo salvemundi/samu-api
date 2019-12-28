@@ -21,7 +21,7 @@ export class AccountancyJop extends NestSchedule {
         this.ensureAccountancyFilesExists();
     }
 
-  @Cron('45 * * * * *')
+  @Cron('59 59 23 * * *')
   async handleCron() {
       const accessToken = this.fileService.getAccessTokenAccountancy();
       if (accessToken === '') {
@@ -81,11 +81,11 @@ export class AccountancyJop extends NestSchedule {
     return 'sha-512=' + shajs('sha512').update(body).digest('base64');
   }
 
-  public static generateSignature(signatureString: string, headers: string): string {
-    const key = new nodeRSA(this.getPrivateKey(), 'pkcs8', {signingScheme: 'pkcs1-sha512'});
+  public static generateSignature(signatureString: string, headers: string, privateKey: Buffer, keyId: number): string {
+    const key = new nodeRSA(privateKey, 'pkcs8', {signingScheme: 'pkcs1-sha512'});
 
     const signedSignature = key.sign(Buffer.from(signatureString), 'base64');
-    return 'keyId="' + process.env.RABOBANK_CERTIFICATE_KEY_ID + '",algorithm="rsa-sha512",headers="' + headers + '",signature="' + signedSignature + '"';
+    return `keyId="${keyId}",algorithm="rsa-sha512",headers="${headers}",signature="${signedSignature}"`;
   }
 
   public static getAccountancyHttpAgent(): https.Agent {
@@ -101,7 +101,7 @@ export class AccountancyJop extends NestSchedule {
     const digest = AccountancyJop.generateDigest('');
     const requestId = uuid();
     const signingString = 'date: ' + currentDate + '\ndigest: ' + digest + '\nx-request-id: ' + requestId;
-    const signature = AccountancyJop.generateSignature(signingString, 'date digest x-request-id');
+    const signature = AccountancyJop.generateSignature(signingString, 'date digest x-request-id', this.getPrivateKey(), +process.env.RABOBANK_CERTIFICATE_KEY_ID);
 
     return {
         'Authorization': 'Bearer ' + accessToken,
