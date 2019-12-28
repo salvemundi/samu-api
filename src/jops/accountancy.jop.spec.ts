@@ -52,7 +52,7 @@ OggGulOprakS+NTBksaYnMQX9CSJAYBvSR+zdExkBtWRRvdoLIk7YIzG/dGedAPh
 tMzcr7BHr1gt34oKwXPC8AwwVfRnfu3flRPUNd2a0r2Ysg985GK3GEYg8Xk6M6tR
 GokuQRU+J8cP+2/d0hk/sTC5fmBS3eez5ot5E3bVUyJAadLmOGrxAGH1IyDJEf5C
 +EIcMR0ttiZmYdDkdM/qkQS8eJz0UjKdH4lTe5Hf6eg/2YHc
------END CERTIFICATE-----`
+-----END CERTIFICATE-----`;
 
 describe('Accountancy', () => {
     describe('GenerateDigest', () => {
