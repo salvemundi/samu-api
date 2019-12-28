@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { Cron, NestSchedule } from 'nest-schedule';
 import { FileService } from '../services/file/file.service';
 import axios from 'axios';
@@ -9,6 +9,7 @@ import * as fs from 'fs';
 import * as uuid from 'uuid/v4';
 import { TransactionDTO } from '../dto/accountancy/transaction.dto';
 import { Mutation } from '../entities/accountancy/mutation.entity';
+import { AccessResponse } from '../dto/accountancy/accessResponse.dto';
 
 @Injectable()
 export class AccountancyJop extends NestSchedule {
@@ -27,7 +28,7 @@ export class AccountancyJop extends NestSchedule {
           return;
       }
 
-      const transactions = await AccountancyJop.obtainTransactions(this.fileService.getAccessTokenAccountancy(), this.fileService.getResourceIdAccountancy());
+      const transactions = await this.obtainTransactions(this.fileService.getAccessTokenAccountancy(), this.fileService.getRefreshTokenAccountancy(), this.fileService.getResourceIdAccountancy());
       for (const transaction of transactions.transactions.booked) {
         // Only add a transaction if there is not a mutation of it
         if (!!(await Mutation.findOne({where: { entryReference: transaction.entryReference}}))) {
@@ -50,7 +51,7 @@ export class AccountancyJop extends NestSchedule {
       }
   }
 
-  public static async obtainTransactions(accessToken: string, resourceId: string): Promise<TransactionDTO> {
+  public async obtainTransactions(accessToken: string, refreshToken: string, resourceId: string, attempt: number = 1): Promise<TransactionDTO> {
       try {
         const response = (await axios.get(`${process.env.RABOBANK_URL}/payments/account-information/ais/v3/accounts/${resourceId}/transactions?bookingStatus=booked`,
             { headers: AccountancyJop.getHttpsHeader(accessToken),
@@ -59,7 +60,20 @@ export class AccountancyJop extends NestSchedule {
 
         return response;
       } catch (e) {
-          // TODO: catch whether the accesstoken is expired
+          try {
+            const response: AccessResponse = (await axios.post(`${process.env.RABOBANK_URL}/payments/account-information/ais/v3/accounts/${resourceId}/transactions?bookingStatus=booked`,
+                `grant_type=refresh_token&code=${refreshToken}`,
+                { headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Authorization': 'Basic ' + Buffer.from(process.env.RABOBANK_CLIENT_ID + ':' + process.env.RABOBANK_CLIENT_SECRET).toString('base64'),
+                },
+                })).data;
+
+            this.fileService.saveAccessTokenAccountancy(response.access_token);
+            this.fileService.saveRefreshTokenAccountancy(response.refresh_token);
+        } catch (e) {
+            throw new InternalServerErrorException('Unable to obtain new access token...');
+        }
       }
   }
 

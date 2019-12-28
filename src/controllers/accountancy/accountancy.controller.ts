@@ -4,6 +4,7 @@ import { FileService } from '../../services/file/file.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import axios from 'axios';
 import { AccountancyJop } from '../../jops/accountancy.jop';
+import { AccessResponse } from '../../dto/accountancy/accessResponse.dto';
 
 @Controller('accountancy')
 @ApiTags('Accountancy')
@@ -55,16 +56,6 @@ export class AccountancyController {
 }
 
 // Only needed once in this controller, that is why it is not globally available
-interface AccessResponse {
-    token_type: string;
-    access_token: string;
-    expires_in: number;
-    consented_on: number;
-    scope: string;
-    refresh_token: string;
-    refresh_token_expires_in: number;
-}
-
 interface AccountsResponse {
     accounts: Array<{
             resourceId: string;
