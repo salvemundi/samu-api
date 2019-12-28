@@ -8,6 +8,7 @@ import * as https from 'https';
 import * as fs from 'fs';
 import * as uuid from 'uuid/v4';
 import { TransactionDTO } from '../dto/accountancy/transaction.dto';
+import { Mutation } from '../entities/accountancy/mutation.entity';
 
 @Injectable()
 export class AccountancyJop extends NestSchedule {
@@ -26,13 +27,39 @@ export class AccountancyJop extends NestSchedule {
           return;
       }
 
-      const response: TransactionDTO = (await axios.get(process.env.RABOBANK_URL + '/payments/account-information/ais/v3/accounts/' + this.fileService.getResourceIdAccountancy() + '/transactions?bookingStatus=booked',
-                                        { headers: AccountancyJop.getHttpsHeader(this.fileService.getAccessTokenAccountancy()),
-                                        httpsAgent: AccountancyJop.getAccountancyHttpAgent(),
-                                    })).data;
+      const transactions = await AccountancyJop.obtainTransactions(this.fileService.getAccessTokenAccountancy(), this.fileService.getResourceIdAccountancy());
+      for (const transaction of transactions.transactions.booked) {
+        // Only add a transaction if there is not a mutation of it
+        if (!!(await Mutation.findOne({where: { entryReference: transaction.entryReference}}))) {
+            continue;
+        }
 
-      for (const mutation of response.transactions.booked) {
+        const mutation = new Mutation();
+        mutation.entryReference = transaction.entryReference;
+        mutation.amount = transaction.transactionAmount.amount;
+        mutation.debtorIban = transaction.debtorAccount.iban;
+        mutation.date = transaction.raboBookingDateTime;
+        mutation.description = transaction.initiatingPartyName + ' ' + transaction.remittanceInformationUnstructured;
 
+        // TODO: Need to develop an automated way of importing transactions
+        mutation.imported = false;
+        mutation.incomeStatement = null;
+        mutation.paymentMethod = null;
+
+        mutation.save();
+      }
+  }
+
+  public static async obtainTransactions(accessToken: string, resourceId: string): Promise<TransactionDTO> {
+      try {
+        const response = (await axios.get(`${process.env.RABOBANK_URL}/payments/account-information/ais/v3/accounts/${resourceId}/transactions?bookingStatus=booked`,
+            { headers: AccountancyJop.getHttpsHeader(accessToken),
+            httpsAgent: AccountancyJop.getAccountancyHttpAgent(),
+        })).data;
+
+        return response;
+      } catch (e) {
+          // TODO: catch whether the accesstoken is expired
       }
   }
 
