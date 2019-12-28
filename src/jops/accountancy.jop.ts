@@ -51,10 +51,10 @@ export class AccountancyJop extends NestSchedule {
       }
   }
 
-  public async obtainTransactions(accessToken: string, refreshToken: string, resourceId: string, attempt: number = 1): Promise<TransactionDTO> {
+  private async obtainTransactions(accessToken: string, refreshToken: string, resourceId: string): Promise<TransactionDTO> {
       try {
         const response = (await axios.get(`${process.env.RABOBANK_URL}/payments/account-information/ais/v3/accounts/${resourceId}/transactions?bookingStatus=booked`,
-            { headers: AccountancyJop.getHttpsHeader(accessToken),
+            { headers: AccountancyJop.getHttpsHeader(accessToken, AccountancyJop.getCertificate(), AccountancyJop.getPrivateKey(), process.env.RABOBANK_CLIENT_ID, +process.env.RABOBANK_CERTIFICATE_KEY_ID),
             httpsAgent: AccountancyJop.getAccountancyHttpAgent(),
         })).data;
 
@@ -96,12 +96,12 @@ export class AccountancyJop extends NestSchedule {
       });
   }
 
-  public static getHttpsHeader(accessToken: string) {
+  public static getHttpsHeader(accessToken: string, certificate: Buffer, privateKey: Buffer, clientId: string, certificateId: number) {
     const currentDate = (new Date()).toUTCString();
     const digest = AccountancyJop.generateDigest('');
     const requestId = uuid();
     const signingString = 'date: ' + currentDate + '\ndigest: ' + digest + '\nx-request-id: ' + requestId;
-    const signature = AccountancyJop.generateSignature(signingString, 'date digest x-request-id', this.getPrivateKey(), +process.env.RABOBANK_CERTIFICATE_KEY_ID);
+    const signature = AccountancyJop.generateSignature(signingString, 'date digest x-request-id', privateKey, certificateId);
 
     return {
         'Authorization': 'Bearer ' + accessToken,
@@ -109,8 +109,8 @@ export class AccountancyJop extends NestSchedule {
         'x-request-id': requestId,
         'digest': digest,
         'signature': signature,
-        'tpp-signature-certificate': this.getCertificate().toString('utf8').replace(/\r?\n|\r/g, '').substr(27, 1224),
-        'x-ibm-client-id': process.env.RABOBANK_CLIENT_ID,
+        'tpp-signature-certificate': certificate.toString('utf8').replace(/\r?\n|\r/g, '').substr(27, 1224),
+        'x-ibm-client-id': clientId,
     };
   }
 
