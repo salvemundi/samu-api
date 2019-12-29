@@ -15,6 +15,7 @@ import { PaymentMethod } from '../../entities/accountancy/paymentMethod.entity';
 import { ImportMutationDTO } from '../../dto/accountancy/importMutation.dto';
 import { IncomeStatement } from '../../entities/accountancy/incomeStatement.entity';
 import { AccountancyInterceptor } from '../../interceptor/accountancy.interceptor';
+import { ActivationLinkDTO } from '../../dto/accountancy/activationLink.dto';
 
 @Controller('accountancy')
 @ApiTags('Accountancy')
@@ -69,6 +70,20 @@ export class AccountancyController {
             console.error(e);
             throw new InternalServerErrorException('Failed to get ResourceId');
         }
+    }
+
+    @Get('activate')
+    @HttpCode(200)
+    @ApiOperation({
+        operationId: 'GetActivationLink',
+        summary: 'Get the activation link from the rabobank api',
+        description: '',
+    })
+    @ApiResponse({ status: 200, description: 'Rabobank activation link', type: ActivationLinkDTO })
+    getRaboActivationLink(): ActivationLinkDTO {
+        return {
+            href: `${process.env.RABOBANK_URL}/oauth2/authorize?response_type=code&scope=ais.transactions.read-90days&client_id=${process.env.RABOBANK_CLIENT_ID}`,
+        };
     }
 
     @Get('incomeStatement')

@@ -1,4 +1,4 @@
-import { NestInterceptor, ExecutionContext, CallHandler, ConflictException, Injectable } from '@nestjs/common';
+import { NestInterceptor, ExecutionContext, CallHandler, ConflictException, Injectable, HttpException, ImATeapotException } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { FileService } from '../services/file/file.service';
 
@@ -11,7 +11,7 @@ export class AccountancyInterceptor implements NestInterceptor {
 
     intercept(context: ExecutionContext, next: CallHandler<any>): Observable<any> {
         if (context.getArgs()[0].url !== '/accountancy/activate' && this.fileService.getAccessTokenAccountancy() === '') {
-            throw new ConflictException('Accountancy API is not activated...');
+            throw new ImATeapotException('Accountancy API is not activated...');
         }
 
         return next.handle();
