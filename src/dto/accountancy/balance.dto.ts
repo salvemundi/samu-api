@@ -4,9 +4,15 @@ export class BalanceDTO {
     @ApiProperty()
     id: number;
 
+    @ApiProperty({required: false})
+    code: number;
+
     @ApiProperty()
     name: string;
 
-    @ApiProperty()
-    balance: number;
+    @ApiProperty({required: false})
+    liabilities: number;
+
+    @ApiProperty({required: false})
+    assets: number;
 }

@@ -97,18 +97,21 @@ export class AccountancyController {
         summary: 'Gets the balance',
         description: '',
     })
-    @ApiResponse({ status: 200, description: 'Balance', type: BalanceDTO })
+    @ApiResponse({ status: 200, description: 'Balance', type: BalanceDTO, isArray: true })
     @ApiResponse({ status: 500, description: 'Internal server error...' })
     async getBalance(): Promise<BalanceDTO[]> {
         const response: BalanceDTO[] = [];
 
         for (const paymentMethod of await this.accountancyService.readAllPaymentMethods()) {
             const sum = paymentMethod.mutations.reduce((a, b) => a + (b.amount || 0), 0);
+            const total = sum + paymentMethod.startAssets;
 
             const dto: BalanceDTO = {
                 id: paymentMethod.id,
+                code: paymentMethod.code,
                 name: paymentMethod.name,
-                balance: sum + paymentMethod.startAssets,
+                assets: total >= 0 ? total : null,
+                liabilities: total < 0 ? total : null,
             };
 
             response.push(dto);
