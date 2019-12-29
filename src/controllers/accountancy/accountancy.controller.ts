@@ -6,7 +6,6 @@ import axios from 'axios';
 import { AccountancyJop } from '../../jops/accountancy.jop';
 import { AccessResponse } from '../../dto/accountancy/accessResponse.dto';
 import { IncomeStatementDTO } from '../../dto/accountancy/incomeStatement.dto';
-import { IncomeStatement } from '../../entities/accountancy/incomeStatement.entity';
 import { Auth } from '../../decorators/auth.decorator';
 import { AccountancyService } from '../../services/accountancy/accountancy.service';
 
