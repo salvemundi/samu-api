@@ -9,9 +9,9 @@ export class ScopeSeeder {
         new Scope('user:delete', 'Lid verwijderen', 3),
         new Scope('committee:write', 'Commissies bewerken', 4),
         new Scope('committee:delete', 'Commissies verwijderen', 5),
-        new Scope('accountancy:read', 'Commissies verwijderen', 6),
-        new Scope('accountancy:write', 'Commissies verwijderen', 7),
-        new Scope('accountancy:delete', 'Commissies verwijderen', 8),
+        new Scope('accountancy:read', 'Boekhouden bekijken', 6),
+        new Scope('accountancy:write', 'Boekhouden bewerken', 7),
+        new Scope('accountancy:delete', 'boekhouden verwijderen', 8),
     ];
 
     public async seed() {

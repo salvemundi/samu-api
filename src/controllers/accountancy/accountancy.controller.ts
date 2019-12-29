@@ -1,16 +1,21 @@
-import { Controller, Post, Body, HttpCode, GoneException, InternalServerErrorException } from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, GoneException, InternalServerErrorException, Get } from '@nestjs/common';
 import { SaveAuthorizationDTO } from '../../dto/accountancy/saveAuthorization.dto';
 import { FileService } from '../../services/file/file.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import axios from 'axios';
 import { AccountancyJop } from '../../jops/accountancy.jop';
 import { AccessResponse } from '../../dto/accountancy/accessResponse.dto';
+import { IncomeStatementDTO } from '../../dto/accountancy/incomeStatement.dto';
+import { IncomeStatement } from '../../entities/accountancy/incomeStatement.entity';
+import { Auth } from '../../decorators/auth.decorator';
+import { AccountancyService } from '../../services/accountancy/accountancy.service';
 
 @Controller('accountancy')
 @ApiTags('Accountancy')
 export class AccountancyController {
     constructor(
         private fileService: FileService,
+        private accountancyService: AccountancyService,
     ) {}
 
     @Post('activate')
@@ -18,11 +23,12 @@ export class AccountancyController {
     @ApiOperation({
         operationId: 'ActivateApi',
         summary: 'Activates the Accountancy api',
-        description: '',
+        description: 'Activates the accountancy api using a Authorization code from the rabo api',
     })
     @ApiResponse({ status: 200, description: 'The Accountancy api is activated!' })
     @ApiResponse({ status: 400, description: 'Validation error...'})
     @ApiResponse({ status: 410, description: 'Authorization code already used...'})
+    @ApiResponse({ status: 500, description: 'Internal server error...' })
     async ActivateApi(@Body() body: SaveAuthorizationDTO) {
         // Redeem Authorization code and saves the access & refresh token
         try {
@@ -52,6 +58,36 @@ export class AccountancyController {
         } catch (e) {
             throw new InternalServerErrorException('Failed to get ResourceId');
         }
+    }
+
+    @Get('incomeStatement')
+    @HttpCode(200)
+    @Auth('accountancy:read')
+    @ApiOperation({
+        operationId: 'GetIncomeStatements',
+        summary: 'Gets the income statements',
+        description: '',
+    })
+    @ApiResponse({ status: 200, description: 'Income statements', type: IncomeStatementDTO, isArray: true })
+    @ApiResponse({ status: 500, description: 'Internal server error...' })
+    async getIncomeStatements(): Promise<IncomeStatementDTO[]> {
+        const response: IncomeStatementDTO[] = [];
+
+        for (const incomeStatement of await this.accountancyService.readAllIncomeStatements()) {
+            const sum = incomeStatement.mutations.reduce((a, b) => a + (b.amount || 0), 0);
+
+            const dto: IncomeStatementDTO = {
+                id: incomeStatement.id,
+                code: incomeStatement.code,
+                name: incomeStatement.name,
+                profit: sum >= 0 ? sum : null,
+                lost: sum < 0 ? sum * -1 : null,
+            };
+
+            response.push(dto);
+        }
+
+        return response;
     }
 }
 

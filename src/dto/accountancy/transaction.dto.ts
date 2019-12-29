@@ -11,7 +11,7 @@ export interface TransactionDTO {
                 valueDate: Date;
                 transactionAmount: {
                     currency: string,
-                    amount: number;
+                    amount: string;
                 },
                 creditorAccount: {
                     iban: string;

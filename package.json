@@ -13,8 +13,7 @@
     "test": "CI=true ./node_modules/.bin/jest --coverage --coverageReporters=text-lcov | coveralls",
     "testLocal": "CI=true ./node_modules/.bin/jest --coverage",
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js --config src/typeormConfig.ts",
-    "deploy": "npm run build && ./node_modules/.bin/now --token=$NOW_TOKEN",
-    "generate-services": "ts-node src/swagger/swaggerBuilder.ts && ./node_modules/@openapitools/openapi-generator-cli//bin/openapi-generator generate -g typescript-inversify -i swagger-spec.json -o ../salvemundi.nl/src/openapi --additional-properties=\"useRxJS6=true\""
+    "generate-services": "ts-node src/swagger/swaggerBuilder.ts && ./node_modules/@openapitools/openapi-generator-cli/bin/openapi-generator generate -g typescript-inversify -i swagger-spec.json -o ../salvemundi.nl/src/openapi --additional-properties=\"useRxJS6=true\""
   },
   "dependencies": {
     "@mollie/api-client": "^3.0.0-beta.1",

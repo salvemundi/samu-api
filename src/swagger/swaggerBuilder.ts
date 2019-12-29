@@ -9,9 +9,7 @@ async function build() {
     const document = SwaggerModule.createDocument(app, swaggerOptions);
 
     fs.writeFileSync('./swagger-spec.json', JSON.stringify(document));
-    SwaggerModule.setup('api', app, document);
-
-    await app.close();
+    process.exit();
 }
 
 build();

@@ -16,8 +16,7 @@ async function bootstrap() {
     credentials: true,
   });
 
-  const scopeSeeder = app.get(ScopeSeeder);
-  await scopeSeeder.seed();
+  await app.get(ScopeSeeder).seed();
 
   const document = SwaggerModule.createDocument(app, swaggerOptions);
   SwaggerModule.setup('api', app, document);

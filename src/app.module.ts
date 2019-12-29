@@ -22,6 +22,7 @@ import { ScopeInterceptor } from './interceptor/scope.interceptor';
 import { AccountancyJop } from './jops/accountancy.jop';
 import { ScheduleModule } from 'nest-schedule';
 import { AccountancyController } from './controllers/accountancy/accountancy.controller';
+import { AccountancyService } from './services/accountancy/accountancy.service';
 
 @Module({
   imports: [
@@ -57,6 +58,7 @@ import { AccountancyController } from './controllers/accountancy/accountancy.con
     ConfirmationService,
     EventService,
     FileService,
+    AccountancyService,
   ],
 })
 export class AppModule {}

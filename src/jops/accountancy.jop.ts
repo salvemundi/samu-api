@@ -37,7 +37,7 @@ export class AccountancyJop extends NestSchedule {
 
         const mutation = new Mutation();
         mutation.entryReference = transaction.entryReference;
-        mutation.amount = transaction.transactionAmount.amount;
+        mutation.amount = parseFloat(transaction.transactionAmount.amount);
         mutation.debtorIban = transaction.debtorAccount.iban;
         mutation.date = transaction.raboBookingDateTime;
         mutation.description = transaction.initiatingPartyName + ' ' + transaction.remittanceInformationUnstructured;
