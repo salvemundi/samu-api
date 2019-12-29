@@ -1,4 +1,4 @@
-import { Controller, Post, Body, HttpCode, GoneException, InternalServerErrorException, Get, Put, Query, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, GoneException, InternalServerErrorException, Get, Put, NotFoundException, BadRequestException, Param } from '@nestjs/common';
 import { SaveAuthorizationDTO } from '../../dto/accountancy/saveAuthorization.dto';
 import { FileService } from '../../services/file/file.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -25,6 +25,7 @@ export class AccountancyController {
 
     @Post('activate')
     @HttpCode(200)
+    @Auth('accountancy:write')
     @ApiOperation({
         operationId: 'ActivateApi',
         summary: 'Activates the Accountancy api',
@@ -32,6 +33,7 @@ export class AccountancyController {
     })
     @ApiResponse({ status: 200, description: 'The Accountancy api is activated!' })
     @ApiResponse({ status: 400, description: 'Validation error...'})
+    @ApiResponse({ status: 403, description: 'U do not have the permission to do this...' })
     @ApiResponse({ status: 410, description: 'Authorization code already used...'})
     @ApiResponse({ status: 500, description: 'Internal server error...' })
     async ActivateApi(@Body() body: SaveAuthorizationDTO) {
@@ -74,6 +76,7 @@ export class AccountancyController {
         description: '',
     })
     @ApiResponse({ status: 200, description: 'Income statements', type: IncomeStatementDTO, isArray: true })
+    @ApiResponse({ status: 403, description: 'U do not have the permission to do this...' })
     @ApiResponse({ status: 500, description: 'Internal server error...' })
     async getIncomeStatements(): Promise<IncomeStatementDTO[]> {
         const response: IncomeStatementDTO[] = [];
@@ -97,12 +100,14 @@ export class AccountancyController {
 
     @Get('balance')
     @HttpCode(200)
+    @Auth('accountancy:read')
     @ApiOperation({
         operationId: 'GetBalance',
         summary: 'Gets the balance',
         description: '',
     })
     @ApiResponse({ status: 200, description: 'Balance', type: BalanceDTO, isArray: true })
+    @ApiResponse({ status: 403, description: 'U do not have the permission to do this...' })
     @ApiResponse({ status: 500, description: 'Internal server error...' })
     async getBalance(): Promise<BalanceDTO[]> {
         const response: BalanceDTO[] = [];
@@ -127,12 +132,14 @@ export class AccountancyController {
 
     @Get('import')
     @HttpCode(200)
+    @Auth('accountancy:read')
     @ApiOperation({
         operationId: 'GetNotImportedMutations',
         summary: 'Gets the mutations that are not imported yet',
         description: '',
     })
     @ApiResponse({ status: 200, description: 'Balance', type: NotImportedMutationDTO, isArray: true })
+    @ApiResponse({ status: 403, description: 'U do not have the permission to do this...' })
     @ApiResponse({ status: 500, description: 'Internal server error...' })
     async getNotImportedMutations(): Promise<NotImportedMutationDTO[]> {
         const response: NotImportedMutationDTO[] = [];
@@ -153,6 +160,7 @@ export class AccountancyController {
 
     @Put('/import/:id')
     @HttpCode(200)
+    @Auth('accountancy:write')
     @ApiOperation({
         operationId: 'importMutation',
         summary: 'Imports a mutation',
@@ -160,9 +168,10 @@ export class AccountancyController {
     })
     @ApiResponse({ status: 200, description: 'Imported!' })
     @ApiResponse({ status: 400, description: 'Invalid payment method or income statement selected...' })
+    @ApiResponse({ status: 403, description: 'U do not have the permission to do this...' })
     @ApiResponse({ status: 404, description: 'Mutation not found...' })
     @ApiResponse({ status: 500, description: 'Internal server error...' })
-    async importMutation(@Query('id') id: number, @Body() body: ImportMutationDTO): Promise<void> {
+    async importMutation(@Param('id') id: number, @Body() body: ImportMutationDTO): Promise<void> {
         const mutation: Mutation = await this.accountancyService.readOneMutations(id);
         if (!mutation) {
             throw new NotFoundException('Mutation not found using this id: ' + id);
