@@ -1,4 +1,4 @@
-import { Controller, Post, Body, HttpCode, GoneException, InternalServerErrorException, Get, Put, NotFoundException, BadRequestException, Param } from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, GoneException, InternalServerErrorException, Get, Put, NotFoundException, BadRequestException, Param, UseInterceptors } from '@nestjs/common';
 import { SaveAuthorizationDTO } from '../../dto/accountancy/saveAuthorization.dto';
 import { FileService } from '../../services/file/file.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -14,9 +14,11 @@ import { Mutation } from '../../entities/accountancy/mutation.entity';
 import { PaymentMethod } from '../../entities/accountancy/paymentMethod.entity';
 import { ImportMutationDTO } from '../../dto/accountancy/importMutation.dto';
 import { IncomeStatement } from '../../entities/accountancy/incomeStatement.entity';
+import { AccountancyInterceptor } from '../../interceptor/accountancy.interceptor';
 
 @Controller('accountancy')
 @ApiTags('Accountancy')
+@UseInterceptors(AccountancyInterceptor)
 export class AccountancyController {
     constructor(
         private fileService: FileService,
