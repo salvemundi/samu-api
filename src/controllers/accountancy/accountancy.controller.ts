@@ -1,4 +1,4 @@
-import { Controller, Post, Body, HttpCode, GoneException, InternalServerErrorException, Get } from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, GoneException, InternalServerErrorException, Get, Put, Query, NotFoundException, BadRequestException } from '@nestjs/common';
 import { SaveAuthorizationDTO } from '../../dto/accountancy/saveAuthorization.dto';
 import { FileService } from '../../services/file/file.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -9,6 +9,11 @@ import { IncomeStatementDTO } from '../../dto/accountancy/incomeStatement.dto';
 import { Auth } from '../../decorators/auth.decorator';
 import { AccountancyService } from '../../services/accountancy/accountancy.service';
 import { BalanceDTO } from '../../dto/accountancy/balance.dto';
+import { NotImportedMutationDTO } from '../../dto/accountancy/notImportedMutation.dto';
+import { Mutation } from '../../entities/accountancy/mutation.entity';
+import { PaymentMethod } from '../../entities/accountancy/paymentMethod.entity';
+import { ImportMutationDTO } from '../../dto/accountancy/importMutation.dto';
+import { IncomeStatement } from '../../entities/accountancy/incomeStatement.entity';
 
 @Controller('accountancy')
 @ApiTags('Accountancy')
@@ -118,6 +123,64 @@ export class AccountancyController {
         }
 
         return response;
+    }
+
+    @Get('import')
+    @HttpCode(200)
+    @ApiOperation({
+        operationId: 'GetNotImportedMutations',
+        summary: 'Gets the mutations that are not imported yet',
+        description: '',
+    })
+    @ApiResponse({ status: 200, description: 'Balance', type: NotImportedMutationDTO, isArray: true })
+    @ApiResponse({ status: 500, description: 'Internal server error...' })
+    async getNotImportedMutations(): Promise<NotImportedMutationDTO[]> {
+        const response: NotImportedMutationDTO[] = [];
+
+        for (const mutation of await this.accountancyService.readAllNotImportedMutations()) {
+            const dto: NotImportedMutationDTO = {
+                id: mutation.id,
+                description: mutation.description,
+                debtorIban: mutation.debtorIban,
+                amount: mutation.amount,
+                date: mutation.date,
+            };
+
+            response.push(dto);
+        }
+        return response;
+    }
+
+    @Put('/import/:id')
+    @HttpCode(200)
+    @ApiOperation({
+        operationId: 'importMutation',
+        summary: 'Imports a mutation',
+        description: '',
+    })
+    @ApiResponse({ status: 200, description: 'Imported!' })
+    @ApiResponse({ status: 400, description: 'Invalid payment method or income statement selected...' })
+    @ApiResponse({ status: 404, description: 'Mutation not found...' })
+    @ApiResponse({ status: 500, description: 'Internal server error...' })
+    async importMutation(@Query('id') id: number, @Body() body: ImportMutationDTO): Promise<void> {
+        const mutation: Mutation = await this.accountancyService.readOneMutations(id);
+        if (!mutation) {
+            throw new NotFoundException('Mutation not found using this id: ' + id);
+        }
+
+        const paymentMethod: PaymentMethod = await this.accountancyService.readOnePaymentMethod(body.paymentMethodId);
+        if (!paymentMethod) {
+            throw new BadRequestException('Invalid payment method selected...');
+        }
+
+        const incomeStatement: IncomeStatement = await this.accountancyService.readOneIncomeStatement(body.incomeStatementId);
+        if (!incomeStatement) {
+            throw new BadRequestException('Invalid income statement selected...');
+        }
+
+        mutation.incomeStatement = incomeStatement;
+        mutation.paymentMethod = paymentMethod;
+        await this.accountancyService.saveMutation(mutation);
     }
 }
 

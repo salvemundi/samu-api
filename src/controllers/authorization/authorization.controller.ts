@@ -40,7 +40,7 @@ export class AuthorizationController {
             throw new UnauthorizedException('Email or password is incorrect...');
         }
 
-        res.cookie('auth', await this.authorizationService.genJWT(user.id, user.email), { domain: '.salvemundi.nl' });
+        res.cookie('auth', await this.authorizationService.genJWT(user.id, user.email), process.env.env !== 'Testing' ? { domain: '.salvemundi.nl' } : {});
         res.status(200).send({message: 'Ingelogd!'});
     }
 
@@ -134,7 +134,7 @@ export class AuthorizationController {
         await this.userService.update(user);
         await confirmation.remove();
 
-        res.cookie('auth', await this.authorizationService.genJWT(user.id, user.email), { domain: '.salvemundi.nl' });
+        res.cookie('auth', await this.authorizationService.genJWT(user.id, user.email), process.env.env !== 'Testing' ? { domain: '.salvemundi.nl' } : {});
         res.status(200).send(user);
     }
 

@@ -22,7 +22,7 @@ export class Mutation extends BaseEntity {
     @Column()
     debtorIban: string;
 
-    @Column()
+    @Column({ default: false })
     imported: boolean;
 
     @ManyToOne(() => PaymentMethod, paymentMethod => paymentMethod.mutations,  { onDelete: 'CASCADE', nullable: true })
