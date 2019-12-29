@@ -63,6 +63,8 @@ export class AccountancyController {
 
             this.fileService.saveResourceIdAccountancy(response2.accounts[0].resourceId);
         } catch (e) {
+            // tslint:disable-next-line: no-console
+            console.error(e);
             throw new InternalServerErrorException('Failed to get ResourceId');
         }
     }
@@ -187,6 +189,7 @@ export class AccountancyController {
             throw new BadRequestException('Invalid income statement selected...');
         }
 
+        mutation.imported = true;
         mutation.incomeStatement = incomeStatement;
         mutation.paymentMethod = paymentMethod;
         await this.accountancyService.saveMutation(mutation);
