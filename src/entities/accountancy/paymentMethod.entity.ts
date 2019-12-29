@@ -12,6 +12,9 @@ export class PaymentMethod extends BaseEntity {
     @Column()
     code: number;
 
+    @Column()
+    startAssets: number;
+
     @OneToMany(() => Mutation, mutation => mutation.paymentMethod)
     mutations: Mutation[];
 }

@@ -8,6 +8,7 @@ import { AccessResponse } from '../../dto/accountancy/accessResponse.dto';
 import { IncomeStatementDTO } from '../../dto/accountancy/incomeStatement.dto';
 import { Auth } from '../../decorators/auth.decorator';
 import { AccountancyService } from '../../services/accountancy/accountancy.service';
+import { BalanceDTO } from '../../dto/accountancy/balance.dto';
 
 @Controller('accountancy')
 @ApiTags('Accountancy')
@@ -88,19 +89,46 @@ export class AccountancyController {
 
         return response;
     }
+
+    @Get('balance')
+    @HttpCode(200)
+    @ApiOperation({
+        operationId: 'GetBalance',
+        summary: 'Gets the balance',
+        description: '',
+    })
+    @ApiResponse({ status: 200, description: 'Balance', type: BalanceDTO })
+    @ApiResponse({ status: 500, description: 'Internal server error...' })
+    async getBalance(): Promise<BalanceDTO[]> {
+        const response: BalanceDTO[] = [];
+
+        for (const paymentMethod of await this.accountancyService.readAllPaymentMethods()) {
+            const sum = paymentMethod.mutations.reduce((a, b) => a + (b.amount || 0), 0);
+
+            const dto: BalanceDTO = {
+                id: paymentMethod.id,
+                name: paymentMethod.name,
+                balance: sum + paymentMethod.startAssets,
+            };
+
+            response.push(dto);
+        }
+
+        return response;
+    }
 }
 
 // Only needed once in this controller, that is why it is not globally available
 interface AccountsResponse {
     accounts: Array<{
-            resourceId: string;
-            iban: string;
-            currency: string;
-            status: string;
-            name: string;
-            _links: {
-                balances: string;
-                transactions: string;
-            },
-        }>;
+        resourceId: string;
+        iban: string;
+        currency: string;
+        status: string;
+        name: string;
+        _links: {
+            balances: string;
+            transactions: string;
+        },
+    }>;
 }
