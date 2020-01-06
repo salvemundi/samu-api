@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { CommitteeController } from './controllers/committee/committee.controller';
 import { CommitteeService } from './services/committee/committee.service';
 import { MemberService } from './services/member/member.service';
@@ -15,7 +14,7 @@ import { PaymentService } from './services/payment/payment.service';
 import { EmailService } from './services/email/email.service';
 import { WebhookController } from './controllers/payment/webhook.controller';
 import { ConfirmationService } from './services/confirmation/confirmation.service';
-import {EventController} from './controllers/event/event.controller';
+import { EventController } from './controllers/event/event.controller';
 import { EventService } from './services/event/event.service';
 import { FileService } from './services/file/file.service';
 import { ScopeInterceptor } from './interceptor/scope.interceptor';
@@ -26,7 +25,6 @@ import { AccountancyService } from './services/accountancy/accountancy.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot(require('./typeormConfig')),
     ScheduleModule.register(),
   ],
   controllers: [

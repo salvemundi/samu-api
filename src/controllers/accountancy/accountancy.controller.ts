@@ -95,13 +95,14 @@ export class AccountancyController {
         description: '',
     })
     @ApiQuery({name: 'till', type: String, required: true}) // format: date
+    @ApiQuery({name: 'name', type: String, required: false})
     @ApiResponse({ status: 200, description: 'Income statements', type: IncomeStatementDTO, isArray: true })
     @ApiResponse({ status: 403, description: 'U do not have the permission to do this...' })
     @ApiResponse({ status: 500, description: 'Internal server error...' })
-    async getIncomeStatements(@Query('till') till: string): Promise<IncomeStatementDTO[]> {
+    async getIncomeStatements(@Query('till') till: string, @Query('name') name?: string): Promise<IncomeStatementDTO[]> {
         const response: IncomeStatementDTO[] = [];
 
-        for (const incomeStatement of await this.accountancyService.readAllIncomeStatements(new Date(till))) {
+        for (const incomeStatement of await this.accountancyService.readAllIncomeStatements(new Date(till), name)) {
             const sum = incomeStatement.mutations.reduce((a, b) => a + (b.amount || 0), 0);
 
             const dto: IncomeStatementDTO = {

@@ -6,11 +6,15 @@ import { Mutation } from '../../entities/accountancy/mutation.entity';
 
 @Injectable()
 export class AccountancyService implements AccountancyServiceInterface {
-    public readAllIncomeStatements(till: Date): Promise<IncomeStatement[]> {
+    public readAllIncomeStatements(till: Date, name?: string): Promise<IncomeStatement[]> {
         return IncomeStatement.find({
             join: { alias: 'incomeStatement', innerJoinAndSelect: { mutations: 'incomeStatement.mutations'}},
             where: qb => {
-                qb.where('mutations.date <= :date', { date: till}); },
+                qb.where('mutations.date <= :date', { date: till});
+                if (name) {
+                    qb.where('incomeStatement.name LIKE :name', { name });
+                }
+            },
             });
     }
 
