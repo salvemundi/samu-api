@@ -1,7 +1,7 @@
-import { Controller, Post, Body, HttpCode, GoneException, InternalServerErrorException, Get, Put, NotFoundException, BadRequestException, Param, UseInterceptors } from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, GoneException, InternalServerErrorException, Get, Put, NotFoundException, BadRequestException, Param, UseInterceptors, Query } from '@nestjs/common';
 import { SaveAuthorizationDTO } from '../../dto/accountancy/saveAuthorization.dto';
 import { FileService } from '../../services/file/file.service';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags, ApiQuery } from '@nestjs/swagger';
 import axios from 'axios';
 import { AccountancyJop } from '../../jops/accountancy.jop';
 import { AccessResponse } from '../../dto/accountancy/accessResponse.dto';
@@ -19,7 +19,7 @@ import { ActivationLinkDTO } from '../../dto/accountancy/activationLink.dto';
 
 @Controller('accountancy')
 @ApiTags('Accountancy')
-@UseInterceptors(AccountancyInterceptor)
+// @UseInterceptors(AccountancyInterceptor)
 export class AccountancyController {
     constructor(
         private fileService: FileService,
@@ -94,13 +94,14 @@ export class AccountancyController {
         summary: 'Gets the income statements',
         description: '',
     })
+    @ApiQuery({name: 'till', type: String, required: true}) // format: date
     @ApiResponse({ status: 200, description: 'Income statements', type: IncomeStatementDTO, isArray: true })
     @ApiResponse({ status: 403, description: 'U do not have the permission to do this...' })
     @ApiResponse({ status: 500, description: 'Internal server error...' })
-    async getIncomeStatements(): Promise<IncomeStatementDTO[]> {
+    async getIncomeStatements(@Query('till') till: string): Promise<IncomeStatementDTO[]> {
         const response: IncomeStatementDTO[] = [];
 
-        for (const incomeStatement of await this.accountancyService.readAllIncomeStatements()) {
+        for (const incomeStatement of await this.accountancyService.readAllIncomeStatements(new Date(till))) {
             const sum = incomeStatement.mutations.reduce((a, b) => a + (b.amount || 0), 0);
 
             const dto: IncomeStatementDTO = {
@@ -125,13 +126,14 @@ export class AccountancyController {
         summary: 'Gets the balance',
         description: '',
     })
+    @ApiQuery({name: 'till', type: String, required: true})
     @ApiResponse({ status: 200, description: 'Balance', type: BalanceDTO, isArray: true })
     @ApiResponse({ status: 403, description: 'U do not have the permission to do this...' })
     @ApiResponse({ status: 500, description: 'Internal server error...' })
-    async getBalance(): Promise<BalanceDTO[]> {
+    async getBalance(@Query('till') till: string): Promise<BalanceDTO[]> {
         const response: BalanceDTO[] = [];
 
-        for (const paymentMethod of await this.accountancyService.readAllPaymentMethods()) {
+        for (const paymentMethod of await this.accountancyService.readAllPaymentMethods(new Date(till))) {
             const sum = paymentMethod.mutations.reduce((a, b) => a + (b.amount || 0), 0);
             const total = sum + paymentMethod.startAssets;
 

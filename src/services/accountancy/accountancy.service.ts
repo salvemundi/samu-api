@@ -6,31 +6,39 @@ import { Mutation } from '../../entities/accountancy/mutation.entity';
 
 @Injectable()
 export class AccountancyService implements AccountancyServiceInterface {
-    public async readAllIncomeStatements(): Promise<IncomeStatement[]> {
-        return IncomeStatement.find({relations: ['mutations']});
+    public readAllIncomeStatements(till: Date): Promise<IncomeStatement[]> {
+        return IncomeStatement.find({
+            join: { alias: 'incomeStatement', innerJoinAndSelect: { mutations: 'incomeStatement.mutations'}},
+            where: qb => {
+                qb.where('mutations.date <= :date', { date: till}); },
+            });
     }
 
-    public async readAllPaymentMethods(): Promise<PaymentMethod[]> {
-        return PaymentMethod.find({relations: ['mutations']});
+    public readAllPaymentMethods(till: Date): Promise<PaymentMethod[]> {
+        return PaymentMethod.find({
+            join: { alias: 'paymentMethod', innerJoinAndSelect: { mutations: 'paymentMethod.mutations'}},
+            where: qb => {
+                qb.where('mutations.date <= :date', { date: till}); },
+            });
     }
 
-    public async readAllNotImportedMutations(): Promise<Mutation[]> {
+    public readAllNotImportedMutations(): Promise<Mutation[]> {
         return Mutation.find({ where: { imported: false }});
     }
 
-    public async readOneMutations(id: number): Promise<Mutation> {
+    public readOneMutations(id: number): Promise<Mutation> {
         return Mutation.findOne({ where: { id }, relations: ['paymentMethod', 'incomeStatement']});
     }
 
-    public async readOnePaymentMethod(id: number): Promise<PaymentMethod> {
+    public readOnePaymentMethod(id: number): Promise<PaymentMethod> {
         return PaymentMethod.findOne( {where: { id }});
     }
 
-    public async readOneIncomeStatement(id: number): Promise<IncomeStatement> {
+    public readOneIncomeStatement(id: number): Promise<IncomeStatement> {
         return IncomeStatement.findOne( {where: { id }});
     }
 
-    public async saveMutation(mutation: Mutation) {
-        mutation.save();
+    public saveMutation(mutation: Mutation): Promise<Mutation> {
+        return mutation.save();
     }
 }

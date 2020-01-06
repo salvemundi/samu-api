@@ -35,6 +35,8 @@ export class AccountancyJop extends NestSchedule {
             continue;
         }
 
+        transaction.raboBookingDateTime.setHours(0, 0, 0, 0);
+
         const mutation = new Mutation();
         mutation.entryReference = transaction.entryReference;
         mutation.amount = parseFloat(transaction.transactionAmount.amount);
