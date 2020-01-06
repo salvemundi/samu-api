@@ -6,7 +6,6 @@ import { Membership } from '../../entities/membership.entity';
 @Injectable()
 export class MemberService implements IMemberService {
 
-
     async giveMembership(user: User, startDate: Date = new Date(), endDate: Date = null) {
         if (!endDate) {
             endDate = new Date(new Date().setFullYear(startDate.getFullYear() + 1));
@@ -14,7 +13,7 @@ export class MemberService implements IMemberService {
 
         const membership: Membership = new Membership(startDate, endDate);
         membership.user = user;
-        membership.save();
+        await membership.save();
     }
 
     async removeMembership(user: User) {
