@@ -1,7 +1,7 @@
 import { Controller, Post, Body, HttpCode, GoneException, InternalServerErrorException, Get, Put, NotFoundException, BadRequestException, Param, UseInterceptors, Query, ConflictException, Delete } from '@nestjs/common';
 import { SaveAuthorizationDTO } from '../../dto/accountancy/saveAuthorization.dto';
 import { FileService } from '../../services/file/file.service';
-import { ApiOperation, ApiResponse, ApiTags, ApiQuery } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags, ApiQuery, ApiParam } from '@nestjs/swagger';
 import axios from 'axios';
 import { AccountancyJop } from '../../jops/accountancy.jop';
 import { AccessResponse } from '../../dto/accountancy/accessResponse.dto';
@@ -155,7 +155,7 @@ export class AccountancyController {
         summary: 'Edits an income statement',
         description: '',
     })
-    @ApiQuery({name: 'id', type: Number, required: true})
+    @ApiParam({name: 'id', type: Number, required: true})
     @ApiResponse({ status: 200, description: 'Balance is added!', type: IncomeStatement })
     @ApiResponse({ status: 400, description: 'Validation error' })
     @ApiResponse({ status: 403, description: 'You do not have the permission to do this...' })
@@ -187,7 +187,7 @@ export class AccountancyController {
         summary: 'Deletes the income statement',
         description: '',
     })
-    @ApiQuery({name: 'id', type: Number, required: true})
+    @ApiParam({name: 'id', type: Number, required: true})
     @ApiResponse({ status: 200, description: 'Deleted!' })
     @ApiResponse({ status: 403, description: 'You do not have the permission to do this...' })
     @ApiResponse({ status: 404, description: 'This income statement could not be found...' })
@@ -270,7 +270,7 @@ export class AccountancyController {
         summary: 'Edits a balance / payment method',
         description: '',
     })
-    @ApiQuery({name: 'id', type: Number, required: true})
+    @ApiParam({name: 'id', type: Number, required: true})
     @ApiResponse({ status: 200, description: 'Balance is added!', type: PaymentMethod })
     @ApiResponse({ status: 400, description: 'Validation error' })
     @ApiResponse({ status: 403, description: 'You do not have the permission to do this...' })
@@ -304,7 +304,7 @@ export class AccountancyController {
         summary: 'Deletes the balance / payment method',
         description: '',
     })
-    @ApiQuery({name: 'id', type: Number, required: true})
+    @ApiParam({name: 'id', type: Number, required: true})
     @ApiResponse({ status: 200, description: 'Deleted!' })
     @ApiResponse({ status: 403, description: 'You do not have the permission to do this...' })
     @ApiResponse({ status: 404, description: 'This balance could not be found...' })
