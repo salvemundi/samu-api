@@ -16,6 +16,7 @@ import { ImportMutationDTO } from '../../dto/accountancy/importMutation.dto';
 import { IncomeStatement } from '../../entities/accountancy/incomeStatement.entity';
 import { AccountancyInterceptor } from '../../interceptor/accountancy.interceptor';
 import { ActivationLinkDTO } from '../../dto/accountancy/activationLink.dto';
+import { AddMutationDTO } from '../../dto/accountancy/addMutation.dto';
 
 @Controller('accountancy')
 @ApiTags('Accountancy')
@@ -128,13 +129,14 @@ export class AccountancyController {
         description: '',
     })
     @ApiQuery({name: 'till', type: String, required: true})
+    @ApiQuery({name: 'name', type: String, required: false})
     @ApiResponse({ status: 200, description: 'Balance', type: BalanceDTO, isArray: true })
     @ApiResponse({ status: 403, description: 'U do not have the permission to do this...' })
     @ApiResponse({ status: 500, description: 'Internal server error...' })
-    async getBalance(@Query('till') till: string): Promise<BalanceDTO[]> {
+    async getBalance(@Query('till') till: string, @Query('name') name?: string): Promise<BalanceDTO[]> {
         const response: BalanceDTO[] = [];
 
-        for (const paymentMethod of await this.accountancyService.readAllPaymentMethods(new Date(till))) {
+        for (const paymentMethod of await this.accountancyService.readAllPaymentMethods(new Date(till), name)) {
             const sum = paymentMethod.mutations.reduce((a, b) => a + (b.amount || 0), 0);
             const total = sum + paymentMethod.startAssets;
 
@@ -150,6 +152,49 @@ export class AccountancyController {
         }
 
         return response;
+    }
+
+    @Post('mutation')
+    @HttpCode(200)
+    @Auth('accountancy:write')
+    @ApiOperation({
+        operationId: 'AddMutation',
+        summary: 'Adds a mutation',
+        description: '',
+    })
+    @ApiResponse({ status: 200, description: 'Mutation is added!', type: Mutation })
+    @ApiResponse({ status: 400, description: 'Validation error' })
+    @ApiResponse({ status: 403, description: 'U do not have the permission to do this...' })
+    @ApiResponse({ status: 404, description: 'Income statement or Payment method not found...' })
+    @ApiResponse({ status: 500, description: 'Internal server error...' })
+    async addMutation(@Body() body: AddMutationDTO): Promise<Mutation> {
+        const relations = await Promise.all<IncomeStatement | PaymentMethod>([
+            this.accountancyService.readOneIncomeStatement(body.incomeStatementId),
+            this.accountancyService.readOnePaymentMethod(body.paymentMethodId),
+        ]);
+
+        if (!relations[0]) {
+            throw new NotFoundException('Income statement not found...');
+        }
+
+        if (!relations[1]) {
+            throw new NotFoundException('Payment method not found...');
+        }
+
+        const mutation = new Mutation();
+        mutation.description = body.description;
+        mutation.date = body.date;
+        mutation.amount = body.amount;
+        mutation.debtorIban = body.debtorIban;
+        mutation.incomeStatement = relations[0] as IncomeStatement;
+        mutation.paymentMethod = relations[1] as PaymentMethod;
+        mutation.imported = true;
+
+        if (body.entryReference) {
+            mutation.entryReference = body.entryReference;
+        }
+
+        return this.accountancyService.saveMutation(mutation);
     }
 
     @Get('import')

@@ -12,17 +12,22 @@ export class AccountancyService implements AccountancyServiceInterface {
             where: qb => {
                 qb.where('mutations.date <= :date', { date: till});
                 if (name) {
-                    qb.where('incomeStatement.name LIKE :name', { name });
+                    qb.where(`incomeStatement.name LIKE '%${name}%'`);
                 }
             },
             });
     }
 
-    public readAllPaymentMethods(till: Date): Promise<PaymentMethod[]> {
+    public readAllPaymentMethods(till: Date, name?: string): Promise<PaymentMethod[]> {
         return PaymentMethod.find({
             join: { alias: 'paymentMethod', innerJoinAndSelect: { mutations: 'paymentMethod.mutations'}},
             where: qb => {
-                qb.where('mutations.date <= :date', { date: till}); },
+                qb.where('mutations.date <= :date', { date: till});
+
+                if (name) {
+                    qb.where(`paymentMethod.name LIKE '%${name}%'`);
+                }
+            },
             });
     }
 
