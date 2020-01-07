@@ -22,7 +22,7 @@ export class WebhookController {
             throw new NotFoundException('Payment is not found by Mollie');
         }
 
-        const paymentMetadata: {transaction_id: number}[] = payment.metadata;
+        const paymentMetadata: Array<{transaction_id: number}> = payment.metadata;
         const transaction = await this.paymentService.getTransaction(+paymentMetadata[0].transaction_id);
         if (!transaction) {
             throw new NotFoundException('Transaction is not found...');

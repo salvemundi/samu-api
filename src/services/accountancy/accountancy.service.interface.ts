@@ -8,6 +8,7 @@ export interface AccountancyServiceInterface {
     readAllNotImportedMutations(): Promise<Mutation[]>;
     readOneMutations(id: number): Promise<Mutation>;
     readOnePaymentMethod(id: number): Promise<PaymentMethod>;
+    readOnePaymentMethodByCode(code: number): Promise<PaymentMethod>;
     readOneIncomeStatement(id: number): Promise<IncomeStatement>;
     saveMutation(mutation: Mutation): Promise<Mutation>;
 }

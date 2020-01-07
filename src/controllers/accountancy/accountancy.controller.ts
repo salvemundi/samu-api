@@ -1,4 +1,4 @@
-import { Controller, Post, Body, HttpCode, GoneException, InternalServerErrorException, Get, Put, NotFoundException, BadRequestException, Param, UseInterceptors, Query } from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, GoneException, InternalServerErrorException, Get, Put, NotFoundException, BadRequestException, Param, UseInterceptors, Query, ConflictException } from '@nestjs/common';
 import { SaveAuthorizationDTO } from '../../dto/accountancy/saveAuthorization.dto';
 import { FileService } from '../../services/file/file.service';
 import { ApiOperation, ApiResponse, ApiTags, ApiQuery } from '@nestjs/swagger';
@@ -17,6 +17,8 @@ import { IncomeStatement } from '../../entities/accountancy/incomeStatement.enti
 import { AccountancyInterceptor } from '../../interceptor/accountancy.interceptor';
 import { ActivationLinkDTO } from '../../dto/accountancy/activationLink.dto';
 import { AddMutationDTO } from '../../dto/accountancy/addMutation.dto';
+import { AddBalanceDTO } from '../../dto/accountancy/addBalance.dto';
+import { AddIncomeStatementDTO } from '../../dto/accountancy/addIncomeStatement.dto';
 
 @Controller('accountancy')
 @ApiTags('Accountancy')
@@ -37,7 +39,7 @@ export class AccountancyController {
     })
     @ApiResponse({ status: 200, description: 'The Accountancy api is activated!' })
     @ApiResponse({ status: 400, description: 'Validation error...'})
-    @ApiResponse({ status: 403, description: 'U do not have the permission to do this...' })
+    @ApiResponse({ status: 403, description: 'You do not have the permission to do this...' })
     @ApiResponse({ status: 410, description: 'Authorization code already used...'})
     @ApiResponse({ status: 500, description: 'Internal server error...' })
     async ActivateApi(@Body() body: SaveAuthorizationDTO) {
@@ -98,7 +100,7 @@ export class AccountancyController {
     @ApiQuery({name: 'till', type: String, required: true}) // format: date
     @ApiQuery({name: 'name', type: String, required: false})
     @ApiResponse({ status: 200, description: 'Income statements', type: IncomeStatementDTO, isArray: true })
-    @ApiResponse({ status: 403, description: 'U do not have the permission to do this...' })
+    @ApiResponse({ status: 403, description: 'You do not have the permission to do this...' })
     @ApiResponse({ status: 500, description: 'Internal server error...' })
     async getIncomeStatements(@Query('till') till: string, @Query('name') name?: string): Promise<IncomeStatementDTO[]> {
         const response: IncomeStatementDTO[] = [];
@@ -120,6 +122,62 @@ export class AccountancyController {
         return response;
     }
 
+    @Post('/incomeStatement')
+    @HttpCode(200)
+    @Auth('accountancy:write')
+    @ApiOperation({
+        operationId: 'AddIncomeStatement',
+        summary: 'Adds an income statement',
+        description: '',
+    })
+    @ApiResponse({ status: 200, description: 'Balance is added!', type: IncomeStatement })
+    @ApiResponse({ status: 400, description: 'Validation error' })
+    @ApiResponse({ status: 403, description: 'You do not have the permission to do this...' })
+    @ApiResponse({ status: 409, description: 'This income statement code already exists...' })
+    @ApiResponse({ status: 500, description: 'Internal server error...' })
+    async addIncomeStatement(@Body() body: AddIncomeStatementDTO): Promise<IncomeStatement> {
+        if (await this.accountancyService.readOneIncomeStatementByCode(body.code)) {
+            throw new ConflictException('This income statement code already exists...');
+        }
+
+        const incomeStatement = new IncomeStatement();
+        incomeStatement.name = body.name;
+        incomeStatement.code = body.code;
+
+        return this.accountancyService.saveIncomeStatement(incomeStatement);
+    }
+
+    @Put('/incomeStatement/:id')
+    @HttpCode(200)
+    @Auth('accountancy:write')
+    @ApiOperation({
+        operationId: 'EditIncomeStatement',
+        summary: 'Edits an income statement',
+        description: '',
+    })
+    @ApiResponse({ status: 200, description: 'Balance is added!', type: IncomeStatement })
+    @ApiResponse({ status: 400, description: 'Validation error' })
+    @ApiResponse({ status: 403, description: 'You do not have the permission to do this...' })
+    @ApiResponse({ status: 404, description: 'This income statement could not be found...' })
+    @ApiResponse({ status: 409, description: 'This income statement code already exists...' })
+    @ApiResponse({ status: 500, description: 'Internal server error...' })
+    async editIncomeStatement(@Body() body: AddIncomeStatementDTO, @Param('id') id: number): Promise<IncomeStatement> {
+        const incomeStatement = await this.accountancyService.readOneIncomeStatement(id);
+        if (!incomeStatement) {
+            throw new NotFoundException('This balance could not be found...');
+        }
+
+        const sharedCodeIncomeStatement = await this.accountancyService.readOneIncomeStatementByCode(body.code);
+        if (sharedCodeIncomeStatement && incomeStatement.id !== sharedCodeIncomeStatement.id) {
+            throw new ConflictException('This income statement code already exists...');
+        }
+
+        incomeStatement.name = body.name;
+        incomeStatement.code = body.code;
+
+        return this.accountancyService.saveIncomeStatement(incomeStatement);
+    }
+
     @Get('balance')
     @HttpCode(200)
     @Auth('accountancy:read')
@@ -131,14 +189,14 @@ export class AccountancyController {
     @ApiQuery({name: 'till', type: String, required: true})
     @ApiQuery({name: 'name', type: String, required: false})
     @ApiResponse({ status: 200, description: 'Balance', type: BalanceDTO, isArray: true })
-    @ApiResponse({ status: 403, description: 'U do not have the permission to do this...' })
+    @ApiResponse({ status: 403, description: 'You do not have the permission to do this...' })
     @ApiResponse({ status: 500, description: 'Internal server error...' })
     async getBalance(@Query('till') till: string, @Query('name') name?: string): Promise<BalanceDTO[]> {
         const response: BalanceDTO[] = [];
 
         for (const paymentMethod of await this.accountancyService.readAllPaymentMethods(new Date(till), name)) {
             const sum = paymentMethod.mutations.reduce((a, b) => a + (b.amount || 0), 0);
-            const total = sum + paymentMethod.startAssets;
+            const total = sum + paymentMethod.startAssets - paymentMethod.startLiabilities;
 
             const dto: BalanceDTO = {
                 id: paymentMethod.id,
@@ -154,6 +212,66 @@ export class AccountancyController {
         return response;
     }
 
+    @Post('/balance')
+    @HttpCode(200)
+    @Auth('accountancy:write')
+    @ApiOperation({
+        operationId: 'AddBalance',
+        summary: 'Adds a balance / payment method',
+        description: '',
+    })
+    @ApiResponse({ status: 200, description: 'Balance is added!', type: PaymentMethod })
+    @ApiResponse({ status: 400, description: 'Validation error' })
+    @ApiResponse({ status: 403, description: 'You do not have the permission to do this...' })
+    @ApiResponse({ status: 409, description: 'This balance code already exists...' })
+    @ApiResponse({ status: 500, description: 'Internal server error...' })
+    async addBalance(@Body() body: AddBalanceDTO): Promise<PaymentMethod> {
+        if (await this.accountancyService.readOnePaymentMethodByCode(body.code)) {
+            throw new ConflictException('This balance code already exists...');
+        }
+
+        const balance = new PaymentMethod();
+        balance.name = body.name;
+        balance.code = body.code;
+        balance.startAssets = body.startAssets;
+        balance.startLiabilities = body.startLiabilities;
+
+        return this.accountancyService.savePaymentMethod(balance);
+    }
+
+    @Put('/balance/:id')
+    @HttpCode(200)
+    @Auth('accountancy:write')
+    @ApiOperation({
+        operationId: 'EditBalance',
+        summary: 'Edits a balance / payment method',
+        description: '',
+    })
+    @ApiResponse({ status: 200, description: 'Balance is added!', type: PaymentMethod })
+    @ApiResponse({ status: 400, description: 'Validation error' })
+    @ApiResponse({ status: 403, description: 'You do not have the permission to do this...' })
+    @ApiResponse({ status: 404, description: 'This balance could not be found...' })
+    @ApiResponse({ status: 409, description: 'This balance code already exists...' })
+    @ApiResponse({ status: 500, description: 'Internal server error...' })
+    async editBalance(@Body() body: AddBalanceDTO, @Param('id') id: number): Promise<PaymentMethod> {
+        const balance = await this.accountancyService.readOnePaymentMethod(id);
+        if (!balance) {
+            throw new NotFoundException('This balance could not be found...');
+        }
+
+        const sharedCodeBalance = await this.accountancyService.readOnePaymentMethodByCode(body.code);
+        if (sharedCodeBalance && balance.id !== sharedCodeBalance.id) {
+            throw new ConflictException('This income statement code already exists...');
+        }
+
+        balance.name = body.name;
+        balance.code = body.code;
+        balance.startAssets = body.startAssets;
+        balance.startLiabilities = body.startLiabilities;
+
+        return this.accountancyService.savePaymentMethod(balance);
+    }
+
     @Post('mutation')
     @HttpCode(200)
     @Auth('accountancy:write')
@@ -164,7 +282,7 @@ export class AccountancyController {
     })
     @ApiResponse({ status: 200, description: 'Mutation is added!', type: Mutation })
     @ApiResponse({ status: 400, description: 'Validation error' })
-    @ApiResponse({ status: 403, description: 'U do not have the permission to do this...' })
+    @ApiResponse({ status: 403, description: 'You do not have the permission to do this...' })
     @ApiResponse({ status: 404, description: 'Income statement or Payment method not found...' })
     @ApiResponse({ status: 500, description: 'Internal server error...' })
     async addMutation(@Body() body: AddMutationDTO): Promise<Mutation> {
@@ -206,7 +324,7 @@ export class AccountancyController {
         description: '',
     })
     @ApiResponse({ status: 200, description: 'Balance', type: NotImportedMutationDTO, isArray: true })
-    @ApiResponse({ status: 403, description: 'U do not have the permission to do this...' })
+    @ApiResponse({ status: 403, description: 'You do not have the permission to do this...' })
     @ApiResponse({ status: 500, description: 'Internal server error...' })
     async getNotImportedMutations(): Promise<NotImportedMutationDTO[]> {
         const response: NotImportedMutationDTO[] = [];
@@ -235,7 +353,7 @@ export class AccountancyController {
     })
     @ApiResponse({ status: 200, description: 'Imported!' })
     @ApiResponse({ status: 400, description: 'Invalid payment method or income statement selected...' })
-    @ApiResponse({ status: 403, description: 'U do not have the permission to do this...' })
+    @ApiResponse({ status: 403, description: 'You do not have the permission to do this...' })
     @ApiResponse({ status: 404, description: 'Mutation not found...' })
     @ApiResponse({ status: 500, description: 'Internal server error...' })
     async importMutation(@Param('id') id: number, @Body() body: ImportMutationDTO): Promise<void> {

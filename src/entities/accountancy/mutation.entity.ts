@@ -29,7 +29,7 @@ export class Mutation extends BaseEntity {
     @Column()
     debtorIban: string;
 
-    @ApiProperty()
+    @ApiProperty({ default: false })
     @Column({ default: false })
     imported: boolean;
 

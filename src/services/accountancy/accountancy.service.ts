@@ -43,11 +43,27 @@ export class AccountancyService implements AccountancyServiceInterface {
         return PaymentMethod.findOne( {where: { id }});
     }
 
+    public readOnePaymentMethodByCode(code: number): Promise<PaymentMethod> {
+        return PaymentMethod.findOne( {where: { code }});
+    }
+
     public readOneIncomeStatement(id: number): Promise<IncomeStatement> {
         return IncomeStatement.findOne( {where: { id }});
     }
 
+    public readOneIncomeStatementByCode(code: number): Promise<IncomeStatement> {
+        return IncomeStatement.findOne( {where: { code }});
+    }
+
     public saveMutation(mutation: Mutation): Promise<Mutation> {
         return mutation.save();
+    }
+
+    public savePaymentMethod(paymentMethod: PaymentMethod): Promise<PaymentMethod> {
+        return paymentMethod.save();
+    }
+
+    public saveIncomeStatement(incomeStatement: IncomeStatement): Promise<IncomeStatement> {
+        return incomeStatement.save();
     }
 }
