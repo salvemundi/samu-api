@@ -1,4 +1,4 @@
-import { Controller, Post, Body, HttpCode, GoneException, InternalServerErrorException, Get, Put, NotFoundException, BadRequestException, Param, UseInterceptors, Query, ConflictException } from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, GoneException, InternalServerErrorException, Get, Put, NotFoundException, BadRequestException, Param, UseInterceptors, Query, ConflictException, Delete } from '@nestjs/common';
 import { SaveAuthorizationDTO } from '../../dto/accountancy/saveAuthorization.dto';
 import { FileService } from '../../services/file/file.service';
 import { ApiOperation, ApiResponse, ApiTags, ApiQuery } from '@nestjs/swagger';
@@ -155,6 +155,7 @@ export class AccountancyController {
         summary: 'Edits an income statement',
         description: '',
     })
+    @ApiQuery({name: 'id', type: Number, required: true})
     @ApiResponse({ status: 200, description: 'Balance is added!', type: IncomeStatement })
     @ApiResponse({ status: 400, description: 'Validation error' })
     @ApiResponse({ status: 403, description: 'You do not have the permission to do this...' })
@@ -176,6 +177,28 @@ export class AccountancyController {
         incomeStatement.code = body.code;
 
         return this.accountancyService.saveIncomeStatement(incomeStatement);
+    }
+
+    @Delete('/incomeStatement/:id')
+    @HttpCode(200)
+    @Auth('accountancy:delete')
+    @ApiOperation({
+        operationId: 'DeleteIncomeStatement',
+        summary: 'Deletes the income statement',
+        description: '',
+    })
+    @ApiQuery({name: 'id', type: Number, required: true})
+    @ApiResponse({ status: 200, description: 'Deleted!' })
+    @ApiResponse({ status: 403, description: 'You do not have the permission to do this...' })
+    @ApiResponse({ status: 404, description: 'This income statement could not be found...' })
+    @ApiResponse({ status: 500, description: 'Internal server error...' })
+    async deleteIncomeStatement(@Param('id') id: number) {
+        const incomeStatement = await this.accountancyService.readOneIncomeStatement(id);
+        if (!incomeStatement) {
+            throw new NotFoundException('This income statement could not be found...');
+        }
+
+        await this.accountancyService.deleteIncomeStatement(incomeStatement);
     }
 
     @Get('balance')
@@ -247,6 +270,7 @@ export class AccountancyController {
         summary: 'Edits a balance / payment method',
         description: '',
     })
+    @ApiQuery({name: 'id', type: Number, required: true})
     @ApiResponse({ status: 200, description: 'Balance is added!', type: PaymentMethod })
     @ApiResponse({ status: 400, description: 'Validation error' })
     @ApiResponse({ status: 403, description: 'You do not have the permission to do this...' })
@@ -270,6 +294,28 @@ export class AccountancyController {
         balance.startLiabilities = body.startLiabilities;
 
         return this.accountancyService.savePaymentMethod(balance);
+    }
+
+    @Delete('/balance/:id')
+    @HttpCode(200)
+    @Auth('accountancy:delete')
+    @ApiOperation({
+        operationId: 'DeleteBalance',
+        summary: 'Deletes the balance / payment method',
+        description: '',
+    })
+    @ApiQuery({name: 'id', type: Number, required: true})
+    @ApiResponse({ status: 200, description: 'Deleted!' })
+    @ApiResponse({ status: 403, description: 'You do not have the permission to do this...' })
+    @ApiResponse({ status: 404, description: 'This balance could not be found...' })
+    @ApiResponse({ status: 500, description: 'Internal server error...' })
+    async deleteBalance(@Param('id') id: number) {
+        const balance = await this.accountancyService.readOnePaymentMethod(id);
+        if (!balance) {
+            throw new NotFoundException('This income statement could not be found...');
+        }
+
+        await this.accountancyService.deletePaymentMethod(balance);
     }
 
     @Post('mutation')
