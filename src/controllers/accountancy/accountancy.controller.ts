@@ -22,7 +22,7 @@ import { AddIncomeStatementDTO } from '../../dto/accountancy/addIncomeStatement.
 
 @Controller('accountancy')
 @ApiTags('Accountancy')
-// @UseInterceptors(AccountancyInterceptor)
+@UseInterceptors(AccountancyInterceptor)
 export class AccountancyController {
     constructor(
         private fileService: FileService,
