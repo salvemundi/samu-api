@@ -9,6 +9,9 @@ export class ScopeSeeder {
         new Scope('user:delete', 'Lid verwijderen', 3),
         new Scope('committee:write', 'Commissies bewerken', 4),
         new Scope('committee:delete', 'Commissies verwijderen', 5),
+        new Scope('accountancy:read', 'Boekhouden bekijken', 6),
+        new Scope('accountancy:write', 'Boekhouden bewerken', 7),
+        new Scope('accountancy:delete', 'boekhouden verwijderen', 8),
     ];
 
     public async seed() {
@@ -16,6 +19,7 @@ export class ScopeSeeder {
             if (await Scope.findOne({ where: {id: scope.id}})) {
                 return;
             }
+
             Scope.save(scope);
         });
     }

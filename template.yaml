@@ -88,6 +88,18 @@ spec:
           value: "{{sendgrid_user}}"
         - name: STORAGE_PATH
           value: "{{storage}}"
+        - name: RABOBANK_URL
+          value: "{{rabobank_url}}"
+        - name: RABOBANK_CLIENT_ID
+          value: "{{rabobank_client_id}}"
+        - name: RABOBANK_CLIENT_SECRET
+          value: "{{rabobank_client_secret}}"
+        - name: RABOBANK_CERTIFICATE_KEY_ID
+          value: "{{rabobank_certificate_key_id}}"
+        - name: RABOBANK_PRIVATE_KEY_PATH
+          value: "{{rabobank_private_key_path}}"
+        - name: RABOBANK_CERTIFICATE_PATH
+          value: "{{rabobank_certificate_path}}"
         ports:
         - containerPort: 1337
 

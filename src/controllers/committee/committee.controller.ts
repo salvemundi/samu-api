@@ -53,6 +53,7 @@ export class CommitteeController {
     })
     @ApiResponse({ status: 200, description: 'The committee has been created!', type: Committee })
     @ApiResponse({ status: 400, description: 'Validation error...' })
+    @ApiResponse({ status: 403, description: 'You do not have the permission to do this...' })
     @ApiResponse({ status: 500, description: 'Internal server error...' })
     async create(@Body() body: CreateCommissionDto) {
         const committee = new Committee(body.name, body.description, new Date());
@@ -69,6 +70,7 @@ export class CommitteeController {
     })
     @ApiResponse({ status: 200, description: 'The committee has been updated!', type: Committee })
     @ApiResponse({ status: 400, description: 'Validation error...' })
+    @ApiResponse({ status: 403, description: 'You do not have the permission to do this...' })
     @ApiResponse({ status: 404, description: 'No committee found...' })
     @ApiResponse({ status: 500, description: 'Internal server error...' })
     async update(@Body() body: UpdateCommissionDto) {
@@ -92,6 +94,7 @@ export class CommitteeController {
         description: 'This call is used to delete a committee',
     })
     @ApiResponse({ status: 200, description: 'Committee deleted!' })
+    @ApiResponse({ status: 403, description: 'You do not have the permission to do this...' })
     @ApiResponse({ status: 404, description: 'No committee found...' })
     @ApiResponse({ status: 500, description: 'Internal server error...' })
     async delete(@Param('id') id: number) {
