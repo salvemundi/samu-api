@@ -140,9 +140,21 @@ export class AccountancyController {
             throw new ConflictException('This income statement code already exists...');
         }
 
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const mutation = new Mutation();
+        mutation.amount = 0;
+        mutation.date = today;
+        mutation.debtorIban = '';
+        mutation.description = 'Init income statement';
+        mutation.imported = true;
+        await this.accountancyService.saveMutation(mutation);
+
         const incomeStatement = new IncomeStatement();
         incomeStatement.name = body.name;
         incomeStatement.code = body.code;
+        incomeStatement.mutations = [mutation];
 
         return this.accountancyService.saveIncomeStatement(incomeStatement);
     }
