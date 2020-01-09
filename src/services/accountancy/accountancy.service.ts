@@ -12,7 +12,7 @@ export class AccountancyService implements AccountancyServiceInterface {
             where: qb => {
                 qb.where('mutations.date <= :date', { date: till});
                 if (name) {
-                    qb.where(`incomeStatement.name LIKE '%${name}%'`);
+                    qb.where('incomeStatement.name LIKE :name', { name: `%${name}%` } );
                 }
             },
             });
@@ -25,7 +25,7 @@ export class AccountancyService implements AccountancyServiceInterface {
                 qb.where('mutations.date <= :date', { date: till});
 
                 if (name) {
-                    qb.where(`paymentMethod.name LIKE '%${name}%'`);
+                    qb.where('paymentMethod.name LIKE :name', { name: `%${name}%` } );
                 }
             },
             });

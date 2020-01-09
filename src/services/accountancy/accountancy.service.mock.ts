@@ -34,7 +34,7 @@ export class MockAccountancyService implements AccountancyServiceInterface {
             resolve(null);
         });
     }
-    readAllPaymentMethods(till: Date): Promise<PaymentMethod[]> {
+    readAllPaymentMethods(till: Date, name?: string): Promise<PaymentMethod[]> {
         return new Promise((resolve) => {
             resolve([]);
         });
@@ -64,7 +64,7 @@ export class MockAccountancyService implements AccountancyServiceInterface {
             resolve(null);
         });
     }
-    readAllIncomeStatements(till: Date): Promise<IncomeStatement[]> {
+    readAllIncomeStatements(till: Date, name?: string): Promise<IncomeStatement[]> {
         return new Promise((resolve) => {
             resolve([]);
         });

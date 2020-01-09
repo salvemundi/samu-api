@@ -15,4 +15,10 @@ export class BalanceDTO {
 
     @ApiProperty({required: false})
     assets: number;
+
+    @ApiProperty()
+    startAssets: number;
+
+    @ApiProperty()
+    startLiabilities: number;
 }

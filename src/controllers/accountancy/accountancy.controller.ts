@@ -203,7 +203,7 @@ export class AccountancyController {
 
     @Get('balance')
     @HttpCode(200)
-    @Auth('accountancy:read')
+    // @Auth('accountancy:read')
     @ApiOperation({
         operationId: 'GetBalance',
         summary: 'Gets the balance',
@@ -227,6 +227,8 @@ export class AccountancyController {
                 name: paymentMethod.name,
                 assets: total >= 0 ? total : null,
                 liabilities: total < 0 ? total : null,
+                startAssets: paymentMethod.startAssets,
+                startLiabilities: paymentMethod.startLiabilities,
             };
 
             response.push(dto);
@@ -253,11 +255,23 @@ export class AccountancyController {
             throw new ConflictException('This balance code already exists...');
         }
 
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const mutation = new Mutation();
+        mutation.amount = 0;
+        mutation.date = today;
+        mutation.debtorIban = '';
+        mutation.description = 'Init payment method';
+        mutation.imported = true;
+        await this.accountancyService.saveMutation(mutation);
+
         const balance = new PaymentMethod();
         balance.name = body.name;
         balance.code = body.code;
         balance.startAssets = body.startAssets;
         balance.startLiabilities = body.startLiabilities;
+        balance.mutations = [ mutation ];
 
         return this.accountancyService.savePaymentMethod(balance);
     }
