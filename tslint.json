@@ -8,7 +8,7 @@
     ]
   },
   "jsRules": {
-    //"no-unused-expression": true
+    "no-unused-expression": true
   },
   "rules": {
     "quotemark": [true, "single"],

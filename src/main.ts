@@ -6,8 +6,10 @@ import { ValidationPipe } from '@nestjs/common';
 import * as cookieParser from 'cookie-parser';
 import { ScopeSeeder } from './seed/scope.seed';
 import swaggerOptions from './swagger/document';
+import { createConnection } from 'typeorm';
 
 async function bootstrap() {
+  await createConnection(require('./typeormConfig'));
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe());
   app.use(cookieParser());
@@ -16,8 +18,7 @@ async function bootstrap() {
     credentials: true,
   });
 
-  const scopeSeeder = app.get(ScopeSeeder);
-  await scopeSeeder.seed();
+  await app.get(ScopeSeeder).seed();
 
   const document = SwaggerModule.createDocument(app, swaggerOptions);
   SwaggerModule.setup('api', app, document);
